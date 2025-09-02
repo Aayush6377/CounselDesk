@@ -1,0 +1,39 @@
+:root {
+  --primary-color: #A89166;
+  --secondary-color: #1A1A1A;
+  --accent-color: #E8D7B5;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn { animation: fadeIn 1s ease-out forwards; }
+.animate-slideInUp { animation: slideInUp 0.8s ease-out forwards; opacity: 0; }
+.animate-scaleIn { animation: scaleIn 0.7s ease-out forwards; }
+
+/* Active nav item */
+.nav-item.active {
+  color: var(--primary-color);
+  position: relative;
+}
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -8px;
+  width: 6px;
+  height: 6px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+}
