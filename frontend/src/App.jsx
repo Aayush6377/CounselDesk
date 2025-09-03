@@ -14,6 +14,9 @@ import Chatbot from "./components/Chatbot/Chatbot";
 import LawyersList from "./pages/landing/LawyersList/LawyersList";
 import LawyerProfile from "./components/LawyerProfile/LawyerProfile";
 import ContactUs from "./components/Contactus/Contactus";
+import Login from "./pages/landing/Login/Login";
+import ForgotPassword from "./pages/landing/Login/ForgotPassword";
+import Signup from "./pages/landing/Signup/Signup";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +42,18 @@ const router = createBrowserRouter([
       {
         path: "/contact",
         element: <ContactUs />
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/login/forgot-password",
+        element: <ForgotPassword />
+      },
+      {
+        path: "/signup",
+        element: <Signup />
       }
     ]
   },

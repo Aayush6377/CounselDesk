@@ -74,6 +74,7 @@ const ContactUs = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Full Name"
+                    required
                     className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                   />
                 </div>
@@ -86,6 +87,7 @@ const ContactUs = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Email Address"
+                    required
                     className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                   />
                 </div>
@@ -98,6 +100,7 @@ const ContactUs = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Phone Number (Optional)"
+                    required
                     className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                   />
                 </div>
@@ -110,6 +113,7 @@ const ContactUs = () => {
                     onChange={handleChange}
                     placeholder="Your Message"
                     rows="4"
+                    required
                     className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                   />
                 </div>
@@ -146,10 +150,6 @@ const ContactUs = () => {
                   <iframe 
                     width="100%" 
                     height="200" 
-                    frameborder="0" 
-                    scrolling="no" 
-                    marginheight="0" 
-                    marginwidth="0" 
                     src="https://www.openstreetmap.org/export/embed.html?bbox=77.3195%2C28.4552%2C77.3295%2C28.4652&amp;marker=28.4602%2C77.3245"
                     style={{border: "1px solid black"}}>
                     </iframe>

@@ -3,76 +3,64 @@
 <meta charset="utf-8"/>
 <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
 <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
-<title>LegalAssist - Contact Us</title>
+<title>LegalAssist - Forgot Password</title>
 <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <style type="text/tailwindcss">
-    :root {
-      --primary-color: #A89166;
-      --secondary-color: #1A1A1A;
-      --accent-color: #E8D7B5;
-    }
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .animate-fadeIn {
-      animation: fadeIn 1s ease-out forwards;
-    }
-    .animate-slideInUp {
-      animation: slideInUp 0.8s ease-out forwards;
-      opacity: 0;
-    }
-    .footer-link {
-        animation: fadeIn 0.5s ease-out forwards;
-        opacity: 0;
-    }
-    .footer-link:nth-child(1) { animation-delay: 0.1s; }
-    .footer-link:nth-child(2) { animation-delay: 0.2s; }
-    .footer-link:nth-child(3) { animation-delay: 0.3s; }
-    .footer-link:nth-child(4) { animation-delay: 0.4s; }
-    .footer-link:nth-child(5) { animation-delay: 0.5s; }
-    .nav-item.active {
-      color: var(--primary-color);
-      position: relative;
-    }
-    .nav-item.active::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: -8px;
-      width: 6px;
-      height: 6px;
-      background-color: var(--primary-color);
-      border-radius: 50%;
-    }
-    .stagger-1 { animation-delay: 100ms; }
-    .stagger-2 { animation-delay: 200ms; }
-    .stagger-3 { animation-delay: 300ms; }
-  </style>
+        :root {
+            --primary-color: #A89166;
+            --secondary-color: #1A1A1A;
+            --accent-color: #E8D7B5;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .animate-slideInUp {
+            animation: slideInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .stagger-1 {
+            animation-delay: 100ms;
+        }
+        .stagger-2 {
+            animation-delay: 200ms;
+        }
+        .stagger-3 {
+            animation-delay: 300ms;
+        }
+        .stagger-4 {
+            animation-delay: 400ms;
+        }
+        .stagger-5 {
+            animation-delay: 500ms;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-gray-300">
 <div class="relative flex size-full min-h-screen flex-col bg-[var(--secondary-color)] group/design-root overflow-x-hidden" style='font-family: Manrope, "Noto Sans", sans-serif;'>
-<div class="layout-container flex h-full grow flex-col">
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#2D2D2D] px-10 py-4 shadow-lg sticky top-0 bg-[var(--secondary-color)] z-50 animate-fadeIn">
+<div class="flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap px-10 py-4 sticky top-0 bg-[var(--secondary-color)] z-50 animate-fadeIn">
 <div class="flex items-center gap-3 text-white">
 <div class="flex items-center justify-center size-10 bg-[var(--primary-color)] text-white rounded-full transition-transform duration-300 hover:rotate-12">
 <span class="material-symbols-outlined">gavel</span>
@@ -81,148 +69,55 @@
 </div>
 <div class="flex flex-1 justify-center gap-8">
 <div class="flex items-center gap-8">
-<a class="nav-item text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Home</a>
-<a class="nav-item text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Chatbot</a>
-<a class="nav-item text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Lawyer Directory</a>
-<a class="nav-item text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Pricing</a>
-<a class="nav-item text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)] active" href="#">Contact Us</a>
+<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Home</a>
+<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Chatbot</a>
+<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Lawyer Directory</a>
+<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Pricing</a>
+<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Contact Us</a>
 </div>
 </div>
 <div class="flex items-center gap-4">
-<a class="text-sm font-medium text-gray-400 hover:text-[var(--primary-color)] transition-colors" href="#">Login</a>
+<a class="text-sm font-medium text-white" href="#">Login</a>
 <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 px-5 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-amber-600 transition-all duration-300 transform hover:scale-105">
 <span class="truncate">Sign Up</span>
 </button>
 </div>
 </header>
-<main class="flex-1 bg-[var(--secondary-color)] py-20 px-4 sm:px-6 lg:px-8">
-<div class="max-w-7xl mx-auto">
+<main class="flex-1 bg-[var(--secondary-color)] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
+<div class="w-full max-w-md space-y-8">
 <div class="text-center animate-slideInUp">
-<h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">Contact Us</h1>
-<p class="mt-4 max-w-2xl mx-auto text-lg text-gray-400">
-              We're here to help. Reach out to us with any questions or inquiries.
-            </p>
+<div class="inline-block">
+<div class="flex items-center justify-center size-20 bg-[var(--primary-color)] text-white rounded-full mx-auto mb-6 transition-transform duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-amber-500/20">
+<span class="material-symbols-outlined text-5xl">lock_reset</span>
 </div>
-<div class="mt-20 grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-<div class="animate-slideInUp stagger-1">
-<h2 class="text-2xl font-bold text-white mb-6">Get in Touch</h2>
+</div>
+<h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">Forgot Password?</h1>
+<p class="mt-4 max-w-md mx-auto text-lg text-gray-400">
+                            Enter your email and we'll send you instructions to reset your password.
+                        </p>
+</div>
+<div class="bg-[#212121] border border-[#2D2D2D] shadow-2xl rounded-2xl p-8 sm:p-10 space-y-6 animate-slideInUp stagger-1">
 <form action="#" class="space-y-6" method="POST">
-<div>
-<label class="sr-only" for="name">Full Name</label>
-<input autocomplete="name" class="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors" id="name" name="name" placeholder="Full Name" type="text"/>
-</div>
-<div>
+<div class="animate-slideInUp stagger-2">
 <label class="sr-only" for="email">Email</label>
-<input autocomplete="email" class="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors" id="email" name="email" placeholder="Email Address" type="email"/>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">mail</span>
+<input autocomplete="email" class="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 pl-12 pr-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors" id="email" name="email" placeholder="Email Address" type="email"/>
 </div>
-<div>
-<label class="sr-only" for="phone">Phone</label>
-<input autocomplete="tel" class="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors" id="phone" name="phone" placeholder="Phone Number (Optional)" type="tel"/>
 </div>
-<div>
-<label class="sr-only" for="message">Message</label>
-<textarea class="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors" id="message" name="message" placeholder="Your Message" rows="4"></textarea>
-</div>
-<div>
+<div class="animate-slideInUp stagger-3">
 <button class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-[var(--primary-color)] hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-[var(--primary-color)] transition-all duration-300 transform hover:scale-105" type="submit">
-                    Send Message
-                  </button>
+                                    Send Reset Instructions
+                                </button>
 </div>
 </form>
-</div>
-<div class="space-y-12 animate-slideInUp stagger-2">
-<div>
-<h2 class="text-2xl font-bold text-white mb-6">Contact Information</h2>
-<div class="space-y-6">
-<div class="flex items-start space-x-4">
-<div class="flex-shrink-0">
-<span class="material-symbols-outlined text-[var(--primary-color)] text-2xl">mail</span>
-</div>
-<div>
-<h3 class="text-lg font-semibold text-white">Email Us</h3>
-<p class="text-gray-400">Our team is here to help. <br/> <a class="text-[var(--accent-color)] hover:underline" href="mailto:contact@legalassist.com">contact@legalassist.com</a></p>
-</div>
-</div>
-<div class="flex items-start space-x-4">
-<div class="flex-shrink-0">
-<span class="material-symbols-outlined text-[var(--primary-color)] text-2xl">call</span>
-</div>
-<div>
-<h3 class="text-lg font-semibold text-white">Call Us</h3>
-<p class="text-gray-400">Mon-Fri from 8am to 5pm. <br/> <a class="text-[var(--accent-color)] hover:underline" href="tel:+1234567890">+1 (234) 567-890</a></p>
-</div>
-</div>
-<div class="flex items-start space-x-4">
-<div class="flex-shrink-0">
-<span class="material-symbols-outlined text-[var(--primary-color)] text-2xl">location_on</span>
-</div>
-<div>
-<h3 class="text-lg font-semibold text-white">Main Office</h3>
-<p class="text-gray-400">123 Legal Avenue, Suite 100 <br/> Justice City, JC 12345</p>
-</div>
-</div>
-</div>
-</div>
-<div>
-<h2 class="text-2xl font-bold text-white mb-6">Our Location</h2>
-<div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden border-2 border-[#3E3E3E] shadow-lg">
-<iframe allowfullscreen="" class="filter grayscale invert brightness-90 contrast-120" height="100%" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.219523215585!2d-73.98824768459388!3d40.75797497932691!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6434221%3A0x746a504c56d784a!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1678886423456!5m2!1sen!2sus" style="border:0;" width="100%"></iframe>
-</div>
-</div>
-</div>
+<p class="text-center text-sm text-gray-500 animate-slideInUp stagger-4">
+                            Remember your password?
+                            <a class="font-medium text-[var(--accent-color)] hover:text-amber-300" href="#">Log in</a>
+</p>
 </div>
 </div>
 </main>
-<footer class="bg-[var(--secondary-color)] border-t border-[#2D2D2D] py-16 px-4 sm:px-6 lg:px-8">
-<div class="max-w-7xl mx-auto">
-<div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-<div class="col-span-1 md:col-span-1">
-<div class="flex items-center gap-3 text-white footer-link">
-<div class="flex items-center justify-center size-12 bg-[var(--primary-color)] text-white rounded-full transition-transform duration-300 hover:scale-110">
-<span class="material-symbols-outlined text-3xl">gavel</span>
-</div>
-<h2 class="text-white text-2xl font-bold leading-tight tracking-[-0.015em]">LegalAssist</h2>
-</div>
-<p class="text-gray-400 text-sm mt-4 footer-link">Your trusted partner in navigating the complexities of the legal world. Get instant AI assistance and connect with professional lawyers.</p>
-<div class="flex space-x-4 mt-6 footer-link">
-<a class="text-gray-400 hover:text-white transition-colors duration-300" href="#"><svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path></svg></a>
-<a class="text-gray-400 hover:text-white transition-colors duration-300" href="#"><svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg></a>
-<a class="text-gray-400 hover:text-white transition-colors duration-300" href="#"><svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12.011c0 4.432 2.865 8.18 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.482A10.001 10.001 0 0022 12.011C22 6.477 17.523 2 12 2z" fill-rule="evenodd"></path></svg></a>
-</div>
-</div>
-<div class="col-span-1">
-<h3 class="text-white text-lg font-semibold tracking-wider uppercase footer-link">Services</h3>
-<ul class="mt-4 space-y-3">
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">AI Chatbot</a></li>
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">Lawyer Directory</a></li>
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">Case Evaluation</a></li>
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">Legal Documents</a></li>
-</ul>
-</div>
-<div class="col-span-1">
-<h3 class="text-white text-lg font-semibold tracking-wider uppercase footer-link">Quick Links</h3>
-<ul class="mt-4 space-y-3">
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">About Us</a></li>
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">Pricing</a></li>
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">Contact Us</a></li>
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">FAQ</a></li>
-</ul>
-</div>
-<div class="col-span-1">
-<h3 class="text-white text-lg font-semibold tracking-wider uppercase footer-link">Legal</h3>
-<ul class="mt-4 space-y-3">
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">Terms of Service</a></li>
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">Privacy Policy</a></li>
-<li><a class="footer-link text-gray-400 hover:text-white transition-colors duration-300" href="#">Disclaimer</a></li>
-</ul>
-</div>
-</div>
-<div class="mt-12 pt-8 border-t border-[#2D2D2D] text-center text-gray-500 text-sm footer-link">
-<p>© 2024 LegalAssist. All rights reserved.</p>
-<p class="mt-2">Disclaimer: The information provided by our AI is for informational purposes only and does not constitute legal advice.</p>
-</div>
-</div>
-</footer>
 </div>
 </div>
 
