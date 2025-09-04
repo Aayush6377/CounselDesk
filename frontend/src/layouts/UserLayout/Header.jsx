@@ -1,13 +1,14 @@
 import Navbar from "../../components/Navbar/Navbar";
 
 const Header = () => {
+
     const navItems = [
-        { name: "Home", path: "/" },
-        { name: "Chatbot", path: "/chatbot" },
-        { name: "Lawyers", path: "/lawyers" },
-        { name: "Contact Us", path: "/contact" },
+        { name: "Dashboard", path: "" },
+        { name: "Chatbot", path: "chatbot" },
+        { name: "Find Lawyers", path: "find-lawyers" },
+        { name: "Appointments", path: "appointments" },
     ];
-    
+
     return (
         <div>
             <Navbar navItems={navItems}/>

@@ -8,10 +8,12 @@ import lawyerMeeting from "./images/lawyerMeeting.png";
 import legalDocs from "./images/legalDocs.png";
 import connection from "./images/connection.png";
 import authBackground from "./images/authBackground.png";
+import defaultProfile from "./images/defaultProfile.png"
 
 export const images = {
     logo, ladyJustice, howItWorks1, howItWorks2, howItWorks3,
-    chatbot, lawyerMeeting, legalDocs, connection, authBackground
+    chatbot, lawyerMeeting, legalDocs, connection, authBackground,
+    defaultProfile
 }
 
 export const lawyers = [
@@ -132,17 +134,153 @@ export const lawyerProfile = {
   ],
   "reviews": [
     {
-      "userName": "Aayush Kukreja",
+      "userName": "Priya Mehta",
       "rating": 5,
       "comment": "Very professional and explained everything clearly.",
-      "date": "2025-08-20"
+      "date": "2025-08-20",
+      "profileImage": "https://randomuser.me/api/portraits/men/2.jpg"
     },
     {
-      "userName": "Priya Mehta",
+      "userName": "Rahul Gupta",
       "rating": 4,
       "comment": "Good experience, but consultation started a bit late.",
-      "date": "2025-08-18"
+      "date": "2025-08-18",
+      "profileImage": "https://randomuser.me/api/portraits/men/57.jpg"
     }
   ]
 }
 
+export const dummyAppointments = [
+  {
+    "_id": "apt_001",
+    "userId": "user_123",
+    "lawyerId": {
+      "_id": "lawyer_001",
+      "name": "Adv. Rohan Sharma",
+      "specialization": "Criminal Law",
+      "rating": 4.8,
+      "subscriptionPlan": "premium"
+    },
+    "slot": {
+      "date": "2025-09-05",
+      "time": "10:00 AM"
+    },
+    "fees": 1500,
+    "status": "confirmed",
+    "paymentId": "pay_001",
+    "createdAt": "2025-08-30T12:00:00Z"
+  },
+  {
+    "_id": "apt_002",
+    "userId": "user_123",
+    "lawyerId": {
+      "_id": "lawyer_002",
+      "name": "Adv. Priya Mehta",
+      "specialization": "Corporate Law",
+      "rating": 4.6,
+      "subscriptionPlan": "standard"
+    },
+    "slot": {
+      "date": "2025-09-07",
+      "time": "4:00 PM"
+    },
+    "fees": 2000,
+    "status": "cancelled",
+    "paymentId": "pay_002",
+    "createdAt": "2025-08-31T15:30:00Z"
+  },
+  {
+    "_id": "apt_003",
+    "userId": "user_123",
+    "lawyerId": {
+      "_id": "lawyer_003",
+      "name": "Adv. Kunal Verma",
+      "specialization": "Family Law",
+      "rating": 4.3,
+      "subscriptionPlan": "free"
+    },
+    "slot": {
+      "date": "2025-09-10",
+      "time": "11:30 AM"
+    },
+    "fees": 1200,
+    "status": "completed",
+    "paymentId": "pay_003",
+    "createdAt": "2025-09-01T09:15:00Z"
+  }
+]
+
+export const appointment = {
+  "_id": "apt_001",
+  "userId": "user_123",
+  "lawyerId": {
+    "_id": "lawyer_001",
+    "name": "Adv. Rohan Sharma",
+    "specialization": "Criminal Law",
+    "rating": 4.8,
+    "subscriptionPlan": "premium",
+    "profileImage": "https://randomuser.me/api/portraits/men/32.jpg"
+  },
+  "slot": {
+    "date": "2025-09-05",
+    "time": "10:00 AM"
+  },
+  "fees": 1500,
+  "status": "confirmed",
+  "paymentId": "pay_001",
+  "createdAt": "2025-08-30T12:00:00Z"
+}
+
+export const dummyPayment = [
+  {
+    "_id": "pay_001",
+    "userId": "user_123",
+    "lawyerId": {
+      "_id": "lawyer_001",
+      "name": "Adv. Rohan Sharma",
+      "specialization": "Criminal Law",
+      "profileImage": "https://randomuser.me/api/portraits/men/42.jpg"
+    },
+    "appointmentId": "apt_001",
+    "amount": 1500,
+    "currency": "INR",
+    "type": "consultancy",
+    "status": "success",
+    "transactionId": "razorpay_txn_001",
+    "createdAt": "2025-08-30T12:15:00Z"
+  },
+  {
+    "_id": "pay_002",
+    "userId": "user_123",
+    "lawyerId": {
+      "_id": "lawyer_002",
+      "name": "Adv. Priya Mehta",
+      "specialization": "Corporate Law",
+      "profileImage": "https://randomuser.me/api/portraits/men/52.jpg"
+    },
+    "appointmentId": "apt_002",
+    "amount": 2000,
+    "currency": "INR",
+    "type": "consultancy",
+    "status": "pending",
+    "transactionId": "razorpay_txn_002",
+    "createdAt": "2025-08-31T16:00:00Z"
+  },
+  {
+    "_id": "pay_003",
+    "userId": "user_123",
+    "lawyerId": {
+      "_id": "lawyer_003",
+      "name": "Adv. Kunal Verma",
+      "specialization": "Family Law",
+      "profileImage": "https://randomuser.me/api/portraits/men/72.jpg"
+    },
+    "appointmentId": "apt_003",
+    "amount": 1200,
+    "currency": "INR",
+    "type": "consultancy",
+    "status": "failed",
+    "transactionId": "razorpay_txn_003",
+    "createdAt": "2025-09-01T09:30:00Z"
+  }
+]

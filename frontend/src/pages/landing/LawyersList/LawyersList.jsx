@@ -1,9 +1,10 @@
 import { NavLink} from "react-router-dom";
-import { lawyers } from "../../../assets/assets"; 
 import renderRating from "../../../utils/renderRating";
+import { useStore } from "../../../hooks/useStore";
+
 
 const LawyersList = () => {
-  const isLoggedIn = false; 
+  const { isLoggedIn, lawyerList } = useStore(); 
 
   return (
     <main className="flex-1 bg-[var(--secondary-color)] py-16 px-4 sm:px-6 lg:px-8">
@@ -15,7 +16,7 @@ const LawyersList = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {lawyers.map((lawyer, index) => {
+          {lawyerList.map((lawyer, index) => {
             const isLocked = lawyer.subscriptionPlan !== "free" && !isLoggedIn;
 
             return (

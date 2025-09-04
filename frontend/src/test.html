@@ -3,118 +3,152 @@
 <meta charset="utf-8"/>
 <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
 <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
-<title>LegalAssist - Forgot Password</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>Stitch Design</title>
 <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <style type="text/tailwindcss">
-        :root {
-            --primary-color: #A89166;
-            --secondary-color: #1A1A1A;
-            --accent-color: #E8D7B5;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .animate-fadeIn {
-            animation: fadeIn 1s ease-out forwards;
-        }
-        .animate-slideInUp {
-            animation: slideInUp 0.8s ease-out forwards;
-            opacity: 0;
-        }
-        .stagger-1 {
-            animation-delay: 100ms;
-        }
-        .stagger-2 {
-            animation-delay: 200ms;
-        }
-        .stagger-3 {
-            animation-delay: 300ms;
-        }
-        .stagger-4 {
-            animation-delay: 400ms;
-        }
-        .stagger-5 {
-            animation-delay: 500ms;
-        }
-    </style>
+    :root {
+      --primary-color: #A89166;
+      --secondary-color: #1A1A1A;
+      --accent-color: #E8D7B5;
+      --glow-color: rgba(168, 145, 102, 0.4);
+    }
+    .glow-effect {
+      box-shadow: 0 0 10px 2px var(--glow-color), 0 0 20px 5px var(--glow-color), 0 0 40px 10px rgba(168, 145, 102, 0.2);
+    }
+    .star-rating input[type="radio"] {
+      display: none;
+    }
+    .star-rating label {
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .star-rating input[type="radio"]:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+      color: var(--primary-color);
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-gray-300">
-<div class="relative flex size-full min-h-screen flex-col bg-[var(--secondary-color)] group/design-root overflow-x-hidden" style='font-family: Manrope, "Noto Sans", sans-serif;'>
-<div class="flex h-full grow flex-col">
-<header class="flex items-center justify-between whitespace-nowrap px-10 py-4 sticky top-0 bg-[var(--secondary-color)] z-50 animate-fadeIn">
-<div class="flex items-center gap-3 text-white">
-<div class="flex items-center justify-center size-10 bg-[var(--primary-color)] text-white rounded-full transition-transform duration-300 hover:rotate-12">
-<span class="material-symbols-outlined">gavel</span>
-</div>
-<h2 class="text-white text-2xl font-bold leading-tight tracking-[-0.015em]">LegalAssist</h2>
-</div>
-<div class="flex flex-1 justify-center gap-8">
+<body class="bg-[var(--secondary-color)]">
+<div class="relative flex size-full min-h-screen flex-col bg-gradient-to-b from-[var(--secondary-color)] to-[#0d1013] dark group/design-root overflow-x-hidden" style='font-family: Manrope, "Noto Sans", sans-serif;'>
+<div class="fixed top-0 left-0 w-full h-[600px] bg-gradient-to-b from-[rgba(168,145,102,0.1)] to-transparent -z-10 pointer-events-none"></div>
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-transparent px-10 py-4 backdrop-blur-sm bg-[var(--secondary-color)]/50 fixed top-0 left-0 right-0 z-50">
 <div class="flex items-center gap-8">
-<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Home</a>
-<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Chatbot</a>
-<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Lawyer Directory</a>
-<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Pricing</a>
-<a class="text-gray-400 text-sm font-medium leading-normal transition-colors hover:text-[var(--primary-color)]" href="#">Contact Us</a>
-</div>
+<a class="flex items-center gap-3 text-[var(--accent-color)]" href="#">
+<svg class="size-8 text-[var(--primary-color)]" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+<h2 class="text-[var(--accent-color)] text-xl font-bold leading-tight tracking-[-0.015em]">LegalAI</h2>
+</a>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Chatbot</a>
+<a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Find Lawyers</a>
+<a class="text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Appointments</a>
+</nav>
 </div>
 <div class="flex items-center gap-4">
-<a class="text-sm font-medium text-white" href="#">Login</a>
-<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 px-5 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-amber-600 transition-all duration-300 transform hover:scale-105">
-<span class="truncate">Sign Up</span>
+<label class="relative hidden sm:flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-[#9dabb9]">search</span>
+<input class="form-input w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border-none bg-black/30 h-10 placeholder:text-[#9dabb9] pl-10 pr-4 text-base font-normal leading-normal transition-all duration-300 focus:w-64" placeholder="Search..." value=""/>
+</label>
+<button class="relative flex items-center justify-center rounded-lg h-10 w-10 bg-black/30 text-[var(--accent-color)] hover:bg-black/50 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[var(--primary-color)]"></span>
+</button>
+<button class="flex items-center gap-2 group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-transparent group-hover:border-[var(--primary-color)] transition-colors" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAM8y7ldIRGlGuEk9d0M25RL2Ub7NziNEv58zzvU7nl9jJhDT1SK8vDbMq7N1jxOYh3gAocWLjHyzjTnFKGACo5z7SWIOuk0H70Sw39GSFzLCBUvzZYaKGNffFVyse5sn0fBV3UxkmusdLQMfj8MD9sv8HG8FItDAyPthALQyXuoYKPFg9CJCXUPwQGAw1fxV_moLC1Q47YY2COqvVWumkcIXGnoof504x5L8QEEDJm8ear6G73y4w5-_ySet93SbkdGIiyOnKongon");'></div>
+<span class="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors">expand_more</span>
 </button>
 </div>
 </header>
-<main class="flex-1 bg-[var(--secondary-color)] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
-<div class="w-full max-w-md space-y-8">
-<div class="text-center animate-slideInUp">
-<div class="inline-block">
-<div class="flex items-center justify-center size-20 bg-[var(--primary-color)] text-white rounded-full mx-auto mb-6 transition-transform duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-amber-500/20">
-<span class="material-symbols-outlined text-5xl">lock_reset</span>
+<main class="px-4 sm:px-10 lg:px-16 xl:px-24 flex flex-1 justify-center py-8 pt-28">
+<div class="layout-content-container flex flex-col items-center max-w-5xl flex-1 gap-10">
+<div class="w-full flex items-center gap-4">
+<a class="flex items-center justify-center h-10 w-10 rounded-full bg-black/20 hover:bg-black/40 text-gray-300 transition-colors" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+</a>
+<h1 class="text-[var(--accent-color)] text-3xl sm:text-4xl font-bold">Appointment Details</h1>
+</div>
+<div class="w-full bg-black/20 border border-white/10 rounded-2xl p-6 sm:p-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="md:col-span-1 flex flex-col items-center text-center">
+<img alt="Lawyer Avatar" class="w-32 h-32 rounded-full object-cover border-4 border-[var(--primary-color)]/50 glow-effect mb-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfvD5gyHXld3Mp609IkelXlJvr0wGL-2YN4d4gZqKCX2ZTSQmiKE2fJq845ooOhJzS8uX5rZ9YdoTOqYKt9OLrfnECGrJTa5xwCEdjPQfmYmyQC_2Q-cZpWhkHtPzGSsYFUO-Ex5qKa0zyhRpY9yUw-yhF1p9sq8iYx7mlDprK1bYXaQGzqAY9AGgppCrZXDsApqpx3CiEUKWU3pPQCoiISHaC2vTFyRQdIPgcrZbXxoNB8mDzYcR0QCluujvsRlxHDpW_KZB74M6G"/>
+<h2 class="text-2xl font-bold text-[var(--accent-color)]">Adv. Sarah Chen</h2>
+<p class="text-base text-gray-400">Family Law Specialist</p>
+<div class="flex items-center gap-1 mt-2 text-[var(--primary-color)]">
+<span class="material-symbols-outlined text-lg">star</span>
+<span class="material-symbols-outlined text-lg">star</span>
+<span class="material-symbols-outlined text-lg">star</span>
+<span class="material-symbols-outlined text-lg">star</span>
+<span class="material-symbols-outlined text-lg">star_half</span>
+<span class="text-sm text-gray-300 ml-1">(4.5)</span>
+</div>
+<div class="mt-4">
+<span class="text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full bg-[var(--primary-color)]/20 text-[var(--accent-color)]">Premium Plan</span>
 </div>
 </div>
-<h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">Forgot Password?</h1>
-<p class="mt-4 max-w-md mx-auto text-lg text-gray-400">
-                            Enter your email and we'll send you instructions to reset your password.
-                        </p>
+<div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+<div>
+<p class="text-sm font-medium text-gray-400">Appointment Date</p>
+<p class="text-lg font-semibold text-[var(--accent-color)]">Thursday, June 20, 2024</p>
 </div>
-<div class="bg-[#212121] border border-[#2D2D2D] shadow-2xl rounded-2xl p-8 sm:p-10 space-y-6 animate-slideInUp stagger-1">
-<form action="#" class="space-y-6" method="POST">
-<div class="animate-slideInUp stagger-2">
-<label class="sr-only" for="email">Email</label>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">mail</span>
-<input autocomplete="email" class="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 pl-12 pr-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors" id="email" name="email" placeholder="Email Address" type="email"/>
+<div>
+<p class="text-sm font-medium text-gray-400">Time Slot</p>
+<p class="text-lg font-semibold text-[var(--accent-color)]">11:00 AM - 11:45 AM (EDT)</p>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-400">Status</p>
+<span class="text-lg font-semibold px-2 py-1 rounded-full bg-green-500/20 text-green-400">Confirmed</span>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-400">Appointment Fees</p>
+<p class="text-lg font-semibold text-[var(--accent-color)]">$150.00</p>
+</div>
+<div class="sm:col-span-2">
+<p class="text-sm font-medium text-gray-400">Payment ID</p>
+<p class="text-lg font-semibold text-[var(--accent-color)] font-mono">pay_1P9xF2SH2eZvKYlo2z3a4b5c</p>
+</div>
+<div class="sm:col-span-2">
+<p class="text-sm font-medium text-gray-400">Booked On</p>
+<p class="text-lg font-semibold text-[var(--accent-color)]">Tuesday, June 18, 2024 at 05:30 PM</p>
 </div>
 </div>
-<div class="animate-slideInUp stagger-3">
-<button class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-[var(--primary-color)] hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-[var(--primary-color)] transition-all duration-300 transform hover:scale-105" type="submit">
-                                    Send Reset Instructions
-                                </button>
 </div>
-</form>
-<p class="text-center text-sm text-gray-500 animate-slideInUp stagger-4">
-                            Remember your password?
-                            <a class="font-medium text-[var(--accent-color)] hover:text-amber-300" href="#">Log in</a>
-</p>
+<div class="border-t border-white/10 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-end gap-3">
+<button class="w-full sm:w-auto py-2 px-6 rounded-lg bg-black/40 text-gray-300 hover:bg-black/60 transition-colors text-base font-medium">Download Invoice</button>
+<button class="w-full sm:w-auto py-2 px-6 rounded-lg bg-[var(--primary-color)]/80 text-[var(--secondary-color)] hover:bg-[var(--primary-color)] transition-colors text-base font-bold">Reschedule</button>
+</div>
+</div>
+<div class="w-full bg-black/20 border border-white/10 rounded-2xl p-6 sm:p-8">
+<h3 class="text-2xl font-bold text-[var(--accent-color)] mb-4">Leave a Review</h3>
+<div class="flex flex-col gap-6">
+<div>
+<label class="text-sm font-medium text-gray-400 mb-2 block">Your Rating</label>
+<div class="star-rating flex flex-row-reverse justify-end items-center gap-1 text-gray-500">
+<input class="hidden" id="star5" name="rating" type="radio" value="5"/>
+<label class="material-symbols-outlined text-4xl" for="star5">star</label>
+<input class="hidden" id="star4" name="rating" type="radio" value="4"/>
+<label class="material-symbols-outlined text-4xl" for="star4">star</label>
+<input class="hidden" id="star3" name="rating" type="radio" value="3"/>
+<label class="material-symbols-outlined text-4xl" for="star3">star</label>
+<input class="hidden" id="star2" name="rating" type="radio" value="2"/>
+<label class="material-symbols-outlined text-4xl" for="star2">star</label>
+<input class="hidden" id="star1" name="rating" type="radio" value="1"/>
+<label class="material-symbols-outlined text-4xl" for="star1">star</label>
+</div>
+</div>
+<div>
+<label class="text-sm font-medium text-gray-400 mb-2 block" for="review-text">Your Review</label>
+<textarea class="form-textarea w-full resize-none rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border-none bg-black/30 placeholder:text-[#9dabb9] text-base font-normal leading-normal transition-all duration-300" id="review-text" name="review-text" placeholder="Share your experience with the lawyer..." rows="4"></textarea>
+</div>
+<div class="flex justify-end">
+<button class="w-full sm:w-auto py-2 px-6 rounded-lg bg-[var(--primary-color)]/80 text-[var(--secondary-color)] hover:bg-[var(--primary-color)] transition-colors text-base font-bold">Submit Review</button>
+</div>
+</div>
 </div>
 </div>
 </main>

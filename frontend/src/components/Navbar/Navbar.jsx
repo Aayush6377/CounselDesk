@@ -1,24 +1,20 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { images } from "../../assets/assets";
+import { useStore } from "../../hooks/useStore";
 
-const Navbar = () => {
+const Navbar = ({ navItems }) => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Chatbot", path: "/chatbot" },
-    { name: "Lawyers", path: "/lawyers" },
-    { name: "Contact Us", path: "/contact" },
-  ];
+  const { isLoggedIn, userDetails } = useStore();
 
   const authRoutes = {
     login: "/login",
-    signup: "/signup"
+    signup: "/signup",
+    profile: "profile",
   };
 
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-[#2D2D2D] px-6 md:px-10 py-4 shadow-lg sticky top-0 bg-[var(--secondary-color)] z-50 animate-fadeIn">
+    <header className="flex items-center justify-between whitespace-nowrap border-b border-[#2D2D2D] px-6 md:px-10 py-4 shadow-lg sticky top-0 bg-[var(--secondary-color)] z-50">
       {/* Logo */}
       <div className="flex items-center gap-3 text-white">
         <Link to="/" className="flex items-center gap-3">
@@ -41,6 +37,7 @@ const Navbar = () => {
           <NavLink
             key={item.name}
             to={item.path}
+            end={item.path === ""} 
             className={({ isActive }) =>
               `nav-item text-sm font-medium transition-colors ${
                 isActive
@@ -54,20 +51,32 @@ const Navbar = () => {
         ))}
       </nav>
 
-      {/* Auth Buttons (Desktop) */}
+      {/* Conditional Rendering for Auth Buttons or Profile Pic */}
       <div className="hidden md:flex items-center gap-4">
-        <Link
-          to={authRoutes.login}
-          className="text-sm font-medium text-gray-400 hover:text-[var(--primary-color)] transition-colors"
-        >
-          Login
-        </Link>
-        <Link
-          to={authRoutes.signup}
-          className="flex min-w-[84px] items-center justify-center rounded-md h-10 px-5 bg-[var(--primary-color)] text-white text-sm font-bold hover:bg-amber-600 transition-all duration-300 transform hover:scale-105"
-        >
-          Sign Up
-        </Link>
+        {isLoggedIn ? (
+          <Link to={authRoutes.profile}>
+            <img
+              src={userDetails.profileImage || images.defaultProfile}
+              alt="Profile"
+              className="size-10 rounded-full object-cover"
+            />
+          </Link>
+        ) : (
+          <>
+            <Link
+              to={authRoutes.login}
+              className="text-sm font-medium text-gray-400 hover:text-[var(--primary-color)] transition-colors"
+            >
+              Login
+            </Link>
+            <Link
+              to={authRoutes.signup}
+              className="flex min-w-[84px] items-center justify-center rounded-md h-10 px-5 bg-[var(--primary-color)] text-white text-sm font-bold hover:bg-amber-600 transition-all duration-300 transform hover:scale-105"
+            >
+              Sign Up
+            </Link>
+          </>
+        )}
       </div>
 
       {/* Mobile Menu Button */}
@@ -94,11 +103,12 @@ const Navbar = () => {
 
       {/* Mobile Nav Dropdown */}
       {isOpen && (
-        <div className="absolute top-[64px] left-0 w-full bg-[var(--secondary-color)] border-t border-[#2D2D2D] flex flex-col items-center gap-6 py-8 md:hidden animate-fadeIn">
+        <div className="absolute top-[64px] left-0 w-full bg-[var(--secondary-color)] border-t border-[#2D2D2D] flex flex-col items-center gap-6 py-8 md:hidden">
           {navItems.map((item) => (
             <NavLink
               key={item.name}
               to={item.path}
+              end={item.path === ""}
               className={({ isActive }) =>
                 `nav-item text-base font-medium ${
                   isActive
@@ -112,22 +122,38 @@ const Navbar = () => {
             </NavLink>
           ))}
 
-          {/* Auth Buttons (Mobile) */}
+          {/* Conditional Rendering for Auth Buttons or Profile Pic (Mobile) */}
           <div className="flex flex-col gap-3 w-full px-6 mt-6">
-            <Link
-              to={authRoutes.login}
-              className="w-full text-center text-sm font-medium text-gray-300 hover:text-[var(--primary-color)] transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Login
-            </Link>
-            <Link
-              to={authRoutes.signup}
-              className="w-full flex items-center justify-center rounded-md h-10 px-5 bg-[var(--primary-color)] text-white text-sm font-bold hover:bg-amber-600 transition-all duration-300 transform hover:scale-105"
-              onClick={() => setIsOpen(false)}
-            >
-              Sign Up
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                to={authRoutes.profile}
+                className="w-full text-center"
+                onClick={() => setIsOpen(false)}
+              >
+                <img
+                  src={userDetails.profileImage|| images.defaultProfile}
+                  alt="Profile"
+                  className="mx-auto size-10 rounded-full object-cover"
+                />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to={authRoutes.login}
+                  className="w-full text-center text-sm font-medium text-gray-300 hover:text-[var(--primary-color)] transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  to={authRoutes.signup}
+                  className="w-full flex items-center justify-center rounded-md h-10 px-5 bg-[var(--primary-color)] text-white text-sm font-bold hover:bg-amber-600 transition-all duration-300 transform hover:scale-105"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

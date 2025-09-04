@@ -7,8 +7,8 @@ import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 
 const footerLinks = {
   Services: [
-    { name: "AI Legal Chatbot", path: "/chatbot" },
-    { name: "Lawyers", path: "/lawyers" },
+    { name: "AI Legal Chatbot", path: "chatbot" },
+    { name: "Lawyers", path: "lawyers" },
     { name: "Consultations", path: "/consultations" },
   ],
   "Quick Links": [

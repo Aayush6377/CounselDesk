@@ -18,6 +18,16 @@ import Login from "./pages/landing/Login/Login";
 import ForgotPassword from "./pages/landing/Login/ForgotPassword";
 import Signup from "./pages/landing/Signup/Signup";
 
+//User panel
+import UserDashboard from "./pages/user/Dashboard/Dashboard";
+import FindLawyers from "./pages/user/FindLawyers/FindLawyers";
+import UserLawyerProfile from "./pages/user/LawyerProfile/LawyerProfile";
+import Booking from "./pages/user/Booking/Booking";
+import UserAppointments from "./pages/user/Appointments/Appointments";
+import UserAppointmentDetails from "./pages/user/Appointments/AppointmentDetails";
+import UserPaymentHistory from "./pages/user/PaymentHistory/PaymentHistory";
+import UserProfile from "./pages/user/Profile/Profile";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -60,9 +70,47 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: <UserLayout />,
+    children: [
+      {
+        path: "/user",
+        element: <UserDashboard />
+      },
+      {
+        path: "chatbot",
+        element: <Chatbot />
+      },
+      {
+        path: "find-lawyers",
+        element: <FindLawyers />
+      },
+      {
+        path: "lawyer-profile",
+        element: <UserLawyerProfile />
+      },
+      {
+        path: "book-appointment",
+        element: <Booking />
+      },
+      {
+        path: "appointments",
+        element: <UserAppointments />
+      },
+      {
+        path: "appointment-details/:appointId",
+        element: <UserAppointmentDetails />
+      },
+      {
+        path: "payment-history",
+        element: <UserPaymentHistory />
+      },
+      {
+        path: "profile",
+        element: <UserProfile />
+      }
+    ]
   },
   {
-    path: "/lawyer",
+    path: "/user-lawyer",
     element: <LawyerLayout />,
   },
   {

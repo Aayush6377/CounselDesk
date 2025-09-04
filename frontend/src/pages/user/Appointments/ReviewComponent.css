@@ -1,0 +1,8 @@
+.star-rating input[type="radio"] {
+  display: none;
+}
+.star-rating label {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
