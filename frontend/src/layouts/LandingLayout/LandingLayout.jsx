@@ -21,6 +21,10 @@ const LandingLayout = () => {
                 case "admin":
                     navigate("/admin", { replace: true });
                     break;
+                default:
+                    console.warn("Unknown user role:", userDetails.role);
+                    navigate("/", { replace: true });
+                    break;
             }
         }
     },[isLoggedIn,userDetails,navigate]);

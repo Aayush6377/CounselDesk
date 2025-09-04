@@ -114,7 +114,7 @@ const LawyerProfile = () => {
                   </React.Fragment>
                 ))}
               </div>
-              <button className="mt-6 text-sm text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors font-semibold">Show all reviews</button>
+              <Link to="/user/lawyer-reviews" className="mt-6 text-sm text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors font-semibold">Show all reviews</Link>
             </div>
           </div>
         </div>

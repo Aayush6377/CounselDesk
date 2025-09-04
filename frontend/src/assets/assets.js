@@ -284,3 +284,64 @@ export const dummyPayment = [
     "createdAt": "2025-09-01T09:30:00Z"
   }
 ]
+
+export const dummyReview = [
+  {
+    "_id": "rev001",
+    "userId": {
+      "_id": "usr001",
+      "name": "Rohan Sharma",
+      "profileImage": "https://randomuser.me/api/portraits/men/12.jpg"
+    },
+    "lawyerId": {
+      "_id": "law001",
+      "name": "Adv. Priya Mehta",
+      "specialization": "Family Law",
+      "rating": 4.8,
+      "reviewsCount": 56
+    },
+    "appointmentId": "app001",
+    "rating": 5,
+    "comment": "Very helpful lawyer!",
+    "createdAt": "2025-09-01T10:15:00Z"
+  },
+  {
+    "_id": "rev002",
+    "userId": {
+      "_id": "usr002",
+      "name": "Ankit Verma",
+      "profileImage": "https://randomuser.me/api/portraits/men/15.jpg"
+    },
+    "lawyerId": {
+      "_id": "law001",
+      "name": "Adv. Priya Mehta",
+      "specialization": "Family Law",
+      "rating": 4.8,
+      "reviewsCount": 56
+    },
+    "appointmentId": "app002",
+    "rating": 4,
+    "comment": "Good consultation, but waiting time was long.",
+    "createdAt": "2025-09-02T08:30:00Z"
+  },
+  {
+    "_id": "rev003",
+    "userId": {
+      "_id": "usr003",
+      "name": "Sneha Kapoor",
+      "profileImage": "https://randomuser.me/api/portraits/women/38.jpg"
+    },
+    "lawyerId": {
+      "_id": "law001",
+      "name": "Adv. Priya Mehta",
+      "specialization": "Family Law",
+      "rating": 4.8,
+      "reviewsCount": 56
+    },
+    "appointmentId": "app003",
+    "rating": 5,
+    "comment": "Explained everything clearly. Highly recommended!",
+    "createdAt": "2025-09-02T11:45:00Z"
+  }
+]
+

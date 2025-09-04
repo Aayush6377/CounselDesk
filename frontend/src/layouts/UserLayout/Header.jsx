@@ -5,7 +5,7 @@ const Header = () => {
     const navItems = [
         { name: "Dashboard", path: "" },
         { name: "Chatbot", path: "chatbot" },
-        { name: "Find Lawyers", path: "find-lawyers" },
+        { name: "Find Lawyers", path: "lawyers" },
         { name: "Appointments", path: "appointments" },
     ];
 

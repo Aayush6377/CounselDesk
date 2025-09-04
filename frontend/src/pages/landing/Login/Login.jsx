@@ -85,7 +85,7 @@ const Login = () => {
                                 <div className="animate-slideInUp stagger-5">
                                     <button
                                         type="submit"
-                                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-[var(--primary-color)] hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-[var(--primary-color)] transition-all duration-300 transform hover:scale-105"
+                                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-[var(--primary-color)] hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-[var(--primary-color)] transition-all duration-300 transform hover:scale-105 cursor-pointer"
                                     >
                                         Log In
                                     </button>
@@ -100,7 +100,7 @@ const Login = () => {
                                 </div>
                             </div>
                             <div className="animate-slideInUp stagger-5">
-                                <button className="w-full flex items-center justify-center py-3 px-4 border border-gray-600 rounded-md shadow-sm text-base font-medium text-white bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white transition-all duration-300">
+                                <button className="cursor-pointer w-full flex items-center justify-center py-3 px-4 border border-gray-600 rounded-md shadow-sm text-base font-medium text-white bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white transition-all duration-300">
                                     <FcGoogle className="h-5 w-5 mr-2"/>
                                     Log in with Google
                                 </button>
@@ -108,7 +108,7 @@ const Login = () => {
                         </div>
                         <p className="text-center text-sm text-gray-500 animate-slideInUp stagger-5">
                             Don't have an account?
-                            <Link to="/signup" className="font-medium text-[var(--accent-color)] hover:text-amber-300">Sign up</Link>
+                            <Link to="/signup" className="ms-1 font-medium text-[var(--accent-color)] hover:text-amber-300">Sign up</Link>
                         </p>
                     </div>
                 </main>

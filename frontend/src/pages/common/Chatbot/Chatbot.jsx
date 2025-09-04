@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { FaPaperPlane, FaUser, FaRobot } from "react-icons/fa";
-import { generateContent } from "../../services/geminiService";
+import { generateContent } from "../../../services/geminiService";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useMutation } from '@tanstack/react-query';
-import { useStore } from "../../hooks/useStore";
+import { useStore } from "../../../hooks/useStore";
 
 const Chatbot = () => {
   const { messages, setMessages } = useStore();

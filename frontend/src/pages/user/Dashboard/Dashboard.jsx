@@ -10,7 +10,7 @@ const Dashboard = () => {
 
     const cartItem = [
         {icon: <MdGavel />, title: "Recent Consultations", description: "Review your past discussions with legal experts.", button: "View History", link: "payment-history"},
-        {icon: <FaSearch />, title: "Find a Lawyer", description: "Search our network of verified legal professionals.", button: "Start Search", link: "find-lawyers"},
+        {icon: <FaSearch />, title: "Find a Lawyer", description: "Search our network of verified legal professionals.", button: "Start Search", link: "lawyers"},
         {icon: <IoCalendar />, title: "Appointments", description: "Manage your upcoming meetings and schedules.", button: "Manage Appointments", link: "appointments"}
     ];
 

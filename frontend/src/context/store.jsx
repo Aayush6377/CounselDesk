@@ -13,10 +13,11 @@ export const StoreProvider = ({ children }) => {
 
   const [isLoggedIn, setLogedin] = useState(true);
   const [userDetails, setUserDetails] = useState({
-    role: "user",
+    role: "lawyer",
     name: "Aayush Kukreja",
     email: "aayush@gmail.com",
     profileImage: "https://randomuser.me/api/portraits/men/42.jpg",
+    bioDataProvided: true
   });
 
   const [lawyerList, setLawyerList] = useState(lawyers);

@@ -9,17 +9,17 @@ const footerLinks = {
   Services: [
     { name: "AI Legal Chatbot", path: "chatbot" },
     { name: "Lawyers", path: "lawyers" },
-    { name: "Consultations", path: "/consultations" },
+    { name: "Consultations", path: "consultations" },
   ],
   "Quick Links": [
-    { name: "Pricing Plans", path: "/pricing" },
-    { name: "FAQ", path: "/faq" },
-    { name: "Contact Us", path: "/contact" },
+    { name: "About us", path: "about" },
+    { name: "FAQ", path: "faq" },
+    { name: "Contact Us", path: "contact" },
   ],
   Legal: [
-    { name: "Privacy Policy", path: "/privacy" },
-    { name: "Terms of Service", path: "/terms" },
-    { name: "Disclaimer", path: "/disclaimer" },
+    { name: "Privacy Policy", path: "privacy" },
+    { name: "Terms of Service", path: "terms" },
+    { name: "Disclaimer", path: "disclaimer" },
   ],
 };
 

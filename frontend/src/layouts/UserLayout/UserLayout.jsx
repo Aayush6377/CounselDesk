@@ -9,21 +9,24 @@ const UserLayout = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (isLoggedIn) {
-            switch (userDetails.role) {
-                case "lawyer":
-                    navigate("/user-lawyer", { replace: true });
-                    break;
-                case "admin":
-                    navigate("/admin", { replace: true });
-                    break;
-            }
+        if (!isLoggedIn) {
+            navigate("/", { replace: true });
+            return; 
         }
-        else{
-            navigate("/"),{ replace: true };
+        
+        switch (userDetails.role) {
+            case "lawyer":
+                navigate("/user-lawyer", { replace: true });
+                break;
+            case "admin":
+                navigate("/admin", { replace: true });
+                break;
+            case "user":
+            default:
+                break;
         }
-    },[isLoggedIn,userDetails,navigate]);
 
+    }, [isLoggedIn, userDetails, navigate]);
 
     return (
         <div>
@@ -31,7 +34,7 @@ const UserLayout = () => {
             <Outlet />
             <Footer />
         </div>
-    )
-}
+    );
+};
 
 export default UserLayout;
