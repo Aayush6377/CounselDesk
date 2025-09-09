@@ -174,7 +174,7 @@ const Booking = () => {
                 disabled={!selectedDate || !selectedTime}
               >
                 <span className="material-symbols-outlined"><FaLock /></span>
-                <span className="truncate">Confirm & Pay ${lawyer.fees}</span>
+                <span className="truncate">Confirm & Pay ₹{lawyer.fees}</span>
               </button>
             </div>
           </div>

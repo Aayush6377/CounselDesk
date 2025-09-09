@@ -17,7 +17,9 @@ export const StoreProvider = ({ children }) => {
     name: "Aayush Kukreja",
     email: "aayush@gmail.com",
     profileImage: "https://randomuser.me/api/portraits/men/42.jpg",
-    bioDataProvided: true
+    bioDataProvided: true,
+    verified: true,
+    subscriptionPlan: "Standard"
   });
 
   const [lawyerList, setLawyerList] = useState(lawyers);

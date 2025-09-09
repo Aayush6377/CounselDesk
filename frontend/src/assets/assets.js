@@ -122,6 +122,8 @@ export const lawyerProfile = {
   "reviewsCount": 152,
   "fees": 2000,
   "subscriptionPlan": "Premium",
+  "bioDataProvided": true,
+  "verified": true,
   "address": {
     "city": "Delhi",
     "state": "Delhi",
