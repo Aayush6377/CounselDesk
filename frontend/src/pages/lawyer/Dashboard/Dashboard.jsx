@@ -33,18 +33,15 @@ const Dashboard = () => {
     const { userDetails } = useStore();
 
     const statCards = [
-    { title: 'Total Bookings', value: '128', subtext: '+5 this month', icon: <FaCalendarAlt /> },
-    { title: 'Total Earnings', value: '₹25,600', subtext: '+ $1,200 this month', icon: <MdOutlinePayment /> },
-    { title: 'Reviews', value: '4.9', subtext: 'from 67 reviews', icon: <IoStar />, valueSuffix: ' / 5.0' },
-    { title: 'Subscription', value: userDetails.subscriptionPlan, subtext: 'Manage Plan', icon: <MdOutlineWorkspacePremium />, valueColor: '#A89166' },
+    { title: 'Total Bookings', value: '128', subtext: '+5 this month', link: "appointments", icon: <FaCalendarAlt />},
+    { title: 'Total Earnings', value: '₹25,600', subtext: '+ $1,200 this month', link: "earnings", icon: <MdOutlinePayment /> },
+    { title: 'Reviews', value: '4.9', subtext: 'from 67 reviews', icon: <IoStar />, link: "reviews", valueSuffix: ' / 5.0' },
+    { title: 'Subscription', value: userDetails.subscription.plan, subtext: 'Manage Plan', link: "subscription", icon: <MdOutlineWorkspacePremium />, valueColor: '#A89166' },
     ];
 
   return (
-    <div className="relative flex size-full min-h-screen flex-col bg-gradient-to-b from-[#1A1A1A] to-[#0d1013] dark group/design-root overflow-x-hidden">
-      <div className="fixed top-0 left-0 w-full h-[600px] bg-gradient-to-b from-[rgba(168,145,102,0.1)] to-transparent -z-10 pointer-events-none"></div>
-      <div className="layout-container flex h-full grow flex-col">
-        <main className="px-4 sm:px-10 lg:px-24 xl:px-40 flex flex-1 justify-center py-8 pt-28">
-          <div className="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-12">
+        <main className="bg-[var(--secondary-color)] px-4 sm:px-10 lg:px-24 xl:px-40 flex flex-1 justify-center py-8 pt-15">
+          <div className="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-12 animate-fadeIn">
             <div className="flex flex-wrap justify-between items-center gap-6">
               <div>
                 <h1 className="text-[#E8D7B5] tracking-tight text-4xl md:text-5xl font-bold leading-tight">Lawyer Dashboard</h1>
@@ -59,7 +56,7 @@ const Dashboard = () => {
             {/* Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {statCards.map((card, index) => (
-                <div key={index} className="bg-black/20 border border-white/10 rounded-xl p-6 flex flex-col gap-2 hover:border-[var(--primary-color)]/50 hover:bg-black/30 transition-all duration-300 transform hover:-translate-y-1">
+                <Link to={card.link} key={index} className="bg-black/20 border border-white/10 rounded-xl p-6 flex flex-col gap-2 hover:border-[var(--primary-color)]/50 hover:bg-black/30 transition-all duration-300 transform hover:-translate-y-1">
                   <div className="flex items-center justify-between text-gray-400">
                     <p className="text-sm">{card.title}</p>
                     <span className="material-symbols-outlined">{card.icon}</span>
@@ -69,7 +66,7 @@ const Dashboard = () => {
                     {card.valueSuffix && <span className="text-base text-gray-400">{card.valueSuffix}</span>}
                   </p>
                   <p className="text-gray-500 text-sm">{card.subtext}</p>
-                </div>
+                </Link>
               ))}
             </div>
 
@@ -88,19 +85,19 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <button className="flex items-center gap-2 mt-4 sm:mt-0 w-fit cursor-pointer rounded-md h-9 px-3 bg-black/30 text-[#E8D7B5] text-sm font-medium leading-normal hover:bg-[var(--primary-color)] hover:text-[var(--secondary-color)] transition-colors">
-                        <Link className="truncate">View Details</Link>
+                        <Link to="/user-lawyer/appointment-details" className="truncate">View Details</Link>
                       </button>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Recent Messages */}
+              {/* Recent Reviews */}
               <div className="flex flex-col">
                 <h2 className="text-[#E8D7B5] text-2xl font-bold leading-tight tracking-tight mb-4">Recent Reviews</h2>
                 <div className="flex flex-col gap-2 bg-black/20 border border-white/10 rounded-xl p-4">
                   {recentMessages.map((message, index) => (
-                    <div key={index} className="group flex items-center gap-4 rounded-lg p-3 hover:bg-black/50 transition-colors cursor-pointer">
+                    <Link to="/user-lawyer/reviews" key={index} className="group flex items-center gap-4 rounded-lg p-3 hover:bg-black/50 transition-colors cursor-pointer">
                       <div className="relative">
                         <div className="w-12 h-12 bg-center bg-no-repeat aspect-square bg-cover rounded-full" style={{ backgroundImage: `url("${message.image}")` }}></div>
                       </div>
@@ -109,15 +106,14 @@ const Dashboard = () => {
                         <p className="text-gray-400 text-sm font-normal leading-normal line-clamp-1">{message.message}</p>
                       </div>
                       <span className="text-gray-500 text-xs ml-auto">{message.time}</span>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
             </div>
           </div>
         </main>
-      </div>
-    </div>
+    
   );
 };
 

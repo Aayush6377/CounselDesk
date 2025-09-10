@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { lawyerProfile } from "../../../assets/assets";
-import { FaChevronCircleLeft, FaChevronCircleRight, FaLock } from "react-icons/fa";
-
+import { FaLock } from "react-icons/fa";
+import Calendar from "../../../components/Calendar/Calendar";
 
 const Booking = () => {
   // const { lawyerId } = useParams();
   // const lawyer = fetchLawyerData(lawyerId);
   const lawyer = lawyerProfile;
 
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -22,55 +21,6 @@ const Booking = () => {
       setSelectedTime(null);
     }
   }, [selectedDate, lawyer.availability]);
-
-  // Calendar logic to generate the days for the current month
-  const generateCalendarDays = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const days = [];
-
-    // Add empty divs for preceding days
-    for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`}></div>);
-    }
-
-    // Add days of the current month
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
-      const isAvailable = lawyer.availability.some(slot => {
-        const slotDate = new Date(slot.date);
-        return slotDate.getDate() === day && slotDate.getMonth() === month && slotDate.getFullYear() === year;
-      });
-      const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
-
-      days.push(
-        <div 
-          key={day}
-          className={`py-2 rounded-lg text-center cursor-pointer transition-colors ${
-            isAvailable 
-              ? isSelected 
-                ? 'bg-[var(--primary-color)]/20 border border-[var(--primary-color)]/50 text-[var(--accent-color)]' 
-                : 'text-gray-300 hover:bg-[var(--primary-color)]/20'
-              : 'text-gray-600 cursor-not-allowed opacity-50'
-          }`}
-          onClick={() => isAvailable && setSelectedDate(date)}
-        >
-          {day}
-        </div>
-      );
-    }
-
-    return days;
-  };
-
-  const changeMonth = (offset) => {
-    setCurrentDate(prev => {
-      const newDate = new Date(prev.getFullYear(), prev.getMonth() + offset, 1);
-      return newDate;
-    });
-  };
   
   const formatDate = (date) => {
     return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -87,33 +37,13 @@ const Booking = () => {
           {/* Calendar and Time Slots Section */}
           <div className="bg-black/20 border border-white/10 rounded-xl p-8">
             <h2 className="text-[var(--accent-color)] text-2xl font-bold mb-6">Select a Date & Time</h2>
-            <div className="flex items-center justify-between mb-4">
-              <button 
-                className="p-2 rounded-full bg-black/40 hover:bg-black/60 transition-colors"
-                onClick={() => changeMonth(-1)}
-              >
-                <span className="material-symbols-outlined text-gray-300"><FaChevronCircleLeft /></span>
-              </button>
-              <h3 className="text-gray-300 text-lg font-semibold">
-                {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-              </h3>
-              <button 
-                className="p-2 rounded-full bg-black/40 hover:bg-black/60 transition-colors"
-                onClick={() => changeMonth(1)}
-              >
-                <span className="material-symbols-outlined text-gray-300"><FaChevronCircleRight /></span>
-              </button>
-            </div>
-            <div className="grid grid-cols-7 text-center gap-2 text-sm">
-              <div className="text-gray-400 font-bold">S</div>
-              <div className="text-gray-400 font-bold">M</div>
-              <div className="text-gray-400 font-bold">T</div>
-              <div className="text-gray-400 font-bold">W</div>
-              <div className="text-gray-400 font-bold">T</div>
-              <div className="text-gray-400 font-bold">F</div>
-              <div className="text-gray-400 font-bold">S</div>
-              {generateCalendarDays()}
-            </div>
+            
+            <Calendar 
+              lawyer={lawyer}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+
             <div className="mt-6">
               <h3 className="text-gray-300 text-lg font-semibold mb-4">
                 Available Slots {selectedDate ? `on ${formatDate(selectedDate)}` : ''}
@@ -121,7 +51,7 @@ const Booking = () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {availableSlots.length > 0 ? (
                   availableSlots.map((slot, index) => (
-                    <button 
+                    <button
                       key={index}
                       onClick={() => setSelectedTime(slot)}
                       className={`py-2 px-3 rounded-lg text-gray-300 transition-colors ${
@@ -169,7 +99,7 @@ const Booking = () => {
               </div>
             </div>
             <div className="mt-8">
-              <button 
+              <button
                 className="mt-2 w-full flex items-center gap-2 cursor-pointer justify-center overflow-hidden rounded-lg h-14 px-6 bg-[var(--primary-color)] text-[var(--secondary-color)] text-lg font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect"
                 disabled={!selectedDate || !selectedTime}
               >

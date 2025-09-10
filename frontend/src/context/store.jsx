@@ -19,7 +19,10 @@ export const StoreProvider = ({ children }) => {
     profileImage: "https://randomuser.me/api/portraits/men/42.jpg",
     bioDataProvided: true,
     verified: true,
-    subscriptionPlan: "Standard"
+    subscription: {
+      plan: "Monthly",
+      status: "active"
+    }
   });
 
   const [lawyerList, setLawyerList] = useState(lawyers);

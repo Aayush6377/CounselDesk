@@ -6,14 +6,17 @@ import { StoreProvider } from "./context/store";
 import LandingLayout from "./layouts/LandingLayout/LandingLayout";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import LawyerLayout from "./layouts/LawyerLayout/LawyerLayout";
-import BioData from "./pages/lawyer/BioData/BioData";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
+
+import BioData from "./pages/lawyer/BioData/BioData";
+import Error from "./components/Error/Error";
 
 //Layouts childrens
 import landingChildrens from "./utils/landingChildrens";
 import userChildrens from "./utils/userChildrens";
 import adminChildrens from "./utils/adminChildrens";
 import lawyerChildrens from "./utils/lawyerChildrens";
+
 
 const router = createBrowserRouter([
   {
@@ -39,6 +42,10 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminLayout />,
     children: adminChildrens
+  },
+  {
+    path: "*",
+    element: <Error errorCode={404} title="Page Not Found" message="Oops! The page you are looking for does not exist. It might have been moved or deleted." />
   }
 ]);
 

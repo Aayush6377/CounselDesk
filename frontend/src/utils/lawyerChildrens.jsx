@@ -1,5 +1,12 @@
 import sharedChildrens from "./sharedChildrens";
 import Dashboard from "../pages/lawyer/Dashboard/Dashboard";
+import Availability from "../pages/lawyer/Availability/Availability";
+import Appointments from "../pages/lawyer/Appointments/Appointments";
+import Earnings from "../pages/lawyer/Earning/Earning";
+import Reviews from "../pages/lawyer/Reviews/Reviews";
+import Subscription from "../pages/lawyer/Subscription/Subscription";
+import Profile from "../pages/lawyer/Profile/Profile";
+import AppointmentDetails from "../pages/lawyer/Appointments/AppointmentDetails";
 
 const lawyerChildrens = [
     {
@@ -7,13 +14,34 @@ const lawyerChildrens = [
         element: <Dashboard />
     },
     {
-        path: "availability"
+        path: "availability",
+        element: <Availability />
     },
     {
-        path: "appointments"
+        path: "appointments",
+        element: <Appointments />
     },
     {
-        path: "earnings"
+        path: "earnings",
+        element: <Earnings />
+
+    },
+    {
+        path: "reviews",
+        element: <Reviews />
+    },
+    {
+        path: "subscription",
+        element: <Subscription />
+
+    },
+    {
+        path: "profile",
+        element: <Profile />
+    },
+    {
+        path: "appointment-details",
+        element: <AppointmentDetails />
     },
     ...sharedChildrens
 ];

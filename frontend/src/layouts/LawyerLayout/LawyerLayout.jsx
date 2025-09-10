@@ -3,6 +3,7 @@ import Footer from "../../components/Footer/Footer";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useStore } from "../../hooks/useStore";
 import { useEffect } from "react";
+import Error from "../../components/Error/Error";
 
 const LawyerLayout = () => {
     const { isLoggedIn, userDetails } = useStore();
@@ -34,6 +35,14 @@ const LawyerLayout = () => {
         }
 
     }, [isLoggedIn, userDetails, navigate]);
+
+    if (userDetails?.role === "lawyer" && !userDetails?.verified) {
+        return <Error 
+        title="Account Pending Approval" 
+        message="Your account has been successfully created and is now awaiting verification by an administrator. You will be notified by email once your account is approved. Thank you for your patience." 
+        errorCode={null} 
+        />;
+    }
 
     return (
         <div>

@@ -8,28 +8,28 @@
 <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <style type="text/tailwindcss">
-    :root {
-      --primary-color: #A89166;
-      --secondary-color: #1A1A1A;
-      --accent-color: #E8D7B5;
-      --glow-color: rgba(168, 145, 102, 0.4);
-    }
-    .glow-effect {
-      box-shadow: 0 0 10px 2px var(--glow-color), 0 0 20px 5px var(--glow-color), 0 0 40px 10px rgba(168, 145, 102, 0.2);
-    }
-    .star-rating input[type="radio"] {
-      display: none;
-    }
-    .star-rating label {
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .star-rating input[type="radio"]:checked ~ label,
-    .star-rating label:hover,
-    .star-rating label:hover ~ label {
-      color: var(--primary-color);
-    }
-  </style>
+        :root {
+            --primary-color: #A89166;
+            --secondary-color: #1A1A1A;
+            --accent-color: #E8D7B5;
+            --glow-color: rgba(168, 145, 102, 0.4);
+        }
+        .glow-effect {
+            box-shadow: 0 0 10px 2px var(--glow-color), 0 0 20px 5px var(--glow-color), 0 0 40px 10px rgba(168, 145, 102, 0.2);
+        }
+        .star-rating {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .star-rating .material-symbols-outlined {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+         .star-rating .material-symbols-outlined.empty {
+            color: #4a4a4a;
+        }
+    </style>
 </head>
 <body class="bg-[var(--secondary-color)]">
 <div class="relative flex size-full min-h-screen flex-col bg-gradient-to-b from-[var(--secondary-color)] to-[#0d1013] dark group/design-root overflow-x-hidden" style='font-family: Manrope, "Noto Sans", sans-serif;'>
@@ -45,9 +45,10 @@
 </a>
 <nav class="hidden md:flex items-center gap-6">
 <a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Dashboard</a>
-<a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Chatbot</a>
-<a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Find Lawyers</a>
-<a class="text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Appointments</a>
+<a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Appointments</a>
+<a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Messages</a>
+<a class="text-[var(--accent-color)] hover:text-white text-base font-medium leading-normal transition-colors" href="#">Reviews &amp; Ratings</a>
+<a class="text-gray-400 hover:text-[var(--accent-color)] text-base font-medium leading-normal transition-colors" href="#">Profile</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
@@ -60,93 +61,139 @@
 <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[var(--primary-color)]"></span>
 </button>
 <button class="flex items-center gap-2 group">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-transparent group-hover:border-[var(--primary-color)] transition-colors" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAM8y7ldIRGlGuEk9d0M25RL2Ub7NziNEv58zzvU7nl9jJhDT1SK8vDbMq7N1jxOYh3gAocWLjHyzjTnFKGACo5z7SWIOuk0H70Sw39GSFzLCBUvzZYaKGNffFVyse5sn0fBV3UxkmusdLQMfj8MD9sv8HG8FItDAyPthALQyXuoYKPFg9CJCXUPwQGAw1fxV_moLC1Q47YY2COqvVWumkcIXGnoof504x5L8QEEDJm8ear6G73y4w5-_ySet93SbkdGIiyOnKongon");'></div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-transparent group-hover:border-[var(--primary-color)] transition-colors" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDyaM6kw1tDOkK3bCYGD76qiKiOa1duLGmrvqwv8Ylf8Dh4XpQx5IY-LjU_mfzmG_NDwDZ60jR4pPT-lm5p9bqTzxSx8pnH2NuW26yUG9sCpKg3tcTrz6wk938txczt7yE4ryrAxiYYeOH8DL5W9Ji5uDlChgJUZhIBK7v4hc5XdJjxKuHrGdKE-6g4k9Y4Al_MArbjPYpeBnZbdCL3QHDsnZEuU_2BVyhLEtw3U-EhHjOcq_TprKTkZ54wvCR17er_Q_jr3QR684b");'></div>
 <span class="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors">expand_more</span>
 </button>
 </div>
 </header>
-<main class="px-4 sm:px-10 lg:px-16 xl:px-24 flex flex-1 justify-center py-8 pt-28">
-<div class="layout-content-container flex flex-col items-center max-w-5xl flex-1 gap-10">
-<div class="w-full flex items-center gap-4">
-<a class="flex items-center justify-center h-10 w-10 rounded-full bg-black/20 hover:bg-black/40 text-gray-300 transition-colors" href="#">
-<span class="material-symbols-outlined">arrow_back</span>
-</a>
-<h1 class="text-[var(--accent-color)] text-3xl sm:text-4xl font-bold">Appointment Details</h1>
-</div>
-<div class="w-full bg-black/20 border border-white/10 rounded-2xl p-6 sm:p-8">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="md:col-span-1 flex flex-col items-center text-center">
-<img alt="Lawyer Avatar" class="w-32 h-32 rounded-full object-cover border-4 border-[var(--primary-color)]/50 glow-effect mb-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfvD5gyHXld3Mp609IkelXlJvr0wGL-2YN4d4gZqKCX2ZTSQmiKE2fJq845ooOhJzS8uX5rZ9YdoTOqYKt9OLrfnECGrJTa5xwCEdjPQfmYmyQC_2Q-cZpWhkHtPzGSsYFUO-Ex5qKa0zyhRpY9yUw-yhF1p9sq8iYx7mlDprK1bYXaQGzqAY9AGgppCrZXDsApqpx3CiEUKWU3pPQCoiISHaC2vTFyRQdIPgcrZbXxoNB8mDzYcR0QCluujvsRlxHDpW_KZB74M6G"/>
-<h2 class="text-2xl font-bold text-[var(--accent-color)]">Adv. Sarah Chen</h2>
-<p class="text-base text-gray-400">Family Law Specialist</p>
-<div class="flex items-center gap-1 mt-2 text-[var(--primary-color)]">
-<span class="material-symbols-outlined text-lg">star</span>
-<span class="material-symbols-outlined text-lg">star</span>
-<span class="material-symbols-outlined text-lg">star</span>
-<span class="material-symbols-outlined text-lg">star</span>
-<span class="material-symbols-outlined text-lg">star_half</span>
-<span class="text-sm text-gray-300 ml-1">(4.5)</span>
-</div>
-<div class="mt-4">
-<span class="text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full bg-[var(--primary-color)]/20 text-[var(--accent-color)]">Premium Plan</span>
-</div>
-</div>
-<div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+<main class="px-4 sm:px-10 lg:px-24 xl:px-40 flex flex-1 justify-center py-8 pt-28">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-8">
+<div class="flex flex-wrap justify-between items-center gap-6">
 <div>
-<p class="text-sm font-medium text-gray-400">Appointment Date</p>
-<p class="text-lg font-semibold text-[var(--accent-color)]">Thursday, June 20, 2024</p>
+<h1 class="text-[var(--accent-color)] tracking-tight text-4xl md:text-5xl font-bold leading-tight">Reviews &amp; Ratings</h1>
+<p class="text-gray-400 mt-2 text-lg">Feedback from your clients.</p>
 </div>
-<div>
-<p class="text-sm font-medium text-gray-400">Time Slot</p>
-<p class="text-lg font-semibold text-[var(--accent-color)]">11:00 AM - 11:45 AM (EDT)</p>
-</div>
-<div>
-<p class="text-sm font-medium text-gray-400">Status</p>
-<span class="text-lg font-semibold px-2 py-1 rounded-full bg-green-500/20 text-green-400">Confirmed</span>
-</div>
-<div>
-<p class="text-sm font-medium text-gray-400">Appointment Fees</p>
-<p class="text-lg font-semibold text-[var(--accent-color)]">$150.00</p>
-</div>
-<div class="sm:col-span-2">
-<p class="text-sm font-medium text-gray-400">Payment ID</p>
-<p class="text-lg font-semibold text-[var(--accent-color)] font-mono">pay_1P9xF2SH2eZvKYlo2z3a4b5c</p>
-</div>
-<div class="sm:col-span-2">
-<p class="text-sm font-medium text-gray-400">Booked On</p>
-<p class="text-lg font-semibold text-[var(--accent-color)]">Tuesday, June 18, 2024 at 05:30 PM</p>
+<div class="flex items-center gap-4">
+<span class="text-gray-400">Sort by:</span>
+<div class="relative">
+<select class="form-select appearance-none w-40 cursor-pointer rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border-none bg-black/30 h-10 pl-4 pr-10 text-base font-normal leading-normal transition-all duration-300">
+<option>Newest First</option>
+<option>Oldest First</option>
+<option>Highest Rating</option>
+<option>Lowest Rating</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
 </div>
 </div>
 </div>
-<div class="border-t border-white/10 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-end gap-3">
-<button class="w-full sm:w-auto py-2 px-6 rounded-lg bg-black/40 text-gray-300 hover:bg-black/60 transition-colors text-base font-medium">Download Invoice</button>
-<button class="w-full sm:w-auto py-2 px-6 rounded-lg bg-[var(--primary-color)]/80 text-[var(--secondary-color)] hover:bg-[var(--primary-color)] transition-colors text-base font-bold">Reschedule</button>
+<div class="bg-black/20 border border-white/10 rounded-xl p-8 mb-8">
+<div class="flex flex-col md:flex-row items-center gap-8">
+<div class="flex flex-col items-center">
+<p class="text-[var(--accent-color)] text-6xl font-bold">4.9</p>
+<div class="star-rating mt-2">
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star_half</span>
+</div>
+<p class="text-gray-400 mt-2 text-sm">Based on 67 reviews</p>
+</div>
+<div class="flex-1 w-full">
+<div class="flex items-center gap-4 mb-2">
+<span class="text-gray-400">5 star</span>
+<div class="w-full bg-gray-700 rounded-full h-2.5">
+<div class="bg-[var(--primary-color)] h-2.5 rounded-full" style="width: 90%"></div>
+</div>
+<span class="text-[var(--accent-color)] w-10 text-right">60</span>
+</div>
+<div class="flex items-center gap-4 mb-2">
+<span class="text-gray-400">4 star</span>
+<div class="w-full bg-gray-700 rounded-full h-2.5">
+<div class="bg-[var(--primary-color)] h-2.5 rounded-full" style="width: 5%"></div>
+</div>
+<span class="text-[var(--accent-color)] w-10 text-right">5</span>
+</div>
+<div class="flex items-center gap-4 mb-2">
+<span class="text-gray-400">3 star</span>
+<div class="w-full bg-gray-700 rounded-full h-2.5">
+<div class="bg-[var(--primary-color)] h-2.5 rounded-full" style="width: 2%"></div>
+</div>
+<span class="text-[var(--accent-color)] w-10 text-right">2</span>
+</div>
+<div class="flex items-center gap-4 mb-2">
+<span class="text-gray-400">2 star</span>
+<div class="w-full bg-gray-700 rounded-full h-2.5">
+<div class="bg-[var(--primary-color)] h-2.5 rounded-full" style="width: 0%"></div>
+</div>
+<span class="text-[var(--accent-color)] w-10 text-right">0</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-gray-400">1 star</span>
+<div class="w-full bg-gray-700 rounded-full h-2.5">
+<div class="bg-[var(--primary-color)] h-2.5 rounded-full" style="width: 0%"></div>
+</div>
+<span class="text-[var(--accent-color)] w-10 text-right">0</span>
 </div>
 </div>
-<div class="w-full bg-black/20 border border-white/10 rounded-2xl p-6 sm:p-8">
-<h3 class="text-2xl font-bold text-[var(--accent-color)] mb-4">Leave a Review</h3>
+</div>
+</div>
 <div class="flex flex-col gap-6">
-<div>
-<label class="text-sm font-medium text-gray-400 mb-2 block">Your Rating</label>
-<div class="star-rating flex flex-row-reverse justify-end items-center gap-1 text-gray-500">
-<input class="hidden" id="star5" name="rating" type="radio" value="5"/>
-<label class="material-symbols-outlined text-4xl" for="star5">star</label>
-<input class="hidden" id="star4" name="rating" type="radio" value="4"/>
-<label class="material-symbols-outlined text-4xl" for="star4">star</label>
-<input class="hidden" id="star3" name="rating" type="radio" value="3"/>
-<label class="material-symbols-outlined text-4xl" for="star3">star</label>
-<input class="hidden" id="star2" name="rating" type="radio" value="2"/>
-<label class="material-symbols-outlined text-4xl" for="star2">star</label>
-<input class="hidden" id="star1" name="rating" type="radio" value="1"/>
-<label class="material-symbols-outlined text-4xl" for="star1">star</label>
+<div class="flex flex-col sm:flex-row items-start gap-6 p-6 bg-black/20 border border-white/10 rounded-xl hover:border-[var(--primary-color)]/50 transition-all duration-300">
+<img alt="Alex Thompson" class="flex-shrink-0 w-16 h-16 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM8y7ldIRGlGuEk9d0M25RL2Ub7NziNEv58zzvU7nl9jJhDT1SK8vDbMq7N1jxOYh3gAocWLjHyzjTnFKGACo5z7SWIOuk0H70Sw39GSFzLCBUvzZYaKGNffFVyse5sn0fBV3UxkmusdLQMfj8MD9sv8HG8FItDAyPthALQyXuoYKPFg9CJCXUPwQGAw1fxV_moLC1Q47YY2COqvVWumkcIXGnoof504x5L8QEEDJm8ear6G73y4w5-_ySet93SbkdGIiyOnKongon"/>
+<div class="flex flex-col gap-2 flex-1">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<p class="text-[var(--accent-color)] text-lg font-bold leading-tight">Alex Thompson</p>
+<span class="text-gray-500 text-sm">October 25, 2023</span>
+</div>
+<div class="star-rating">
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+</div>
+<p class="text-gray-300 text-base font-normal leading-relaxed mt-2">
+                                    "Attorney Chen was incredibly helpful and professional. He explained everything clearly and made a stressful situation much more manageable. Highly recommended!"
+                                </p>
 </div>
 </div>
-<div>
-<label class="text-sm font-medium text-gray-400 mb-2 block" for="review-text">Your Review</label>
-<textarea class="form-textarea w-full resize-none rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border-none bg-black/30 placeholder:text-[#9dabb9] text-base font-normal leading-normal transition-all duration-300" id="review-text" name="review-text" placeholder="Share your experience with the lawyer..." rows="4"></textarea>
+<div class="flex flex-col sm:flex-row items-start gap-6 p-6 bg-black/20 border border-white/10 rounded-xl hover:border-[var(--primary-color)]/50 transition-all duration-300">
+<img alt="Jessica Tan" class="flex-shrink-0 w-16 h-16 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAStFADqC7sV1CNU1PsymkEHcsf6biOSGZIh_m44U3I-dQNVj4U6cAWKrL5zLU2Q4JY2uxKRyVPbYtcgg8LX0NBn4EOoJKfPvDP1P0o7QHJ5jC3KQ-VM_MziByakPYfav_mh9H1alWFhSRhGUqTVyB6RX5HCefwF5tiqDnY3xBEWdwHVImbXwAUIbnWWLwg47IdlggZ5-bHPJumWzQCVGt3Y8jr16P_WjSk4I-1NIudt_LL_LZ7uLj9I89uRi271NirZ-uFHr4_Suzx"/>
+<div class="flex flex-col gap-2 flex-1">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<p class="text-[var(--accent-color)] text-lg font-bold leading-tight">Jessica Tan</p>
+<span class="text-gray-500 text-sm">October 22, 2023</span>
 </div>
-<div class="flex justify-end">
-<button class="w-full sm:w-auto py-2 px-6 rounded-lg bg-[var(--primary-color)]/80 text-[var(--secondary-color)] hover:bg-[var(--primary-color)] transition-colors text-base font-bold">Submit Review</button>
+<div class="star-rating">
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+</div>
+<p class="text-gray-300 text-base font-normal leading-relaxed mt-2">
+                                    "Excellent service. Robert was very thorough in reviewing my business contract and provided valuable insights. The whole process was seamless."
+                                </p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-start gap-6 p-6 bg-black/20 border border-white/10 rounded-xl hover:border-[var(--primary-color)]/50 transition-all duration-300">
+<img alt="Michael Wong" class="flex-shrink-0 w-16 h-16 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe60dEBfeYIEW38KYRAMOrvivUprgvKPcwg8UzD7s9gLmnHT0upptOI3goUrlY685OkxPZMnX1nuvM9FKDPQrqyewanzgQJADdzhJR1UYWvMEO_fzRpwuLQxXUT9F2Nr41ismZGl6RbVs8FagmdfVD93I9Vzq4a3u_w20YUXrZSVl5u2YjdjGFZUw_JzDSqi5estsnnjc_-TtJrYqhv-kuoP-tcbr38HCQg2tztZrokLaZCRG31GtpXGOgeFckKxl6uq8fa7cHVXqv"/>
+<div class="flex flex-col gap-2 flex-1">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<p class="text-[var(--accent-color)] text-lg font-bold leading-tight">Michael Wong</p>
+<span class="text-gray-500 text-sm">October 19, 2023</span>
+</div>
+<div class="star-rating">
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined">star</span>
+<span class="material-symbols-outlined empty">star</span>
+</div>
+<p class="text-gray-300 text-base font-normal leading-relaxed mt-2">
+                                    "Good experience overall. A bit of a delay in getting the final documents, but the quality of work was high."
+                                </p>
 </div>
 </div>
 </div>

@@ -121,7 +121,12 @@ export const lawyerProfile = {
   "rating": 4.8,
   "reviewsCount": 152,
   "fees": 2000,
-  "subscriptionPlan": "Premium",
+  "subscription": {
+    plan: "Monthly",
+    startDate: new Date(),
+    endDate: new Date(Date.now() + 30*24*60*60*1000),
+    status: "active"
+  },
   "bioDataProvided": true,
   "verified": true,
   "address": {
@@ -223,6 +228,24 @@ export const appointment = {
     "subscriptionPlan": "premium",
     "profileImage": "https://randomuser.me/api/portraits/men/32.jpg"
   },
+  "slot": {
+    "date": "2025-09-05",
+    "time": "10:00 AM"
+  },
+  "fees": 1500,
+  "status": "confirmed",
+  "paymentId": "pay_001",
+  "createdAt": "2025-08-30T12:00:00Z"
+}
+
+export const appointmentLawyer = {
+  "_id": "apt_001",
+  "userId": {
+    "name": "Aayush Kukreja",
+    "email": "aayush@email.com",
+    "profileImage": "https://randomuser.me/api/portraits/men/12.jpg",
+  },
+  "lawyerId": "lawyer_123",
   "slot": {
     "date": "2025-09-05",
     "time": "10:00 AM"
