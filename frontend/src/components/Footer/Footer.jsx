@@ -9,7 +9,6 @@ const footerLinks = {
   Services: [
     { name: "AI Legal Chatbot", path: "chatbot" },
     { name: "Lawyers", path: "lawyers" },
-    { name: "Consultations", path: "consultations" },
   ],
   "Quick Links": [
     { name: "About us", path: "about" },
@@ -24,8 +23,8 @@ const footerLinks = {
 };
 
 const socialLinks = {
-  github: "#",
-  linkedin: "#",
+  github: "https://github.com/Aayush6377/CounselDesk",
+  linkedin: "https://www.linkedin.com/in/aayush-kukreja-b5885324a",
   facebook: "#"
 };
 
@@ -65,13 +64,13 @@ const Footer = () => {
 
             {/* Socials */}
             <div className="flex justify-center sm:justify-start space-x-4 mt-6">
-              <Link to={socialLinks.github} className="text-gray-400 hover:text-white transition-colors">
+              <Link to={socialLinks.github} className="text-gray-400 hover:text-white transition-colors" target="_blank">
                 <FaGithub className="w-6 h-6"/>
               </Link>
-              <Link to={socialLinks.linkedin} className="text-gray-400 hover:text-white transition-colors">
+              <Link to={socialLinks.linkedin} className="text-gray-400 hover:text-white transition-colors" target="_blank">
                 <FaLinkedin className="w-6 h-6"/>
               </Link>
-              <Link to={socialLinks.facebook} className="text-gray-400 hover:text-white transition-colors">
+              <Link to={socialLinks.facebook} className="text-gray-400 hover:text-white transition-colors" target="_blank">
                 <FaFacebookF className="w-6 h-6"/>
               </Link>
             </div>
