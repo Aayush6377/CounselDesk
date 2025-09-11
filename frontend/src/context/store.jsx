@@ -11,9 +11,9 @@ export const StoreProvider = ({ children }) => {
     },
   ]);
 
-  const [isLoggedIn, setLogedin] = useState(true);
+  const [isLoggedIn, setLogedin] = useState(false);
   const [userDetails, setUserDetails] = useState({
-    role: "admin",
+    role: "user",
     name: "Aayush Kukreja",
     email: "aayush@gmail.com",
     profileImage: "https://randomuser.me/api/portraits/men/42.jpg",

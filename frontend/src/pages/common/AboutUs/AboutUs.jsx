@@ -59,7 +59,7 @@ const TeamMemberCard = ({ member }) => (
     <div className="text-center md:text-left">
       <h4 className="text-2xl font-bold text-white">{member.name}</h4>
       <p className="text-[var(--primary-color)] text-lg font-medium mb-2">{member.role}</p>
-      <p className="text-[var(--accent-color)] mb-4 text-justify">{member.bio}</p>
+      <p className="text-gray-400 mb-4 text-justify">{member.bio}</p>
       <div className="flex justify-center md:justify-start gap-4 mt-4">
         <Link to={member.social.github} target="_blank" rel="noopener noreferrer" className="text-[var(--accent-color)] text-3xl hover:text-[var(--primary-color)]">
           <FaGithub />

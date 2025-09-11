@@ -5,6 +5,17 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useMutation } from '@tanstack/react-query';
 import { useStore } from "../../../hooks/useStore";
+import  TypingText  from "../../../components/ui/shadcn-io/typing-text";
+
+const subtitles = [
+  "Ask me anything about your legal concerns.",
+  "I can help you understand complex legal topics.",
+  "Your first step in navigating the legal world.",
+  "Get instant information on contracts, rights, and procedures.",
+  "Demystifying legal jargon, one question at a time.",
+  "How can I assist you with your legal query today?",
+  "Empowering you with the legal knowledge you need."
+];
 
 const Chatbot = () => {
   const { messages, setMessages } = useStore();
@@ -68,7 +79,9 @@ const Chatbot = () => {
         {/* Header */}
         <div className="p-6 border-b border-[#3E3E3E] bg-[#2D2D2D]">
           <h1 className="text-white text-2xl font-bold">Legal AI Assistant</h1>
-          <p className="text-gray-400 text-sm mt-1">Ask me anything about your legal concerns. I'm here to help.</p>
+          <p className="text-gray-400 text-sm mt-1">
+            <TypingText text={subtitles} showCursor={false}/>
+          </p>
         </div>
 
         {/* Chat Messages */}

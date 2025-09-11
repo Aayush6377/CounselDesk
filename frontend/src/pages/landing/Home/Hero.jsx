@@ -4,6 +4,7 @@ import { MdOutlineSmartToy } from "react-icons/md";
 import { VscLaw } from "react-icons/vsc";
 import { FaShieldAlt } from "react-icons/fa";
 import { RotatingText } from "../../../components/ui/shadcn-io/rotating-text";
+import { WritingText } from "../../../components/ui/shadcn-io/writing-text";
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useState } from "react";
@@ -59,7 +60,11 @@ const Hero = () => {
               />
             </h1>
             <p className="text-gray-400 text-lg font-normal leading-normal max-w-2xl animate-slideInUp stagger-1">
-              Get instant legal assistance from our AI chatbot and connect with experienced lawyers for personalized advice.
+              <WritingText
+              text="Get instant legal assistance from our AI chatbot and connect with experienced lawyers for personalized advice." 
+              inView={true}
+              />
+              
             </p>
             <Link
               to="/chatbot"

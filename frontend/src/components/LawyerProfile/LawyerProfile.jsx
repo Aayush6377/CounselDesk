@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import { lawyerProfile } from "../../assets/assets";
 import renderRating from "../../utils/renderRating";
+import { SiGmail } from "react-icons/si";
+import { FaPhone } from "react-icons/fa6";
+import { IoLocationSharp, IoSchoolSharp } from "react-icons/io5";
+import { MdOutlineGavel } from "react-icons/md";
 
 const LawyerProfile = () => {
     return (
@@ -23,15 +27,15 @@ const LawyerProfile = () => {
                                 </div>
                                 <div className="mt-6 text-left space-y-3 text-gray-300">
                                     <div className="flex items-center gap-3">
-                                        <span className="material-symbols-outlined text-[var(--primary-color)]">Email</span>
+                                        <span className="material-symbols-outlined text-[var(--primary-color)]"><SiGmail /></span>
                                         <span>{lawyerProfile.email}</span>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <span className="material-symbols-outlined text-[var(--primary-color)]">Phone</span>
+                                        <span className="material-symbols-outlined text-[var(--primary-color)]"><FaPhone /></span>
                                         <span>{lawyerProfile.phone}</span>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <span className="material-symbols-outlined text-[var(--primary-color)] mt-1">Location</span>
+                                        <span className="material-symbols-outlined text-[var(--primary-color)] mt-1"><IoLocationSharp /></span>
                                         <span>
                                             {lawyerProfile.address.city}, {lawyerProfile.address.state}, {lawyerProfile.address.pincode}
                                         </span>
@@ -48,7 +52,7 @@ const LawyerProfile = () => {
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span>Subscription:</span>
-                                        <span className="bg-[var(--primary-color)] text-white text-xs font-bold px-2 py-1 rounded-full">{lawyerProfile.subscriptionPlan.toUpperCase()}</span>
+                                        <span className="bg-[var(--primary-color)] text-white text-xs font-bold px-2 py-1 rounded-full">{lawyerProfile.subscription.plan.toUpperCase()}</span>
                                     </div>
                                     <p className="text-sm text-gray-400 pt-2">
                                         {lawyerProfile.subscriptionPlan} plan members get priority booking and a 15% discount on all services.
@@ -83,14 +87,14 @@ const LawyerProfile = () => {
                                 <h3 className="text-2xl font-bold text-white mb-6">Qualifications</h3>
                                 <ul className="space-y-4">
                                     <li className="flex items-start gap-4">
-                                        <span className="material-symbols-outlined text-[var(--primary-color)] mt-1">School</span>
+                                        <span className="material-symbols-outlined text-[var(--primary-color)] mt-1"><IoSchoolSharp /></span>
                                         <div>
                                             <h4 className="font-semibold text-white">Degrees</h4>
                                             <p className="text-gray-400">{lawyerProfile.qualification}</p>
                                         </div>
                                     </li>
                                     <li className="flex items-start gap-4">
-                                        <span className="material-symbols-outlined text-[var(--primary-color)] mt-1">Gavel</span>
+                                        <span className="material-symbols-outlined text-[var(--primary-color)] mt-1"><MdOutlineGavel /></span>
                                         <div>
                                             <h4 className="font-semibold text-white">Specialization</h4>
                                             <p className="text-gray-400">{lawyerProfile.specialization}</p>
