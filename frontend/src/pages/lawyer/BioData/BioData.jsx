@@ -127,13 +127,6 @@ const BioData = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    // Here you would typically use FormData to send the data and files to a server
-    // Example:
-    // const data = new FormData();
-    // Object.keys(formData).forEach(key => {
-    //   data.append(key, formData[key]);
-    // });
-    // axios.post('/api/lawyer-profile', data);
   };
 
   return (
