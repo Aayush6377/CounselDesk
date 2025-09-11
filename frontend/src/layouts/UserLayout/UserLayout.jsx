@@ -3,6 +3,7 @@ import Footer from "../../components/Footer/Footer";
 import Header from "./Header";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 
 const UserLayout = () => {
     const { isLoggedIn, userDetails } = useStore();
@@ -30,6 +31,7 @@ const UserLayout = () => {
 
     return (
         <div>
+            <ScrollToTop />
             <Header />
             <Outlet />
             <Footer />

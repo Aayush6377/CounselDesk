@@ -3,6 +3,7 @@ import Footer from "../../components/Footer/Footer";
 import Header from "./Header";
 import { useEffect } from "react";
 import { useStore } from "../../hooks/useStore";
+import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 
 const AdminLayout = () => {
     const { isLoggedIn, userDetails } = useStore();
@@ -29,6 +30,7 @@ const AdminLayout = () => {
     }, [isLoggedIn, userDetails, navigate]);
     return (
         <div>
+            <ScrollToTop />
             <Header />
             <Outlet />
             <Footer />

@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useStore } from "../../hooks/useStore";
 import { useEffect } from "react";
 import Error from "../../components/Error/Error";
+import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 
 const LawyerLayout = () => {
     const { isLoggedIn, userDetails } = useStore();
@@ -46,6 +47,7 @@ const LawyerLayout = () => {
 
     return (
         <div>
+            <ScrollToTop />
             <Header />
             <Outlet />
             <Footer />
