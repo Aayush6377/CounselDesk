@@ -79,9 +79,9 @@ const Chatbot = () => {
         {/* Header */}
         <div className="p-6 border-b border-[#3E3E3E] bg-[#2D2D2D]">
           <h1 className="text-white text-2xl font-bold">Legal AI Assistant</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <div className="text-gray-400 text-sm mt-1">
             <TypingText text={subtitles} showCursor={false}/>
-          </p>
+          </div>
         </div>
 
         {/* Chat Messages */}

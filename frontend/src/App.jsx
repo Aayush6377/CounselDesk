@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StoreProvider } from "./context/store";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 //Layouts
 import LandingLayout from "./layouts/LandingLayout/LandingLayout";
@@ -52,11 +53,13 @@ const router = createBrowserRouter([
 const App = () => {
   const queryClient = new QueryClient();
   return (
-    <QueryClientProvider client={queryClient}>
-      <StoreProvider>
-        <RouterProvider router={router}/>
-      </StoreProvider>
-    </ QueryClientProvider>
+    <GoogleOAuthProvider clientId="664473751982-cpv25n92tu5f9uv94jao55j81u6mmd42.apps.googleusercontent.com">
+      <QueryClientProvider client={queryClient}>
+        <StoreProvider>
+          <RouterProvider router={router}/>
+        </StoreProvider>
+      </ QueryClientProvider>
+    </GoogleOAuthProvider>
   )
 }
 

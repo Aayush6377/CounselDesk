@@ -2,8 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { images } from '../../../assets/assets';
+import { googleAuth, localLogin } from '../../../services/auth.service';
+import { useStore } from '../../../hooks/useStore';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
+    const {setUserDetails, setLogedin} = useStore();
+    const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -11,12 +16,33 @@ const Login = () => {
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+        setErrors(prev => ({...prev, [e.target.name]: ""}));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+
+        const res = await localLogin(formData);
+
+        if (res.success) {
+            setUserDetails(res.user);
+            setLogedin(true);
+        } else {
+            console.log(res);
+            setErrors(res.errors);
+        }
     };
+    
+    const handleGoogleLogin = async(cre) => {
+        const res = await googleAuth(cre,"user");
+        if (res){
+            setUserDetails(res.user);
+            setLogedin(true);
+        }
+        else{
+            console.error('Google signup service returned no data.');
+        }
+    }
 
     return (
         <div 
@@ -60,6 +86,10 @@ const Login = () => {
                                             required
                                             className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 pl-4 pr-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                                         />
+                                        {errors?.email && 
+                                        <p className="mt-2 text-sm text-red-400 animate-slideInUp stagger-7">
+                                            {errors.email}
+                                        </p>}
                                     </div>
                                 </div>
                                 <div className="animate-slideInUp stagger-3">
@@ -75,6 +105,10 @@ const Login = () => {
                                             required
                                             className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 pl-4 pr-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                                         />
+                                        {errors?.password && 
+                                        <p className="mt-2 text-sm text-red-400 animate-slideInUp stagger-7">
+                                            {errors.password}
+                                        </p>}
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-end animate-slideInUp stagger-4">
@@ -101,6 +135,9 @@ const Login = () => {
                             </div>
                             <div className="animate-slideInUp stagger-5">
                                 <button className="cursor-pointer w-full flex items-center justify-center py-3 px-4 border border-gray-600 rounded-md shadow-sm text-base font-medium text-white bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white transition-all duration-300">
+                                    <div className="absolute inset-0 opacity-0 z-10 flex justify-center items-center">
+                                        <GoogleLogin onSuccess={handleGoogleLogin} onError={() => console.error('Google Login Failed')}/>
+                                    </div>
                                     <FcGoogle className="h-5 w-5 mr-2"/>
                                     Log in with Google
                                 </button>

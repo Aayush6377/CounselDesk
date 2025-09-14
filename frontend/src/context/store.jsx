@@ -1,7 +1,8 @@
-import { createContext, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { lawyers, dummyAppointments } from "../assets/assets";
-
-export const StoreContext = createContext();
+import StoreContext from './store-context';
+import { logoutUser, refreshAccessToken } from '../services/auth.service';
+import { useMutation } from '@tanstack/react-query';
 
 export const StoreProvider = ({ children }) => {
   const [messages, setMessages] = useState([
@@ -11,22 +12,48 @@ export const StoreProvider = ({ children }) => {
     },
   ]);
 
+  const checkLogin = async () => {
+    const res = await refreshAccessToken();
+    if (res.success){
+      setUserDetails(res.user);
+      setLogedin(true);
+    }
+    else{
+      setLogedin(false);
+      setUserDetails({});
+    }
+  }
+
+  const { mutate: logout } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      setLogedin(false);
+      setUserDetails({});
+    },
+    onError: (error) => {
+      console.error("Server logout failed:", error);
+      setLogedin(false);
+      setUserDetails({});
+    }
+  });
+
   const [isLoggedIn, setLogedin] = useState(false);
   const [userDetails, setUserDetails] = useState({
-    role: "user",
-    name: "Aayush Kukreja",
-    email: "aayush@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/42.jpg",
-    bioDataProvided: true,
-    verified: true,
-    subscription: {
-      plan: "Monthly",
-      status: "active"
-    }
+    role: "",
+    name: "",
+    email: "",
+    profileImage: "",
+    bioDataProvided:false,
+    verified: false,
+    subscription: {}
   });
 
   const [lawyerList, setLawyerList] = useState(lawyers);
   const [appointments, setAppointments] = useState(dummyAppointments);
+
+  useEffect(() => {
+    checkLogin();
+  },[]);
 
   const store = {
     messages,
@@ -38,7 +65,8 @@ export const StoreProvider = ({ children }) => {
     lawyerList,
     setLawyerList,
     appointments,
-    setAppointments
+    setAppointments,
+    logout
   };
 
   return (

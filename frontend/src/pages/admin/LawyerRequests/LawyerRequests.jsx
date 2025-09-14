@@ -6,10 +6,10 @@ import { MdVisibility } from "react-icons/md";
 const lawyerRequestsData = [
   {
     id: 1,
-    name: 'David Miller',
+    name: 'Narendra Modi',
     avatar: 'https://randomuser.me/api/portraits/men/51.jpg',
     specialization: 'Corporate Law',
-    email: 'david.miller@example.com',
+    email: 'modi.chor@example.com',
     status: 'pending',
   },
   {

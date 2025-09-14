@@ -4,6 +4,7 @@ import Header from "./Header";
 import { useEffect } from "react";
 import { useStore } from "../../hooks/useStore";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import { ToastContainer } from "react-toastify";
 
 const AdminLayout = () => {
     const { isLoggedIn, userDetails } = useStore();
@@ -32,6 +33,7 @@ const AdminLayout = () => {
         <div>
             <ScrollToTop />
             <Header />
+           <ToastContainer theme="dark" autoClose={5000}/>
             <Outlet />
             <Footer />
         </div>

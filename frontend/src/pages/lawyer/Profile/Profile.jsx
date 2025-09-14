@@ -5,7 +5,7 @@ import { IoLogOut } from "react-icons/io5";
 import { useStore } from '../../../hooks/useStore';
 
 const Profile = () => {
-    const { userDetails, setLogedin } = useStore();
+    const { userDetails, logout } = useStore();
     const [profileImage, setProfileImage] = useState(userDetails?.profileImage || images.defaultProfile);
     const [formData, setFormData] = useState({
         personal: {
@@ -71,12 +71,6 @@ const Profile = () => {
         e.preventDefault();
         console.log("Saving all profile changes:", formData);
         alert("Changes Saved! (Check the browser console for the data object)");
-    };
-
-
-    const handleLogOut = () => {
-        console.log('User logged out');
-        setLogedin(false);
     };
 
 
@@ -214,7 +208,7 @@ const Profile = () => {
                             <h3 className="text-[var(--accent-color)] font-semibold">Log Out</h3>
                             <p className="text-gray-400 text-sm mt-1">You will be returned to the login screen.</p>
                         </div>
-                        <button onClick={handleLogOut} className="flex items-center gap-2 w-full sm:w-auto cursor-pointer justify-center rounded-lg h-10 px-4 bg-gray-700/50 text-white text-sm font-medium hover:bg-gray-600/70 transition-colors">
+                        <button onClick={logout} className="flex items-center gap-2 w-full sm:w-auto cursor-pointer justify-center rounded-lg h-10 px-4 bg-gray-700/50 text-white text-sm font-medium hover:bg-gray-600/70 transition-colors">
                             <IoLogOut className="text-base" />
                             <span>Log Out</span>
                         </button>

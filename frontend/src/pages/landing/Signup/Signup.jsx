@@ -3,14 +3,19 @@ import { Link } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { FaUserCheck } from "react-icons/fa";
 import { images } from '../../../assets/assets';
+import { GoogleLogin } from '@react-oauth/google';
+import { googleAuth, localSignup, sendOtp, verifyOtp } from "../../../services/auth.service";
+import { useStore } from '../../../hooks/useStore';
 
 const Signup = () => {
+    const {setUserDetails, setLogedin} = useStore();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
         confirmPassword: ""
     });
+    const [errors, setErrors] = useState({});
     const [userType, setUserType] = useState('user');
     const [otp, setOtp] = useState(Array(6).fill(''));
     const [timer, setTimer] = useState(120);
@@ -18,8 +23,19 @@ const Signup = () => {
     const [isOtpVerified, setIsOtpVerified] = useState(false);
     const [canResend, setCanResend] = useState(false);
     const [message, setMessage] = useState('');
+    const [otpToken, setOtpToken] = useState(null);
     const otpInputsRef = useRef([]);
 
+    const handleGoogleSignup = async(cre) => {
+        const res = await googleAuth(cre,userType);
+        if (res){
+            setUserDetails(res.user);
+            setLogedin(true);
+        }
+        else{
+            console.error('Google signup service returned no data.');
+        }
+    }
 
     useEffect(() => {
         let interval = null;
@@ -37,24 +53,23 @@ const Signup = () => {
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+        setErrors(prev => ({...prev, [e.target.name]: ""}));
     };
 
     const handleOtpChange = (e, index) => {
         const value = e.target.value;
-        if (/[^0-9]/.test(value)) return; // Only allow numbers
+        if (/[^0-9]/.test(value)) return; 
 
         const newOtp = [...otp];
         newOtp[index] = value;
         setOtp(newOtp);
 
-        // Focus next input if a digit is entered
         if (value && e.target.nextSibling) {
             e.target.nextSibling.focus();
         }
     };
     
     const handleKeyDown = (e) => {
-        // Move focus to previous input on backspace if current is empty
         if (e.key === 'Backspace' && !e.target.value && e.target.previousSibling) {
             e.target.previousSibling.focus();
         }
@@ -75,17 +90,26 @@ const Signup = () => {
         e.preventDefault();
         setMessage('');
 
-        // Simulate sending OTP API call
-        console.log('Sending OTP to:', formData.email);
+        if (!formData.email){
+            setMessage("Please enter your email address");
+            return;
+        }
 
-        setIsOtpSent(true);
-        setCanResend(false);
-        setTimer(120);
-        setOtp(Array(6).fill('')); // Clear previous OTP
-        setMessage('An OTP has been sent to your email.');
-        
-        // Focus the first OTP input
-        setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
+        const res = await sendOtp(formData.email);
+
+        if (res.token){
+            setOtpToken(res.token);
+            setIsOtpSent(true);
+            setCanResend(false);
+            setTimer(120);
+            setOtp(Array(6).fill(''));
+            setMessage('An OTP has been sent to your email.');
+
+            setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
+        }
+        else{
+            setMessage(res);
+        }
     };
 
     const handleVerifyOtp = async (e) => {
@@ -93,13 +117,19 @@ const Signup = () => {
         setMessage('');
         const enteredOtp = otp.join('');
 
-        console.log('Verifying OTP:', enteredOtp);
-        // This is a mock verification. Replace with your actual API call.
-        if (enteredOtp === '123456') { // Mock verification OTP
+        if (enteredOtp.length !== 6) {
+            setMessage('Please enter the 6-digit OTP.');
+            return;
+        }
+
+        const res = await verifyOtp(enteredOtp, otpToken);
+
+        if (res.success){
             setIsOtpVerified(true);
             setMessage('Email verified successfully! You can now sign up.');
-        } else {
-            setMessage('Invalid OTP. Please try again.');
+        }
+        else {
+            setMessage(res);
         }
     };
 
@@ -117,9 +147,16 @@ const Signup = () => {
             return;
         }
 
-        console.log('User signed up with data:', { ...formData, userType });
-        setMessage('Sign up successful!');
-        // Here you would typically redirect the user
+        const res = await localSignup({...formData, role: userType});
+
+        if (res.success) {
+            setUserDetails(res.user);
+            setLogedin(true);
+        } else {
+            console.log(res);
+            setMessage(res.message);
+            setErrors(res.errors);
+        }
     };
 
     const formatTime = (seconds) => {
@@ -190,6 +227,10 @@ const Signup = () => {
                                         required
                                         className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 pl-4 pr-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                                     />
+                                    {errors?.name && 
+                                    <p className="mt-2 text-sm text-red-400 animate-slideInUp stagger-7">
+                                        {errors.name}
+                                    </p>}
                                 </div>
                                 <div className="animate-slideInUp stagger-3">
                                     <label className="sr-only" htmlFor="email">Email</label>
@@ -205,6 +246,10 @@ const Signup = () => {
                                             required
                                             className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 pl-4 pr-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors disabled:opacity-50"
                                         />
+                                        {errors?.email && 
+                                        <p className="mt-2 text-sm text-red-400 animate-slideInUp stagger-7">
+                                            {errors.email}
+                                        </p>}
                                         {!isOtpSent && (
                                             <button
                                                 type="button"
@@ -278,6 +323,10 @@ const Signup = () => {
                                         required
                                         className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 pl-4 pr-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                                     />
+                                    {errors?.password && 
+                                    <p className="mt-2 text-sm text-red-400 animate-slideInUp stagger-7">
+                                        {errors.password}
+                                    </p>}
                                 </div>
                                 <div className="animate-slideInUp stagger-6">
                                     <label className="sr-only" htmlFor="confirmPassword">Confirm Password</label>
@@ -291,6 +340,10 @@ const Signup = () => {
                                         required
                                         className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 pl-4 pr-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                                     />
+                                    {errors?.confirmPassword && 
+                                    <p className="mt-2 text-sm text-red-400 animate-slideInUp stagger-7">
+                                        {errors.confirmPassword}
+                                    </p>}
                                 </div>
                                 {message && (
                                     <p className="text-center text-sm font-semibold text-gray-400 animate-slideInUp stagger-7">
@@ -317,7 +370,10 @@ const Signup = () => {
                             </div>
                             <div className="animate-slideInUp stagger-5">
                                 <button className="cursor-pointer w-full flex items-center justify-center py-3 px-4 border border-gray-600 rounded-md shadow-sm text-base font-medium text-white bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white transition-all duration-300">
-                                    <FcGoogle className="h-5 w-5 mr-2"/>
+                                    <div className="absolute inset-0 opacity-0 z-10 flex justify-center items-center">
+                                        <GoogleLogin onSuccess={handleGoogleSignup} onError={() => console.error('Google Login Failed')}/>
+                                    </div>
+                                    <FcGoogle className='h-5 w-5 mr-2'/>
                                     Sign up with Google
                                 </button>
                             </div>

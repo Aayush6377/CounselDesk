@@ -5,6 +5,7 @@ import { useStore } from "../../hooks/useStore";
 import { useEffect } from "react";
 import Error from "../../components/Error/Error";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import { ToastContainer } from "react-toastify";
 
 const LawyerLayout = () => {
     const { isLoggedIn, userDetails } = useStore();
@@ -49,6 +50,7 @@ const LawyerLayout = () => {
         <div>
             <ScrollToTop />
             <Header />
+            <ToastContainer theme="dark" autoClose={5000}/>
             <Outlet />
             <Footer />
         </div>

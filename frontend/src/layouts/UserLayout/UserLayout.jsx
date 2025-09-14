@@ -4,6 +4,7 @@ import Header from "./Header";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import { ToastContainer } from "react-toastify";
 
 const UserLayout = () => {
     const { isLoggedIn, userDetails } = useStore();
@@ -33,6 +34,7 @@ const UserLayout = () => {
         <div>
             <ScrollToTop />
             <Header />
+            <ToastContainer theme="dark" autoClose={5000}/>
             <Outlet />
             <Footer />
         </div>

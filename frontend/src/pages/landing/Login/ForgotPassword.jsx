@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { images } from '../../../assets/assets';
+import { resetPassword, sendOtp, verifyOtp } from '../../../services/auth.service';
+import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -10,9 +12,11 @@ const ForgotPassword = () => {
     const [timer, setTimer] = useState(120);
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [isOtpVerified, setIsOtpVerified] = useState(false);
+    const [otpToken, setOtpToken] = useState(null);
     const [canResend, setCanResend] = useState(false);
     const [message, setMessage] = useState('');
     const otpInputsRef = useRef([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         let interval = null;
@@ -59,42 +63,69 @@ const ForgotPassword = () => {
         }
     };
 
-    const handleSendOtp = (e) => {
+    const handleSendOtp = async (e) => {
         e.preventDefault();
         setMessage('');
-        console.log('Sending OTP to:', email);
 
-        setIsOtpSent(true);
-        setCanResend(false);
-        setTimer(120);
-        setOtp(Array(6).fill(''));
-        setMessage('An OTP has been sent to your email.');
-        setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
+        if (!email){
+            setMessage("Please enter your email address");
+            return;
+        }
+
+        const res = await sendOtp(email, "forgotPassword");
+
+        if (res.token){
+            setOtpToken(res.token);
+            setIsOtpSent(true);
+            setCanResend(false);
+            setTimer(120);
+            setOtp(Array(6).fill(''));
+            setMessage('An OTP has been sent to your email.');
+
+            setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
+        }
+        else{
+            setMessage(res);
+        }
     };
 
-    const handleVerifyOtp = (e) => {
+    const handleVerifyOtp = async (e) => {
         e.preventDefault();
         setMessage('');
         const enteredOtp = otp.join('');
-        console.log('Verifying OTP:', enteredOtp);
-        if (enteredOtp === '123456') { // Mock verification
+        if (enteredOtp.length !== 6) {
+            setMessage('Please enter the 6-digit OTP.');
+            return;
+        }
+
+        const res = await verifyOtp(enteredOtp, otpToken);
+
+        if (res.success){
             setIsOtpVerified(true);
-            setMessage('OTP verified successfully! You can now reset your password.');
-        } else {
-            setMessage('Invalid OTP. Please try again.');
+            setMessage('Email verified successfully! You can now sign up.');
+        }
+        else {
+            setMessage(res);
         }
     };
     
-    const handleResetPassword = (e) => {
+    const handleResetPassword = async (e) => {
         e.preventDefault();
         setMessage('');
         if (newPassword !== confirmPassword) {
             setMessage('Passwords do not match.');
             return;
         }
-        console.log(`Password for ${email} has been reset to: ${newPassword}`);
-        setMessage('Your password has been reset successfully.');
-        // Here you would typically redirect to the login page
+        
+        const res = await resetPassword({email, password: newPassword, confirmPassword});
+
+        if (res.success){
+            toast.success("Your password has been reset successfully.");
+            navigate("/login");
+        }
+        else{
+            setMessage(res.errors.password);
+        }
     };
 
     const formatTime = (seconds) => {

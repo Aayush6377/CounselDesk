@@ -5,7 +5,7 @@ import { MdModeEditOutline, MdDeleteForever } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 
 const Profile = () => {
-    const { userDetails, setLogedin } = useStore();
+    const { userDetails, logout } = useStore();
     const [name, setName] = useState(userDetails?.name || '');
     const [profileImage, setProfileImage] = useState(userDetails?.profileImage || images.defaultProfile);
     const [security, setSecurity] = useState({
@@ -29,11 +29,6 @@ const Profile = () => {
     const handleUpdatePassword = (e) => {
         e.preventDefault();
         console.log(security);
-    };
-
-    const handleLogOut = () => {
-        console.log('User logged out');
-        setLogedin(false);
     };
 
     const handleDeleteAccount = () => {
@@ -136,7 +131,7 @@ const Profile = () => {
                             <p className="text-gray-400 text-sm mt-1">You will be returned to the login screen.</p>
                         </div>
                         <button
-                            onClick={handleLogOut}
+                            onClick={logout}
                             className="flex items-center gap-2 w-full sm:w-auto cursor-pointer justify-center rounded-lg h-10 px-4 bg-gray-700/50 text-white text-sm font-medium hover:bg-gray-600/70 transition-colors"
                         >
                             <span className="material-symbols-outlined text-base"><IoLogOut /></span>

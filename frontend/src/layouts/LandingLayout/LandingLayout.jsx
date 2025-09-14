@@ -4,6 +4,7 @@ import Header from "./Header";
 import { useStore } from "../../hooks/useStore";
 import { useEffect } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
+import { ToastContainer } from "react-toastify";
 
 const LandingLayout = () => {
     const { isLoggedIn, userDetails } = useStore();
@@ -33,6 +34,7 @@ const LandingLayout = () => {
         <>
         <ScrollToTop />
         <Header />
+        <ToastContainer theme="dark" autoClose={5000}/>
         <Outlet />
         <Footer />
         </>
