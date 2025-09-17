@@ -27,6 +27,7 @@ export const StoreProvider = ({ children }) => {
   const { mutate: logout } = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
+      localStorage.removeItem("accessToken");
       setLogedin(false);
       setUserDetails({});
     },
@@ -66,7 +67,7 @@ export const StoreProvider = ({ children }) => {
     setLawyerList,
     appointments,
     setAppointments,
-    logout
+    logout,
   };
 
   return (

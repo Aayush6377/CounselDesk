@@ -68,7 +68,7 @@ export const authByGoogle = async (req,res,next) => {
             success: true,
             message: "Google auth Successful", 
             accessToken, 
-            user: { name: user.name, email: user.email, role: user.role, profileImage: user.profileImage } 
+            user: { name: user.name, email: user.email, role: user.role, profileImage: user.profileImage, bioDataProvided: user.bioDataProvided, verified: user.verified } 
         });
     } catch (error) {
         console.error("Google authentication failed:", error);
@@ -106,7 +106,7 @@ export const signupByLocal = async (req,res,next) => {
             success: true,
             message: "Google Signup Successful", 
             accessToken, 
-            user: { name, email, role } 
+            user: { name, email, role ,bioDataProvided: user.bioDataProvided, verified: user.verified } 
         });
         
     } catch (error) {
@@ -133,9 +133,9 @@ export const loginByLocal = async (req,res,next) => {
 
         res.status(200).json({
             success: true,
-            message: "Google Signup Successful", 
+            message: "Google Login Successful", 
             accessToken, 
-            user: { name: user.name, email: user.email, role: user.role, profileImage: user.profileImage} 
+            user: { name: user.name, email: user.email, role: user.role, profileImage: user.profileImage, bioDataProvided: user.bioDataProvided, verified: user.verified} 
         });
     } catch (error) {
         next(error);
@@ -170,6 +170,14 @@ export const logout = async (req,res,next) => {
         });
 
         res.status(200).json({ success: true, message: "Logged out successfully" });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const deleteAccount = (req,res,next) => {
+    try {
+        
     } catch (error) {
         next(error);
     }
@@ -242,7 +250,7 @@ export const refresh = async (req,res,next) => {
         }
         
         const accessToken = jwt.sign({userId: user._id, role: user.role}, ACCESS_TOKEN_SECRET, {expiresIn: "15m"});
-        res.status(200).json({success: true, accessToken, user: { name: user.name, email: user.email, role: user.role, profileImage: user.profileImage }});
+        res.status(200).json({success: true, accessToken, user: { name: user.name, email: user.email, role: user.role, profileImage: user.profileImage, bioDataProvided: user.bioDataProvided, verified: user.verified }});
     } catch (error) {
         next(error);
     }

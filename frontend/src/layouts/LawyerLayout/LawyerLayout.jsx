@@ -6,9 +6,12 @@ import { useEffect } from "react";
 import Error from "../../components/Error/Error";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { ToastContainer } from "react-toastify";
+import { profileDetails } from "../../services/lawyer.service";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../components/Loader/Loader";
 
 const LawyerLayout = () => {
-    const { isLoggedIn, userDetails } = useStore();
+    const { isLoggedIn, userDetails, setUserDetails } = useStore();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,12 +41,35 @@ const LawyerLayout = () => {
 
     }, [isLoggedIn, userDetails, navigate]);
 
+    const { data: lawyerDetails, isLoading, isSuccess } = useQuery({
+        queryKey: ["lawyerDetails"],
+        queryFn: profileDetails,
+        staleTime: Infinity,
+        cacheTime: Infinity
+    });
+
+    useEffect(() => {
+        if (isSuccess && lawyerDetails){
+            setUserDetails((prev) => ({...prev, ...lawyerDetails}));
+        }
+    }, [isSuccess, lawyerDetails, setUserDetails]);
+
     if (userDetails?.role === "lawyer" && !userDetails?.verified) {
         return <Error 
         title="Account Pending Approval" 
         message="Your account has been successfully created and is now awaiting verification by an administrator. You will be notified by email once your account is approved. Thank you for your patience." 
         errorCode={null} 
         />;
+    }
+
+    if (isLoading){
+        return (
+            <>
+            <Header />
+            <Loader />
+            <Footer />
+            </>
+        );
     }
 
     return (

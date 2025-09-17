@@ -5,8 +5,6 @@ import { useStore } from "../../../hooks/useStore";
 import { Link, NavLink } from "react-router-dom";
 
 
-
-// Data for upcoming appointments
 const upcomingAppointments = [
   {
     _id: "app_1",
@@ -22,7 +20,7 @@ const upcomingAppointments = [
   },
 ];
 
-// Data for recent messages
+
 const recentMessages = [
   { name: 'Alex Thompson', message: 'That sounds good, thank you for...', time: '1h ago', image: "https://randomuser.me/api/portraits/men/13.jpg"},
   { name: 'Michael Wong', message: 'Just sent over the documents for...', time: '3h ago', image: "https://randomuser.me/api/portraits/men/14.jpg" },
@@ -36,7 +34,7 @@ const Dashboard = () => {
     { title: 'Total Bookings', value: '128', subtext: '+5 this month', link: "appointments", icon: <FaCalendarAlt />},
     { title: 'Total Earnings', value: '₹25,600', subtext: '+ $1,200 this month', link: "earnings", icon: <MdOutlinePayment /> },
     { title: 'Reviews', value: '4.9', subtext: 'from 67 reviews', icon: <IoStar />, link: "reviews", valueSuffix: ' / 5.0' },
-    { title: 'Subscription', value: userDetails.subscription.plan, subtext: 'Manage Plan', link: "subscription", icon: <MdOutlineWorkspacePremium />, valueColor: '#A89166' },
+    { title: 'Subscription', value: userDetails?.subscription?.plan || "Free", subtext: 'Manage Plan', link: "subscription", icon: <MdOutlineWorkspacePremium />, valueColor: '#A89166' },
     ];
 
   return (

@@ -8,14 +8,6 @@ const LawyerSchema = new mongoose.Schema({
         unique: true,
         index: true
     },
-    bioDataProvided:{
-        type: Boolean,
-        default: false
-    },
-    verified: {
-        type: Boolean,
-        default: false
-    },
     specialization: {
         type: String,
         required: true,
@@ -26,7 +18,7 @@ const LawyerSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    qualification: {
+    qualifications: {
         type: String,
         required: true,
         trim: true
@@ -106,7 +98,7 @@ const LawyerSchema = new mongoose.Schema({
             default: null
         }
     }],
-    backDetails: {
+    bankDetails: {
         accountHolderName: {
             type: String,
             required: true,

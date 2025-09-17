@@ -34,7 +34,8 @@ const UsersSchema = new mongoose.Schema({
         required: function() {
             return this.authProvider === 'google';
         },
-        default: null
+        default: null,
+        select: false 
     },
     role: {
         type: String,
@@ -43,7 +44,15 @@ const UsersSchema = new mongoose.Schema({
     },
     profileImage: {
         type: String
-    }
+    },
+    bioDataProvided:{
+        type: Boolean,
+        default: false
+    },
+    verified: {
+        type: Boolean,
+        default: false
+    },
 },{minimize: false, timestamps: true});
 
 

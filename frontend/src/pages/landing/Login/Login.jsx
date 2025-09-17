@@ -28,7 +28,6 @@ const Login = () => {
             setUserDetails(res.user);
             setLogedin(true);
         } else {
-            console.log(res);
             setErrors(res.errors);
         }
     };

@@ -3,18 +3,42 @@ import { useStore } from "../../../hooks/useStore";
 import { images } from '../../../assets/assets';
 import { MdModeEditOutline, MdDeleteForever } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
+import { profileUpdate } from '../../../services/user.service';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { resetPassword } from '../../../services/auth.service';
 
 const Profile = () => {
-    const { userDetails, logout } = useStore();
-    const [name, setName] = useState(userDetails?.name || '');
+    const { userDetails, logout, setUserDetails } = useStore();
+    const [formData, setFormData] = useState({name: userDetails?.name || ""});
     const [profileImage, setProfileImage] = useState(userDetails?.profileImage || images.defaultProfile);
-    const [security, setSecurity] = useState({
-        curPassword: "",
-        newPassword: ""
+    const [ security, setSecurity ] = useState({
+        password: "",
+        confirmPassword: ""
+    });
+    const [errors, setErrors] = useState({});
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: (data) => profileUpdate(data),
+        onSuccess: () => {
+            setUserDetails(prev => ({...prev, ...formData, profileImage: profileImage}));
+            toast.success("Profile updated successfully!");
+        },
+
+        onError: (err) => {
+            if (err.response?.data?.errors) {
+                setErrors(err.response.data.errors);
+                toast.error(err.response.data.message);
+            } else {
+                toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+            }
+        }
     });
 
-    const handleChange = (e) => {
-        setSecurity(prev => ({...prev, [e.target.name]: e.target.value}));
+    const handleFormChange = (e) => {
+        e.preventDefault();
+        setFormData(prev => ({...prev, [e.target.name]: e.target.value}));
+        setErrors(prev => ({...prev, [e.target.name]: ""}));
     }
 
     const handleImageUpload = (e) => {
@@ -22,13 +46,40 @@ const Profile = () => {
         if (file) {
             const newImageUrl = URL.createObjectURL(file);
             setProfileImage(newImageUrl);
-            console.log('New image selected:', file);
+            setFormData(prev => ({...prev, profileImage: file}));
         }
     };
 
-    const handleUpdatePassword = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(security);
+        const dataToSubmit = new FormData();
+        dataToSubmit.append("name",formData.name);
+
+        if (formData.profileImage){
+            dataToSubmit.append("profileImage",formData.profileImage, formData.profileImage.name);
+        }
+        mutate(dataToSubmit);
+    }
+
+    const handleSecurityChange = (e) => {
+        const { name, value } = e.target;
+        setSecurity(prev => ({...prev, [name]: value}));
+        setErrors(prev => ({...prev, [name]: ""}));
+    }
+
+    const handleUpdatePassword = async (e) => {
+        e.preventDefault();
+
+        const res = await resetPassword({email: userDetails.email, password: security.password, confirmPassword: security.confirmPassword});
+
+        if (res.success){
+            toast.success("Password changed successfully.");
+            setSecurity({ password: "", confirmPassword: "" });
+        }
+        else{
+            setErrors(res.errors);
+            toast.error(res.message);
+        }
     };
 
     const handleDeleteAccount = () => {
@@ -46,7 +97,7 @@ const Profile = () => {
                 </div>
 
                 {/* Profile Details Section */}
-                <div className="bg-black/20 border border-white/10 rounded-xl p-8">
+                <form onSubmit={handleSubmit} className="bg-black/20 border border-white/10 rounded-xl p-8">
                     <div className="flex flex-col md:flex-row items-center gap-8">
                         <div className="relative">
                             <div
@@ -72,9 +123,11 @@ const Profile = () => {
                                         className="form-input w-full resize-none overflow-hidden rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border border-white/20 bg-black/30 h-12 px-4 text-base font-normal leading-normal transition-all duration-300"
                                         id="name"
                                         type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleFormChange}
                                     />
+                                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>} 
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-400 mb-2" htmlFor="email">Email</label>
@@ -89,36 +142,35 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div className="flex justify-end mt-4">
+                        <button type="submit" className="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center overflow-hidden rounded-lg h-12 px-8 bg-[var(--primary-color)] text-[var(--secondary-color)] text-base font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect">
+                            <span className="truncate">{isPending ? "Saving..." : "Save Changes"}</span>
+                        </button>
+                    </div>
+                </form>
 
                 {/* Security Section */}
-                <form onSubmit={handleUpdatePassword} className="bg-black/20 border border-white/10 rounded-xl p-8">
-                    <h2 className="text-[var(--accent-color)] text-2xl font-bold mb-6">Security</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2" htmlFor="current-password">Current Password</label>
-                            <input
-                                className="form-input w-full resize-none overflow-hidden rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border border-white/20 bg-black/30 h-12 px-4 text-base font-normal leading-normal transition-all duration-300"
-                                id="current-password" name="curPassword" onChange={handleChange}
-                                type="password" required value={security.curPassword}
-                            />
+                <form onSubmit={handleUpdatePassword}>
+                    <div className="bg-black/20 border border-white/10 rounded-xl p-8">
+                        <h2 className="text-[var(--accent-color)] text-2xl font-bold mb-6">Update Password</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-2" htmlFor="new-password">New Password</label>
+                                <input className="form-input w-full resize-none overflow-hidden rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border border-white/20 bg-black/30 h-12 px-4 text-base font-normal leading-normal transition-all duration-300" id="new-password" placeholder="Enter new password" type="password" name="password" value={security.password} onChange={handleSecurityChange} />
+                                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>} 
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-2" htmlFor="confirm-password">Confirm New Password</label>
+                                <input className="form-input w-full resize-none overflow-hidden rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border border-white/20 bg-black/30 h-12 px-4 text-base font-normal leading-normal transition-all duration-300" id="confirm-password" placeholder="Confirm new password" type="password" name="confirmPassword" value={security.confirmPassword} onChange={handleSecurityChange} />
+                                {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>} 
+                            </div>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2" htmlFor="new-password">New Password</label>
-                            <input
-                                className="form-input w-full resize-none overflow-hidden rounded-lg text-[var(--accent-color)] focus:outline-0 focus:ring-2 focus:ring-[var(--primary-color)] border border-white/20 bg-black/30 h-12 px-4 text-base font-normal leading-normal transition-all duration-300"
-                                id="new-password" name="newPassword" onChange={handleChange}
-                                type="password" required value={security.newPassword}
-                            />
+                        {/* Submit Button for Password Form */}
+                        <div className="flex justify-end mt-6">
+                            <button type="submit" className="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center overflow-hidden rounded-lg h-12 px-8 bg-gray-700/60 text-white text-base font-bold leading-normal tracking-wide hover:bg-gray-600/80 transition-all duration-300 transform hover:scale-105">
+                                <span className="truncate">Update Password</span>
+                            </button>
                         </div>
-                    </div>
-                    <div className="mt-6 flex justify-end">
-                        <button
-                            type='submit'
-                            className="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center overflow-hidden rounded-lg h-12 px-6 bg-[var(--primary-color)] text-[var(--secondary-color)] text-base font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect"
-                        >
-                            <span className="truncate">Update Password</span>
-                        </button>
                     </div>
                 </form>
 

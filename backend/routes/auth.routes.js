@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as authController from "../controllers/auth.controller.js";
 import { signUpValidator, otpValidator, otpVerifyValidator, loginValidator, resetPasswordValidator } from "../middlewares/auth.middleware.js";
 import handleFormError from "../utils/handleFormError.js";
+import isLogin from "../middlewares/isLogin.js";
 
 const router = Router();
 
@@ -15,7 +16,10 @@ router.post("/local/resetPassword", resetPasswordValidator, handleFormError, aut
 router.post("/otp/send", otpValidator, handleFormError, authController.sendOtp);
 router.post("/otp/verify", otpVerifyValidator, handleFormError, authController.verifyOtp);
 
-router.get("/refresh",authController.refresh);
+router.post("/refresh",authController.refresh);
+
+router.use(isLogin);
 router.post("/logout",authController.logout);
+router.delete("/delete", authController.deleteAccount);
 
 export default router;

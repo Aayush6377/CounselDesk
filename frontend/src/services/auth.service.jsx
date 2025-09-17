@@ -53,7 +53,7 @@ export const logoutUser = async () => {
 
 export const refreshAccessToken = async () => {
     try {
-        const res = await api.get("/api/auth/refresh");
+        const res = await api.post("/api/auth/refresh", {}, { withCredentials: true });
         return res.data;
     } catch (error) {
         console.error("Failed to refresh token:", error.response?.data?.message || error.message);
