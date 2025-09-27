@@ -1,8 +1,12 @@
 import LAWYER from "../models/lawyers.model.js";
+import SCHEDULE from "../models/schedule.model.js";
 import USER from "../models/users.model.js";
+import TIMESLOT from "../models/timeSlot.model.js";
 import createError from "../utils/createError.js";
+import generateSlotsForNextDays from "../utils/slotGenerator.js";
 import deleteUploadedFiles, { deleteUploadedImage } from "../utils/deleteFile.js";
 import path from "path";
+import moment from "moment-timezone";
 
 export const generateFileUrl = (req, file) => {
     const baseUrl = `${req.protocol}://${req.get('host')}`;
@@ -113,3 +117,78 @@ export const profileDetails = async (req,res,next) => {
         next(error);
     }
 }
+
+export const scheduleUpdate = async (req,res,next) => {
+    try {
+        const lawyerId = req.lawyerId;
+        const { startTime, endTime, breakStartTime, breakEndTime, slotDuration, selectedDays: recurringDays } = req.body;
+
+        const updatedData = {lawyerId, startTime, endTime, breakStartTime, breakEndTime, slotDuration, recurringDays, availableToday: true};
+
+        const updatedSchedule = await SCHEDULE.findOneAndUpdate({lawyerId}, updatedData, {new: true, upsert: true, validationResult: true});
+
+        await TIMESLOT.deleteMany({lawyerId, status: {$ne: "booked"}});
+
+        await generateSlotsForNextDays(lawyerId,updatedSchedule);
+
+        res.status(200).json({success: true, message: "Schedule save", schedule: updatedSchedule});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const scheduleDetails = async (req,res,next) => {
+    try {
+        const lawyerId = req.lawyerId;
+
+        const schedule = await SCHEDULE.findOne({lawyerId}, {lawyerId: 0, _id: 0});
+
+        if (!schedule){
+            throw createError("Schedule is not set for the lawyer", 404);
+        }
+
+        const now = moment().tz("Asia/Kolkata").toDate();
+
+        const slots = await TIMESLOT.find({lawyerId, startTime: {$gte: now}},{startTime: 1, endTime: 1, status: 1, _id: 0}).sort("startTime");
+        res.status(200).json({success: true, message: "Schedule found", schedule, slots});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const scheduleUnavailableToday = async (req, res, next) => {
+    try {
+        const lawyerId = req.lawyerId;
+        const { isAvailableToday } = req.body;
+
+        const newStatus = isAvailableToday ? "available" : "cancelled";
+        const currentStatus = isAvailableToday ? "cancelled" : "available";
+
+        const timeZone = 'Asia/Kolkata';
+        const startOfToday = moment().tz(timeZone).startOf('day').toDate();
+        const endOfToday = moment().tz(timeZone).endOf('day').toDate();
+
+        const result = await TIMESLOT.updateMany(
+            {
+                lawyerId: lawyerId,
+                status: currentStatus,
+                startTime: {
+                    $gte: startOfToday,
+                    $lte: endOfToday 
+                }
+            }, 
+            { $set: { status: newStatus } } 
+        );
+
+        await SCHEDULE.findOneAndUpdate({lawyerId},{availableToday: isAvailableToday});
+
+        const message = isAvailableToday 
+            ? `Made ${result.modifiedCount} slots available for today.`
+            : `Cancelled ${result.modifiedCount} available slots for today.`;
+
+        res.status(200).json({ success: true, message });
+
+    } catch (error) {
+        next(error);
+    }
+};

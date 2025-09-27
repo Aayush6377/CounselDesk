@@ -5,9 +5,10 @@ import { useStore } from "../../hooks/useStore";
 import { useEffect } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { ToastContainer } from "react-toastify";
+import Loader from "../../components/Loader/Loader";
 
 const LandingLayout = () => {
-    const { isLoggedIn, userDetails } = useStore();
+    const { isLoggedIn, userDetails, appLoading } = useStore();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,6 +30,16 @@ const LandingLayout = () => {
             }
         }
     },[isLoggedIn,userDetails,navigate]);
+
+     if (appLoading){
+        return (
+            <>
+            <Header />
+            <Loader />
+            <Footer />
+            </>
+        );
+    }
 
     return (
         <>

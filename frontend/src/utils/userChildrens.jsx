@@ -19,11 +19,11 @@ const userChildrens = [
         element: <FindLawyers />
       },
       {
-        path: "lawyer-profile",
+        path: "lawyer-profile/:lawyerId",
         element: <UserLawyerProfile />
       },
       {
-        path: "book-appointment",
+        path: "book-appointment/:lawyerId",
         element: <Booking />
       },
       {

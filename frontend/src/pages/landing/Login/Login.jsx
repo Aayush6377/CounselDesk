@@ -5,6 +5,7 @@ import { images } from '../../../assets/assets';
 import { googleAuth, localLogin } from '../../../services/auth.service';
 import { useStore } from '../../../hooks/useStore';
 import { GoogleLogin } from '@react-oauth/google';
+import fetchUserLocation from '../../../services/fetchUserLocation';
 
 const Login = () => {
     const {setUserDetails, setLogedin} = useStore();
@@ -27,6 +28,10 @@ const Login = () => {
         if (res.success) {
             setUserDetails(res.user);
             setLogedin(true);
+            if (res.user.role === "user"){
+                const address = await fetchUserLocation();
+                setUserDetails(prev => ({...prev, address}));
+            }
         } else {
             setErrors(res.errors);
         }
@@ -36,6 +41,10 @@ const Login = () => {
         const res = await googleAuth(cre,"user");
         if (res){
             setUserDetails(res.user);
+            if (res.user.role === "user"){
+                const address = await fetchUserLocation();
+                setUserDetails(prev => ({...prev, address}));
+            }
             setLogedin(true);
         }
         else{

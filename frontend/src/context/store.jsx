@@ -3,6 +3,7 @@ import { lawyers, dummyAppointments } from "../assets/assets";
 import StoreContext from './store-context';
 import { logoutUser, refreshAccessToken } from '../services/auth.service';
 import { useMutation } from '@tanstack/react-query';
+import fetchUserLocation from '../services/fetchUserLocation';
 
 export const StoreProvider = ({ children }) => {
   const [messages, setMessages] = useState([
@@ -13,16 +14,30 @@ export const StoreProvider = ({ children }) => {
   ]);
 
   const checkLogin = async () => {
-    const res = await refreshAccessToken();
-    if (res.success){
-      setUserDetails(res.user);
-      setLogedin(true);
-    }
-    else{
+    try {
+      const res = await refreshAccessToken();
+      if (res.success){
+        setUserDetails(res.user);
+
+        if (res.user.role === "user"){
+          const address = await fetchUserLocation();
+          setUserDetails(prev => ({...prev, address}));
+        }
+        setLogedin(true);
+      }
+      else{
+        setLogedin(false);
+        setUserDetails({});
+      }
+    } catch (error) {
+      console.error(error);
       setLogedin(false);
       setUserDetails({});
+    } finally {
+      setAppLoading(false);
     }
   }
+
 
   const { mutate: logout } = useMutation({
     mutationFn: logoutUser,
@@ -46,9 +61,14 @@ export const StoreProvider = ({ children }) => {
     profileImage: "",
     bioDataProvided:false,
     verified: false,
-    subscription: {}
+    subscription: {},
+    address: {
+      state: "",
+      city: ""
+    }
   });
 
+  const [appLoading, setAppLoading] = useState(true);
   const [lawyerList, setLawyerList] = useState(lawyers);
   const [appointments, setAppointments] = useState(dummyAppointments);
 
@@ -57,6 +77,7 @@ export const StoreProvider = ({ children }) => {
   },[]);
 
   const store = {
+    appLoading,
     messages,
     setMessages,
     isLoggedIn,

@@ -8,6 +8,7 @@ import connectDB from "./config/connectDB.js";
 import authRouter from "./routes/auth.routes.js";
 import lawyerRouter from "./routes/lawyer.routes.js";
 import userRouter from "./routes/user.routes.js";
+import landingRouter from "./routes/landing.routes.js";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use(cors({
 app.use("/api/auth",authRouter);
 app.use("/api/lawyer",lawyerRouter);
 app.use("/api/user", userRouter);
+app.use("/api/landing", landingRouter);
 
 app.use((err,req,res,next) => {
     const status = err.status || 500;

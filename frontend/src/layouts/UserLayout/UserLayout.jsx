@@ -5,18 +5,23 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import { ToastContainer } from "react-toastify";
+import Loader from "../../components/Loader/Loader";
 
 const UserLayout = () => {
-    const { isLoggedIn, userDetails } = useStore();
+    const { isLoggedIn, userDetails, appLoading } = useStore();
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (appLoading) {
+            return;
+        }
+
         if (!isLoggedIn) {
             navigate("/", { replace: true });
             return; 
         }
         
-        switch (userDetails.role) {
+        switch (userDetails?.role) {
             case "lawyer":
                 navigate("/user-lawyer", { replace: true });
                 break;
@@ -28,7 +33,18 @@ const UserLayout = () => {
                 break;
         }
 
-    }, [isLoggedIn, userDetails, navigate]);
+    }, [isLoggedIn, userDetails, navigate, appLoading]);
+
+    if (appLoading) {
+        return (
+            <div>
+                <ScrollToTop />
+                <Header />
+                <Loader />
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div>

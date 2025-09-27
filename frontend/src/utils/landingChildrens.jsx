@@ -16,7 +16,7 @@ const landingChildrens = [
         element: <LawyersList />
     },
     {
-        path: "/lawyer/:id",
+        path: "/lawyer/:lawyerId",
         element: <LawyerProfile />
     },
     {

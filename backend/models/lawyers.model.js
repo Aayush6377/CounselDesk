@@ -79,25 +79,6 @@ const LawyerSchema = new mongoose.Schema({
             trim: true
         }
     },
-    availability: [{ 
-        date: {
-            type: Date,
-            required: true
-        },
-        time: {
-            type: String,
-            required: true
-        },
-        booked: {
-            type: Boolean,
-            default: false,
-        },
-        appointmentId: {
-            type: mongoose.Types.ObjectId,
-            ref: "appointment",
-            default: null
-        }
-    }],
     bankDetails: {
         accountHolderName: {
             type: String,

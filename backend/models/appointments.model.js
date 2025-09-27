@@ -11,21 +11,17 @@ const AppointmentsSchema = new mongoose.Schema({
         required: true,
         ref: "lawyer"
     },
-    slot: {
-        date: {
-            type: Date,
-            required: true
-        },
-        time: {
-            type: String,
-            required: true
-        }
+    timeSlotId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'timeSlot',
+        required: true,
+        unique: true,
     },
     status: {
         type: String,
         required: true,
-        enum: ["pending", "confirmed", "cancelled", "completed"],
-        default: "pending"
+        enum: ['scheduled', 'completed', 'cancelledByUser', 'cancelledByLawyer', 'noShow'],
+        default: 'scheduled'
     },
     paymentId: {
         type: mongoose.Types.ObjectId,

@@ -122,6 +122,72 @@ export const profileUpdateValidator = [
     .isFloat({ min: 0 }).withMessage("Fees must be a positive number.")
 ];
 
+export const scheduleUpdateValidator = [
+    body("startTime")
+    .trim()
+    .notEmpty().withMessage("Start time is required.")
+    .isTime({ hourFormat: 'hour24' }).withMessage("Start time must be a valid 24-hour format (e.g., 09:00)."),
+
+    body("endTime")
+    .trim()
+    .notEmpty().withMessage("End time is required.")
+    .isTime({ hourFormat: 'hour24' }).withMessage("End time must be a valid 24-hour format (e.g., 17:00).")
+    .custom((endTime, { req }) => {
+        const { startTime } = req.body;
+        if (startTime && endTime <= startTime) {
+            throw createError("End time must be after the start time", 400);
+        }
+        return true;
+    }),
+
+    body("breakStartTime")
+    .trim()
+    .notEmpty().withMessage("Break start time is required.")
+    .isTime({ hourFormat: 'hour24' }).withMessage("Break start time must be a valid 24-hour format.")
+    .custom((breakStartTime, { req }) => {
+        const { startTime, endTime } = req.body;
+        if (startTime && breakStartTime < startTime) {
+            throw new Error("Break cannot start before the work day starts.");
+        }
+        if (endTime && breakStartTime >= endTime) {
+            throw new Error("Break must start before the work day ends.");
+        }
+        return true;
+    }),
+
+    body("breakEndTime")
+    .trim()
+    .notEmpty().withMessage("Break end time is required.")
+    .isTime({ hourFormat: 'hour24' }).withMessage("Break end time must be a valid 24-hour format.")
+    .custom((breakEndTime, { req }) => {
+        const { breakStartTime, endTime } = req.body;
+        if (breakStartTime && breakEndTime <= breakStartTime) {
+            throw new Error("Break end time must be after the break start time.");
+        }
+        if (endTime && breakEndTime > endTime) {
+            throw new Error("Break cannot end after the work day ends.");
+        }
+        return true;
+    }),
+
+    body("slotDuration")
+    .notEmpty().withMessage("Slot duration is required.")
+    .isInt().withMessage("Slot duration must be an integer.")
+    .isIn([15, 30, 45, 60]).withMessage("Slot duration must be one of the following: 15, 30, 45, or 60 minutes."),
+
+    body("selectedDays.mon").isBoolean().withMessage("Monday must be a boolean value (true/false)."),
+    body("selectedDays.tue").isBoolean().withMessage("Tuesday must be a boolean value (true/false)."),
+    body("selectedDays.wed").isBoolean().withMessage("Wednesday must be a boolean value (true/false)."),
+    body("selectedDays.thu").isBoolean().withMessage("Thursday must be a boolean value (true/false)."),
+    body("selectedDays.fri").isBoolean().withMessage("Friday must be a boolean value (true/false)."),
+    body("selectedDays.sat").isBoolean().withMessage("Saturday must be a boolean value (true/false)."),
+    body("selectedDays.sun").isBoolean().withMessage("Sunday must be a boolean value (true/false)."),
+];
+
+export const scheduleTodayValidator = [
+    body("isAvailableToday").isBoolean().withMessage("isAvailableToday must be a boolean value (true/false).")
+];
+
 export const isLawyer = async (req,res,next) => {
     try {
         const userId = req.userId;
@@ -131,7 +197,7 @@ export const isLawyer = async (req,res,next) => {
             throw createError("User is not a lawyer",400);
         }
 
-        req.lawyer = lawyer;
+        req.lawyerId = lawyer._id;
         next();
     } catch (error) {
         next(error);

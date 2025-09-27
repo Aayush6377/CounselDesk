@@ -11,10 +11,13 @@ import { useQuery } from "@tanstack/react-query";
 import Loader from "../../components/Loader/Loader";
 
 const LawyerLayout = () => {
-    const { isLoggedIn, userDetails, setUserDetails } = useStore();
+    const { isLoggedIn, userDetails, setUserDetails, appLoading } = useStore();
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (appLoading) {
+            return;
+        }
   
         if (!isLoggedIn) {
             navigate("/", { replace: true });
@@ -39,7 +42,7 @@ const LawyerLayout = () => {
                 break;
         }
 
-    }, [isLoggedIn, userDetails, navigate]);
+    }, [isLoggedIn, userDetails, navigate, appLoading]);
 
     const { data: lawyerDetails, isLoading, isSuccess } = useQuery({
         queryKey: ["lawyerDetails"],
@@ -62,7 +65,7 @@ const LawyerLayout = () => {
         />;
     }
 
-    if (isLoading){
+    if (isLoading || appLoading){
         return (
             <>
             <Header />

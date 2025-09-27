@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const UsersSchema = new mongoose.Schema({
     name: {
@@ -55,6 +56,7 @@ const UsersSchema = new mongoose.Schema({
     },
 },{minimize: false, timestamps: true});
 
+UsersSchema.plugin(mongooseAggregatePaginate);
 
 UsersSchema.pre("save", async function(next){
     if (!this.isModified("password")){

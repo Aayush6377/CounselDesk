@@ -1,6 +1,11 @@
+import mongoose from "mongoose";
 import USER from "../models/users.model.js";
 import { deleteUploadedImage } from "../utils/deleteFile.js";
 import { generateFileUrl } from "./lawyer.controller.js";
+import LAWYER from "../models/lawyers.model.js";
+import createError from "../utils/createError.js";
+import TIMESLOT from "../models/timeSlot.model.js";
+import moment from "moment-timezone";
 
 export const profileUpdate = async (req,res,next) => {
     try {
@@ -19,6 +24,140 @@ export const profileUpdate = async (req,res,next) => {
 
         await user.save();
         res.status(200).json({success: true, message: "Profile updated successfully."});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const lawyersList = async (req, res, next) => {
+    try {
+        const { search = "", specialization = "", rating = 0, limit = 12, page=1, address } = req.query;
+
+        const queryRating = parseFloat(rating);
+        const addressFilter = address ? JSON.parse(address) : null;
+
+        const pipeline = [
+            { $match: { role: "lawyer", verified: true } },
+            { $lookup: { from: "lawyers", localField: "_id", foreignField: "userId", as: "lawyerDetails" } },
+            { $match: { "lawyerDetails": { $ne: [] } } },
+            { $unwind: '$lawyerDetails' },
+        ];
+
+        let filterMatch = {};
+        if (search) {
+            filterMatch.name = { $regex: search, $options: 'i' };
+        }
+        if (specialization) {
+            filterMatch["lawyerDetails.specialization"] = specialization;
+        }
+        if (queryRating > 0) {
+            filterMatch['lawyerDetails.rating'] = { $gte: queryRating };
+        }
+        if (Object.keys(filterMatch).length > 0) {
+            pipeline.push({ $match: filterMatch });
+        }
+
+        let addFieldsStage = {
+            subscriptionPriority: {
+                $cond: {
+                    if: {
+                        $and: [
+                            { $in: ['$lawyerDetails.subscription.plan', ['Monthly', 'Yearly']] },
+                            { $eq: ['$lawyerDetails.subscription.status', 'active'] }
+                        ]
+                    },
+                    then: 1,
+                    else: 2
+                }
+            }
+        };
+
+        if (addressFilter) {
+            addFieldsStage.addressPriority = {
+                $cond: {
+                    if: {
+                        $and: [
+                            { $eq: ['$lawyerDetails.address.state', addressFilter.state] },
+                            { $eq: ['$lawyerDetails.address.city', addressFilter.city] }
+                        ]
+                    },
+                    then: 1,
+                    else: {
+                        $cond: {
+                            if: { $eq: ['$lawyerDetails.address.state', addressFilter.state] },
+                            then: 2,
+                            else: 3
+                        }
+                    }
+                }
+            };
+        } else {
+            addFieldsStage.addressPriority = { $literal: 3 };
+        }
+        pipeline.push({ $addFields: addFieldsStage });
+
+        pipeline.push({
+            $sort: {
+                addressPriority: 1,
+                subscriptionPriority: 1,
+                'lawyerDetails.rating': -1,
+                'lawyerDetails.reviewsCount': -1,
+                'lawyerDetails.fees': -1,
+                name: 1
+            }
+        });
+
+        pipeline.push({
+            $project: {
+                _id: 1,
+                name: 1,
+                profileImage: 1,
+                specialization: '$lawyerDetails.specialization',
+                bio: '$lawyerDetails.bio',
+                rating: '$lawyerDetails.rating',
+                reviewsCount: '$lawyerDetails.reviewsCount',
+                fees: '$lawyerDetails.fees',
+                address: '$lawyerDetails.address',
+                subscription: '$lawyerDetails.subscription.plan'
+            }
+        });
+
+        const result = await USER.aggregatePaginate(pipeline,  {
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
+        });
+
+        res.status(200).json({ success: true, data: result.docs,  pagination: {
+            currentPage: result.page,
+            totalPages: result.totalPages,
+            totalResults: result.totalDocs,
+            hasNextPage: result.hasNextPage,
+            hasPrevPage: result.hasPrevPage,
+            nextPage: result.nextPage,
+            prevPage: result.prevPage
+        } });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const lawyerProfile = async (req,res, next) => {
+    try {
+        const { lawyerId } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(lawyerId)) {
+            throw createError("Invalid Lawyer ID format.", 400);
+        }
+
+        const lawyer = await LAWYER.findOne({userId: lawyerId}).populate({path: "userId", select: "name profileImage email"}).select("-documents");
+        if (!lawyer){
+            throw createError("Lawyer Not Found",404);
+        }
+
+        const now = moment().tz("Asia/Kolkata").toDate();
+        const availability = await TIMESLOT.find({lawyerId: lawyer._id, status: "available", startTime: {$gte: now}},{startTime: 1, endTime: 1, status: 1, _id: 0}).sort("startTime").limit(3);
+
+        res.json({success: true, data: lawyer, availability});
     } catch (error) {
         next(error);
     }

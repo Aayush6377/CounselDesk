@@ -1,10 +1,26 @@
 import { NavLink} from "react-router-dom";
 import renderRating from "../../../utils/renderRating";
-import { useStore } from "../../../hooks/useStore";
+import { useQuery } from "@tanstack/react-query";
+import fetchUserLocation from "../../../services/fetchUserLocation";
+import { getLawyersList } from "../../../services/landing.service";
+import { images } from "../../../assets/assets";
+import Loader from "../../../components/Loader/Loader";
 
 
 const LawyersList = () => {
-  const { isLoggedIn, lawyerList } = useStore(); 
+  const {data: address} = useQuery({
+    queryKey: ["address"],
+    queryFn: fetchUserLocation
+  });
+
+  const {data: lawyersList = [], isPending} = useQuery({
+    queryKey: ["lawyerList_landing_page"],
+    queryFn: () => getLawyersList(address)
+  });
+
+  if (isPending){
+    return <Loader />
+  }
 
   return (
     <main className="flex-1 bg-[var(--secondary-color)] py-16 px-4 sm:px-6 lg:px-8">
@@ -16,8 +32,8 @@ const LawyersList = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {lawyerList.map((lawyer, index) => {
-            const isLocked = lawyer.subscriptionPlan !== "free" && !isLoggedIn;
+          {lawyersList.map((lawyer, index) => {
+            const isLocked = lawyer.subscription !== "Free"
 
             return (
               <div
@@ -25,7 +41,7 @@ const LawyersList = () => {
                 className={`bg-[#2D2D2D] rounded-lg shadow-lg p-6 flex flex-col items-center text-center transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[var(--primary-color)] border border-transparent animate-slideInUp stagger-${index + 1}`}
               >
                 <img
-                  alt={`${lawyer.name}'s profile`}
+                  alt={`${lawyer.name || images.defaultProfile}'s profile`}
                   className="w-24 h-24 rounded-full object-cover mb-4 border-2 border-[var(--primary-color)]"
                   src={lawyer.profileImage}
                 />

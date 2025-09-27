@@ -1,12 +1,57 @@
 import React from 'react';
-import { lawyerProfile } from "../../../assets/assets";
 import renderRating from '../../../utils/renderRating';
 import { IoMail } from "react-icons/io5";
 import { FaPhoneAlt } from "react-icons/fa";
 import { MdLocationOn, MdEventAvailable } from "react-icons/md";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { getLawyerDetails } from '../../../services/user.service';
+import { useQuery } from '@tanstack/react-query';
+import Loader from '../../../components/Loader/Loader';
+import moment from 'moment-timezone';
+import Error from '../../../components/Error/Error';
+import createTitleFromStatus from '../../../utils/createTitleFromStatus';
 
 const LawyerProfile = () => {
+  const { lawyerId } = useParams();
+
+  const { data: result, isPending, isError, error } = useQuery({
+    queryKey: ["lawyerProfile",lawyerId],
+    queryFn: () => getLawyerDetails(lawyerId)
+  });
+
+  const lawyerProfile = result?.data;
+  const availability = result?.availability?.map(slot => {
+    const startIST = moment.utc(slot.startTime).tz('Asia/Kolkata');
+    const endIST = moment.utc(slot.endTime).tz('Asia/Kolkata');
+
+    const formattedDate = startIST.format('MMMM Do, YYYY');
+    const formattedTime = `${startIST.format('h:mm A')} - ${endIST.format('h:mm A')}`;
+
+    return {
+      ...slot,
+      date: formattedDate,
+      time: formattedTime,
+    };
+  });
+
+
+  if (isPending){
+    return <Loader />;
+  }
+
+  if (isError){
+    const errorCode = error.response?.data?.status || 500;
+    const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+    const errorTitle = createTitleFromStatus(errorCode);
+
+    return (
+      <Error 
+        errorCode={errorCode}
+        title={errorTitle}
+        message={errorMessage} 
+      />
+    );
+  }
 
   return (
     <main className="bg-[var(--secondary-color)] px-4 sm:px-10 lg:px-16 xl:px-24 flex flex-1 justify-center py-8 pt-15">
@@ -18,9 +63,9 @@ const LawyerProfile = () => {
             <div className="bg-black/20 border border-white/10 rounded-xl p-8 flex flex-col items-center text-center">
               <div 
                 className="w-40 h-40 bg-center bg-no-repeat aspect-square bg-cover rounded-full border-4 border-[var(--primary-color)] glow-effect" 
-                style={{ backgroundImage: `url("${lawyerProfile.profileImage}")` }}>
+                style={{ backgroundImage: `url("${lawyerProfile.userId.profileImage}")` }}>
               </div>
-              <h1 className="text-[var(--accent-color)] text-3xl font-bold mt-6">{lawyerProfile.name}</h1>
+              <h1 className="text-[var(--accent-color)] text-3xl font-bold mt-6">{lawyerProfile.userId.name}</h1>
               <p className="text-[var(--primary-color)] text-lg font-medium">{lawyerProfile.specialization}</p>
               <div className="flex items-center mt-2">
                 {renderRating(lawyerProfile.rating)}
@@ -29,7 +74,7 @@ const LawyerProfile = () => {
               <div className="mt-6 w-full space-y-3 text-left">
                 <div className="flex items-center gap-3">
                   <span className="text-2 text-[var(--primary-color)]"><IoMail /></span>
-                  <span className="text-gray-300">{lawyerProfile.email}</span>
+                  <span className="text-gray-300">{lawyerProfile.userId.email}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-2 text-[var(--primary-color)]"><FaPhoneAlt /></span>
@@ -40,7 +85,7 @@ const LawyerProfile = () => {
                   <span className="text-gray-300">{lawyerProfile.address.city}, {lawyerProfile.address.state}, {lawyerProfile.address.pincode}</span>
                 </div>
               </div>
-              <Link to="/user/book-appointment" className="mt-8 w-full flex items-center gap-2 cursor-pointer justify-center overflow-hidden rounded-lg h-12 px-6 bg-[var(--primary-color)] text-[var(--secondary-color)] text-lg font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect">
+              <Link to={`/user/book-appointment/${lawyerProfile.userId._id}`} className="mt-8 w-full flex items-center gap-2 cursor-pointer justify-center overflow-hidden rounded-lg h-12 px-6 bg-[var(--primary-color)] text-[var(--secondary-color)] text-lg font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect">
                 <span className="truncate">Book Appointment</span>
               </Link>
             </div>
@@ -51,7 +96,7 @@ const LawyerProfile = () => {
               <div className="space-y-4">
                 <div>
                   <p className="text-[var(--primary-color)] text-sm font-semibold">Qualifications</p>
-                  <p className="text-gray-300">{lawyerProfile.qualification}</p>
+                  <p className="text-gray-300">{lawyerProfile.qualifications}</p>
                 </div>
                 <div>
                   <p className="text-[var(--primary-color)] text-sm font-semibold">Consultation Fee</p>
@@ -59,7 +104,7 @@ const LawyerProfile = () => {
                 </div>
                 <div>
                   <p className="text-[var(--primary-color)] text-sm font-semibold">Subscription Plan</p>
-                  <p className="text-gray-300">{lawyerProfile.subscriptionPlan}</p>
+                  <p className="text-gray-300">{lawyerProfile.subscription.plan}</p>
                 </div>
               </div>
             </div>
@@ -74,25 +119,33 @@ const LawyerProfile = () => {
             </div>
 
             {/* Availability Section */}
-            <div className="bg-black/20 border border-white/10 rounded-xl p-8">
+             <div className="bg-black/20 border border-white/10 rounded-xl p-8">
               <h2 className="text-[var(--accent-color)] text-2xl font-bold mb-6">Availability</h2>
               <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
                 <h3 className="text-gray-300 text-lg font-semibold">Available Dates & Times:</h3>
               </div>
               <div className="space-y-4">
-                {lawyerProfile.availability.map((slot, index) => (
-                  <div key={index} className="flex items-center gap-4 bg-black/30 border border-white/10 rounded-lg p-4">
-                    <span className="material-symbols-outlined text-[var(--primary-color)]"><MdEventAvailable /></span>
-                    <span className="text-gray-300">{slot.date}</span>
-                    <span className="text-gray-400">at</span>
-                    <span className="text-[var(--accent-color)] font-semibold">{slot.time}</span>
+                {availability && availability.length > 0 ? (
+                  availability.map((slot, index) => (
+                    <div key={index} className="flex items-center gap-4 bg-black/30 border border-white/10 rounded-lg p-4">
+                      <span className="material-symbols-outlined text-[var(--primary-color)]">
+                        <MdEventAvailable />
+                      </span>
+                      <span className="text-gray-300">{slot?.date}</span>
+                      <span className="text-gray-400">at</span>
+                      <span className="text-[var(--accent-color)] font-semibold">{slot?.time}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-center p-4">
+                    <p className="text-gray-400 font-semibold">Not available</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
             {/* Client Reviews Section */}
-            <div className="bg-black/20 border border-white/10 rounded-xl p-8">
+            {/* <div className="bg-black/20 border border-white/10 rounded-xl p-8">
               <h2 className="text-[var(--accent-color)] text-2xl font-bold mb-6">Client Reviews</h2>
               <div className="space-y-6">
                 {lawyerProfile.reviews.slice(0,3).map((review, index) => (
@@ -115,7 +168,7 @@ const LawyerProfile = () => {
                 ))}
               </div>
               <Link to="/user/lawyer-reviews" className="mt-6 text-sm text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors font-semibold">Show all reviews</Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -1,12 +1,57 @@
-import { Link } from "react-router-dom";
-import { lawyerProfile } from "../../assets/assets";
+import { Link, useParams } from "react-router-dom";
 import renderRating from "../../utils/renderRating";
 import { SiGmail } from "react-icons/si";
 import { FaPhone } from "react-icons/fa6";
 import { IoLocationSharp, IoSchoolSharp } from "react-icons/io5";
 import { MdOutlineGavel } from "react-icons/md";
+import { useQuery } from "@tanstack/react-query";
+import { getLawyerDetails } from "../../services/landing.service";
+import moment from "moment-timezone";
+import createTitleFromStatus from "../../utils/createTitleFromStatus";
+import Loader from "../Loader/Loader";
+import Error from "../Error/Error";
 
 const LawyerProfile = () => {
+    const { lawyerId } = useParams();
+
+    const { data: result, isPending, isError, error } = useQuery({
+        queryKey: ["lawyerProfile",lawyerId],
+        queryFn: () => getLawyerDetails(lawyerId)
+    });
+
+    const lawyerProfile = result?.data;
+    const availability = result?.availability?.map(slot => {
+        const startIST = moment.utc(slot.startTime).tz('Asia/Kolkata');
+        const endIST = moment.utc(slot.endTime).tz('Asia/Kolkata');
+
+        const formattedDate = startIST.format('MMMM Do, YYYY');
+        const formattedTime = `${startIST.format('h:mm A')} - ${endIST.format('h:mm A')}`;
+
+        return {
+        ...slot,
+        date: formattedDate,
+        time: formattedTime,
+        };
+    });
+
+
+    if (isPending){
+        return <Loader />;
+    }
+
+    if (isError){
+        const errorCode = error.response?.data?.status || 500;
+        const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+        const errorTitle = createTitleFromStatus(errorCode);
+
+        return (
+        <Error 
+            errorCode={errorCode}
+            title={errorTitle}
+            message={errorMessage} 
+        />
+        );
+    }
     return (
         <div className="relative flex size-full min-h-screen flex-col bg-[var(--secondary-color)] group/design-root overflow-x-hidden font-['Manrope',_'Noto_Sans',_sans-serif]">
             <main className="flex-1 bg-[var(--secondary-color)] py-16 px-4 sm:px-6 lg:px-8 text-gray-300">
@@ -18,9 +63,9 @@ const LawyerProfile = () => {
                                 <img
                                     alt="Lawyer Portrait"
                                     className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-4 border-[var(--primary-color)]"
-                                    src={lawyerProfile.profileImage}
+                                    src={lawyerProfile.userId.profileImage}
                                 />
-                                <h2 className="text-3xl font-bold text-white">{lawyerProfile.name}</h2>
+                                <h2 className="text-3xl font-bold text-white">{lawyerProfile.userId.name}</h2>
                                 <p className="text-[var(--accent-color)] font-medium text-lg mt-1">{lawyerProfile.specialization}</p>
                                 <div className="flex items-center justify-center gap-1 mt-3 text-yellow-400">
                                     {renderRating(lawyerProfile.rating)}
@@ -28,7 +73,7 @@ const LawyerProfile = () => {
                                 <div className="mt-6 text-left space-y-3 text-gray-300">
                                     <div className="flex items-center gap-3">
                                         <span className="material-symbols-outlined text-[var(--primary-color)]"><SiGmail /></span>
-                                        <span>{lawyerProfile.email}</span>
+                                        <span>{lawyerProfile.userId.email}</span>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span className="material-symbols-outlined text-[var(--primary-color)]"><FaPhone /></span>
@@ -54,21 +99,24 @@ const LawyerProfile = () => {
                                         <span>Subscription:</span>
                                         <span className="bg-[var(--primary-color)] text-white text-xs font-bold px-2 py-1 rounded-full">{lawyerProfile.subscription.plan.toUpperCase()}</span>
                                     </div>
-                                    <p className="text-sm text-gray-400 pt-2">
-                                        {lawyerProfile.subscriptionPlan} plan members get priority booking and a 15% discount on all services.
-                                    </p>
                                 </div>
                             </div>
                             {/* Availability Section */}
                             <div className="bg-[#2D2D2D] rounded-lg shadow-lg p-6 animate-fadeIn stagger-3">
                                 <h3 className="text-xl font-bold text-white mb-4 border-b border-gray-700 pb-2">Availability</h3>
                                 <div className="space-y-3">
-                                    {lawyerProfile.availability.map((slot, index) => (
-                                        <div key={index} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
-                                            <p className="font-semibold text-white">{new Date(slot.date).toDateString()}</p>
-                                            <p className="text-sm text-gray-400">{slot.time}</p>
-                                        </div>
-                                    ))}
+                                    {availability && availability.length > 0 ? (
+                                        availability.map((slot, index) => (
+                                            <div key={index} className="flex justify-between items-center bg-gray-700 p-3 rounded-md">
+                                                <p className="font-semibold text-white">{slot.date}</p>
+                                                <p className="text-sm text-gray-400">{slot.time}</p>
+                                            </div>
+                                        ))
+                                    ): (
+                                    <div className="flex items-center justify-center p-4">
+                                        <p className="text-gray-400 font-semibold">Not available</p>
+                                    </div>
+                                    )}
                                 </div>
                                 <button className="mt-6 w-full flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-12 px-5 bg-[var(--primary-color)] text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-amber-600 transition-all duration-300 transform hover:scale-105">
                                     <Link to="/login" className="truncate">Book an Appointment</Link>
@@ -90,7 +138,7 @@ const LawyerProfile = () => {
                                         <span className="material-symbols-outlined text-[var(--primary-color)] mt-1"><IoSchoolSharp /></span>
                                         <div>
                                             <h4 className="font-semibold text-white">Degrees</h4>
-                                            <p className="text-gray-400">{lawyerProfile.qualification}</p>
+                                            <p className="text-gray-400">{lawyerProfile.qualifications}</p>
                                         </div>
                                     </li>
                                     <li className="flex items-start gap-4">
@@ -103,7 +151,7 @@ const LawyerProfile = () => {
                                 </ul>
                             </div>
                             {/* Client Reviews */}
-                            <div className="bg-[#2D2D2D] rounded-lg shadow-lg p-8 animate-fadeIn stagger-5">
+                            {/* <div className="bg-[#2D2D2D] rounded-lg shadow-lg p-8 animate-fadeIn stagger-5">
                                 <h3 className="text-2xl font-bold text-white mb-6">Client Reviews</h3>
                                 <div className="space-y-6">
                                     {lawyerProfile.reviews.map((review, index) => (
@@ -120,7 +168,7 @@ const LawyerProfile = () => {
                                         </div>
                                     ))}
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
