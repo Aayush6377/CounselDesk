@@ -1,0 +1,1 @@
+export const logoUrl = "https://res.cloudinary.com/dtyua1uzq/image/upload/v1759004114/Logo_rhenmi.png";

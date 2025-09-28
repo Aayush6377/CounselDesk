@@ -60,3 +60,41 @@ export const welcomeMailContent = (userName) => ({
     </div>
   `
 });
+
+export const appointmentConfirmationMailContent = (details) => ({
+    subject: `Appointment Confirmed with ${details.lawyerName} on ${details.appointmentDate}`,
+    html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #E8D7B5; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+      <div style="background-color: #A89166; color: #ffffff; padding: 20px; text-align: center;">
+        <h1 style="margin: 0;">CounselDesk</h1>
+        <p style="margin: 0; font-size: 14px;">Your AI Legal Assistant</p>
+      </div>
+      <div style="padding: 30px; background-color: #ffffff; line-height: 1.6;">
+        <h2 style="color: #1A1A1A; text-align: center;">Your Appointment is Confirmed!</h2>
+        <p style="font-size: 16px; color: #1A1A1A;">Hello ${details.userName},</p>
+        <p style="font-size: 16px; color: #1A1A1A;">
+          This email confirms your booking for a legal consultation. Please find the details of your upcoming appointment below.
+        </p>
+        <div style="background-color: #f9f9f9; border: 1px solid #E8D7B5; border-radius: 8px; padding: 20px; margin-top: 20px;">
+          <h3 style="color: #1A1A1A; border-bottom: 2px solid #E8D7B5; padding-bottom: 10px; margin-top: 0;">Appointment Details:</h3>
+          <ul style="font-size: 16px; color: #1A1A1A; list-style-type: none; padding-left: 0;">
+            <li style="padding: 8px 0;"><strong>Lawyer:</strong> ${details.lawyerName}</li>
+            <li style="padding: 8px 0;"><strong>Date:</strong> ${details.appointmentDate}</li>
+            <li style="padding: 8px 0;"><strong>Time:</strong> ${details.appointmentTime} (IST)</li>
+            <li style="padding: 8px 0;"><strong>Fee Paid:</strong> ₹${details.consultationFee}</li>
+          </ul>
+        </div>
+        <div style="text-align: center; margin: 40px 0;">
+          <a href="${frontend}/user/appointments" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">View My Appointments</a>
+        </div>
+        <p style="font-size: 16px; color: #1A1A1A;">
+          Please be prepared for your session at the scheduled time. If you need to reschedule or cancel, please do so through your dashboard at least 24 hours in advance.
+        </p>
+      </div>
+      <div style="background-color: #E8D7B5; color: #1A1A1A; padding: 15px; text-align: center; font-size: 12px;">
+        <p style="margin: 0;">&copy; ${new Date().getFullYear()} CounselDesk. All rights reserved.</p>
+        <p style="margin: 5px 0 0;">Faridabad, Haryana, India</p>
+      </div>
+    </div>
+    `
+});

@@ -51,7 +51,7 @@ const Footer = () => {
                     className="h-full w-full object-contain rounded-full"
                   />
                 </div>
-                <h2 className="text-white text-xl sm:text-2xl font-bold">
+                <h2 className="text-white text-xl sm:text-2xl font-bold hover:text-[var(--accent-color)]">
                   CounselDesk
                 </h2>
               </Link>

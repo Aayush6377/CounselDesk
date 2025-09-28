@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import moment from 'moment-timezone';
+import React, { useMemo, useState } from 'react';
 import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
 
-const Calendar = ({ lawyer, selectedDate, setSelectedDate }) => {
+const Calendar = ({ allSlots, selectedDate, setSelectedDate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  const availableDates = useMemo(() => {
+        return new Set(
+            allSlots.map(slot => moment(slot.startTime).tz('Asia/Kolkata').format('YYYY-MM-DD'))
+        );
+    }, [allSlots]);
 
   const generateCalendarDays = () => {
     const year = currentDate.getFullYear();
@@ -17,10 +24,9 @@ const Calendar = ({ lawyer, selectedDate, setSelectedDate }) => {
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const isAvailable = lawyer.availability.some(slot => {
-        const slotDate = new Date(slot.date);
-        return slotDate.getDate() === day && slotDate.getMonth() === month && slotDate.getFullYear() === year;
-      });
+      const dateString = moment(date).format('YYYY-MM-DD');
+
+      const isAvailable = availableDates.has(dateString);
       const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
 
       days.push(

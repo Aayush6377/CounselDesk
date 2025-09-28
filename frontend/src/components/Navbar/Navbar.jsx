@@ -25,7 +25,7 @@ const Navbar = ({ navItems }) => {
               className="h-full w-full object-contain rounded-full" 
             />
           </div>
-          <h2 className="text-white text-2xl font-bold leading-tight tracking-[-0.015em]">
+          <h2 className="text-white text-2xl font-bold leading-tight tracking-[-0.015em] hover:text-[var(--accent-color)]">
             CounselDesk
           </h2>
         </Link>

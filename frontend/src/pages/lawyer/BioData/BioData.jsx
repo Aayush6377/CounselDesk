@@ -161,7 +161,7 @@ const BioData = () => {
     };
 
     if (isLoading){
-      return <Loader />
+      return <Loader />;
     }
 
   return (

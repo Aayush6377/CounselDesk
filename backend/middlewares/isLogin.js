@@ -24,7 +24,8 @@ const isLogin = async (req, res, next) => {
         }
 
         req.userId = decoded.userId;
-        req.role = decoded.role
+        req.role = decoded.role;
+        req.email = user.email;
         
         next();
 

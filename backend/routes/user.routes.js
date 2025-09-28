@@ -2,8 +2,9 @@ import { Router } from "express";
 import isLogin from "../middlewares/isLogin.js";
 import { imageUploader } from "../middlewares/multer.js";
 import * as userController from "../controllers/user.controller.js";
-import { profileUpdateValidator } from "../middlewares/user.middleware.js";
+import { isLawyer, profileUpdateValidator } from "../middlewares/user.middleware.js";
 import handleFormError from "../utils/handleFormError.js";
+import { createCheckoutSession, confirmBooking } from "../controllers/stripe.controller.js";
 
 const router = Router();
 router.use(isLogin);
@@ -12,6 +13,11 @@ router.put("/profile/update", imageUploader, profileUpdateValidator , handleForm
 
 //Lawyer details
 router.get("/lawyers/list", userController.lawyersList);
-router.get("/lawyer/profile/:lawyerId", userController.lawyerProfile);
+router.get("/lawyer/profile/:lawyerId", isLawyer,userController.lawyerProfile);
+router.get("/lawyer/timeSlots/:lawyerId", isLawyer,userController.lawyerTimeSlots);
+
+//Payment
+router.post("/payment/consultancy/checkout-session", createCheckoutSession);
+router.post("/payment/confirm-booking", confirmBooking);
 
 export default router;

@@ -7,6 +7,8 @@ import generateSlotsForNextDays from "../utils/slotGenerator.js";
 import deleteUploadedFiles, { deleteUploadedImage } from "../utils/deleteFile.js";
 import path from "path";
 import moment from "moment-timezone";
+import Stripe from "stripe";
+import { frontend } from "../server.js";
 
 export const generateFileUrl = (req, file) => {
     const baseUrl = `${req.protocol}://${req.get('host')}`;
@@ -34,6 +36,26 @@ export const profileSetup = async (req,res,next) => {
             throw createError("Lawyer already registered", 400);
         }
 
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+        let stripeAccountId;
+        try {
+            const account = await stripe.accounts.create({
+                type: "express",
+                country: "US",
+                email: user.email,
+                business_type: "individual",
+                capabilities: {
+                    card_payments: { requested: true },
+                    transfers: {requested: true}
+                },
+                external_account: 'btok_us_verified',
+            });
+            stripeAccountId = account.id;
+        } catch (error) {
+            console.error(error);
+            throw createError("Unable to create stripe account",500);
+        }
+
         const files = req.files;
 
         const profileImage = files.profileImage ? generateFileUrl(req, files.profileImage[0]) : null;
@@ -54,7 +76,7 @@ export const profileSetup = async (req,res,next) => {
 
         await LAWYER.create({
             userId, specialization, bio, qualifications, 
-            phone, fees, address, bankDetails, documents
+            phone, fees, address, bankDetails, documents, stripeAccountId
         });
 
         res.status(201).json({success: true, message: "Lawyer data has successfully been added."});

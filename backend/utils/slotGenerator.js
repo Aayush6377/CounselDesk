@@ -12,10 +12,6 @@ const generateSlotsForNextDays = async (lawyerId, schedule, daysToGenerate = 3) 
         startTime: { $gte: moment().tz(timeZone).startOf('day').toDate() }
     });
 
-    const bookedStartTimes = new Set(
-        bookedSlots.map(slot => moment(slot.startTime).valueOf())
-    );
-
     const newSlots = [];
 
     for (let i = 0; i < daysToGenerate; i++) {
@@ -44,9 +40,9 @@ const generateSlotsForNextDays = async (lawyerId, schedule, daysToGenerate = 3) 
                 }
             }
 
-            const remainder = slotTime.minute() % slotDuration;
+            const remainder = slotTime.minute() % 15;
             if (remainder !== 0) {
-                slotTime.add(slotDuration - remainder, 'minutes').second(0).millisecond(0);
+                slotTime.add(15 - remainder, 'minutes').second(0).millisecond(0);
             }
 
             while (slotTime.isBefore(endOfDay)) {
@@ -56,16 +52,20 @@ const generateSlotsForNextDays = async (lawyerId, schedule, daysToGenerate = 3) 
                     break; 
                 }
 
-                const overlapsWithBreak = potentialEndTime.isAfter(breakStart) && slotTime.isBefore(breakEnd);
-                
-                if (overlapsWithBreak) {
-                    slotTime = breakEnd.clone();
-                    continue; 
+                let overlapsWithBooking = false;
+                for (const bookedSlot of bookedSlots) {
+                    const bookedStartTime = moment(bookedSlot.startTime);
+                    const bookedEndTime = moment(bookedSlot.endTime);
+                    
+                    if (slotTime.isBefore(bookedEndTime) && potentialEndTime.isAfter(bookedStartTime)) {
+                        overlapsWithBooking = true;
+                        break; 
+                    }
                 }
-                
-                const isAlreadyBooked = bookedStartTimes.has(slotTime.valueOf());
 
-                if (!isAlreadyBooked) {
+                const overlapsWithBreak = potentialEndTime.isAfter(breakStart) && slotTime.isBefore(breakEnd);
+
+                if (!overlapsWithBooking && !overlapsWithBreak) {
                     newSlots.push({
                         lawyerId,
                         startTime: slotTime.toDate(),

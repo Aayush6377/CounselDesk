@@ -38,7 +38,11 @@ const LawyerSchema = new mongoose.Schema({
     },
     fees: {
         type: Number,
-        deafult: 0
+        default: 0
+    },
+    totalEarnings: {
+        type: Number,
+        default: 0
     },
     subscription: {
         plan: {
@@ -100,6 +104,10 @@ const LawyerSchema = new mongoose.Schema({
             required: true,
             select: false
         }
+    },
+    stripeAccountId: {
+        type: String,
+        select: false 
     },
     documents: {
         barCouncilCertificate: {

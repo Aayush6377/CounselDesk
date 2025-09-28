@@ -6,6 +6,7 @@ import LAWYER from "../models/lawyers.model.js";
 import createError from "../utils/createError.js";
 import TIMESLOT from "../models/timeSlot.model.js";
 import moment from "moment-timezone";
+import APPOINTMENT from "../models/appointments.model.js";
 
 export const profileUpdate = async (req,res,next) => {
     try {
@@ -145,9 +146,6 @@ export const lawyersList = async (req, res, next) => {
 export const lawyerProfile = async (req,res, next) => {
     try {
         const { lawyerId } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(lawyerId)) {
-            throw createError("Invalid Lawyer ID format.", 400);
-        }
 
         const lawyer = await LAWYER.findOne({userId: lawyerId}).populate({path: "userId", select: "name profileImage email"}).select("-documents");
         if (!lawyer){
@@ -158,6 +156,32 @@ export const lawyerProfile = async (req,res, next) => {
         const availability = await TIMESLOT.find({lawyerId: lawyer._id, status: "available", startTime: {$gte: now}},{startTime: 1, endTime: 1, status: 1, _id: 0}).sort("startTime").limit(3);
 
         res.json({success: true, data: lawyer, availability});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const lawyerTimeSlots = async (req,res,next) => {
+    try {
+        const { lawyerId } = req.params;
+        const userId = req.userId;
+        const lawyer = await LAWYER.findOne({userId: lawyerId}).populate({path: "userId", select: "name"}).select("userId fees specialization");
+
+        const timeZone = "Asia/Kolkata";
+        const startOfToday = moment().tz(timeZone).startOf('day').toDate();
+        const endOfToday = moment().tz(timeZone).endOf('day').toDate();
+
+        const todaysAppointment = await APPOINTMENT.findOne({
+            userId: userId,
+            status: 'scheduled',
+            createdAt: { $gte: startOfToday, $lte: endOfToday }
+        });
+
+        const hasBookedSlotToday = !!todaysAppointment;
+
+        const now = moment().tz("Asia/Kolkata").toDate();
+        const slots = await TIMESLOT.find({lawyerId: lawyer._id, status: "available", startTime: {$gte: now}}).sort("startTime");
+        res.json({success: true, data: lawyer, slots, hasBookedSlotToday});
     } catch (error) {
         next(error);
     }

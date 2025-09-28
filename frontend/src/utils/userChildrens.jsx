@@ -8,6 +8,7 @@ import UserAppointmentDetails from "../pages/user/Appointments/AppointmentDetail
 import UserPaymentHistory from "../pages/user/PaymentHistory/PaymentHistory";
 import UserProfile from "../pages/user/Profile/Profile";
 import LawyerReviews from "../pages/user/LawyerReviews/LawyerReviews";
+import BookingSuccess from "../pages/user/Booking/BookingSuccess";
 
 const userChildrens = [
       { 
@@ -25,6 +26,10 @@ const userChildrens = [
       {
         path: "book-appointment/:lawyerId",
         element: <Booking />
+      },
+      {
+        path: "/user/booking/success",
+        element: <BookingSuccess />
       },
       {
         path: "appointments",

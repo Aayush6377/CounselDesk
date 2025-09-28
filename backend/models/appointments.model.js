@@ -20,8 +20,8 @@ const AppointmentsSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['scheduled', 'completed', 'cancelledByUser', 'cancelledByLawyer', 'noShow'],
-        default: 'scheduled'
+        enum: ['scheduled', 'completed', 'cancelledByUser', 'cancelledByLawyer', 'noShow', 'pending'],
+        default: 'pending'
     },
     paymentId: {
         type: mongoose.Types.ObjectId,
