@@ -15,7 +15,7 @@ router.use(isLawyer);
 router.put("/profile/update", imageUploader, profileUpdateValidator, handleFormError ,lawyerController.profileUpdate);
 router.get("/profile/details", lawyerController.profileDetails);
 
-//Booking routes
+//Schedule routes
 router.post("/schedule/update", scheduleUpdateValidator, handleFormError, lawyerController.scheduleUpdate);
 router.put("/schedule/unavailable/today", scheduleTodayValidator, handleFormError,lawyerController.scheduleUnavailableToday);
 router.get("/schedule/details", lawyerController.scheduleDetails);

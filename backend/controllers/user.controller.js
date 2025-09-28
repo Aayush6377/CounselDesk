@@ -186,3 +186,65 @@ export const lawyerTimeSlots = async (req,res,next) => {
         next(error);
     }
 }
+
+export const getUserAppointments = async (req,res,next) => {
+    try {
+        const { page = 1, limit = 6 } = req.query;
+        const userId = req.userId;
+        const timeZone = 'Asia/Kolkata';
+        const now = moment().tz(timeZone).toDate();
+
+        const timeSlotsToEnd = await TIMESLOT.find({ endTime: { $lt: now } }).select("_id");
+        const timeSlotIdsToEnd = timeSlotsToEnd.map(slot => slot._id);
+
+        await APPOINTMENT.updateMany({userId, status: "scheduled", timeSlotId: {$in: timeSlotIdsToEnd}}, {$set: {status: "completed"}});
+
+        const pipeline = new mongoose.Aggregate([
+            { $match: { userId: new mongoose.Types.ObjectId(userId), status: {$in: ['scheduled', 'completed', 'cancelled']} }},
+            { $lookup: { from: "timeslots", localField: "timeSlotId", foreignField: "_id", as: "timeSlot" } },
+            { $unwind: "$timeSlot" },
+            { $lookup: { from: "lawyers", localField: "lawyerId", foreignField: "_id", as: "lawyer" } },
+            { $unwind: "$lawyer" },
+            { $lookup: { from: "users", localField: "lawyer.userId", foreignField: "_id", as: "lawyer.user" } },
+            { $unwind: "$lawyer.user" },
+            { $lookup: { from: "payments", localField: "paymentId", foreignField: "_id", as: "payment" } },
+            { $unwind: "$payment" },
+            {
+                $addFields: {
+                    sortPriority: {
+                        $cond: {
+                            if: { $eq: ["$status", "scheduled"] },
+                            then: 1,
+                            else: 2
+                        }
+                    }
+                }
+            },
+            { $sort: { sortPriority:1 ,"timeSlot.startTime": 1, updatedAt: -1 }},
+            {
+                $project: {
+                    _id: 1,
+                    status: 1,
+                    lawyerName: "$lawyer.user.name",
+                    lawyerId: "$lawyer.user._id",
+                    specialization: "$lawyer.specialization",
+                    date: "$timeSlot.startTime",
+                    fees: "$payment.amount"
+                }
+            }
+        ]);
+
+        const result = await APPOINTMENT.aggregatePaginate(pipeline, { page: parseInt(page, 10), limit: parseInt(limit, 10) });
+        res.status(200).json({ success: true, data: result.docs, pagination: {
+            currentPage: result.page,
+            totalPages: result.totalPages,
+            totalResults: result.totalDocs,
+            hasNextPage: result.hasNextPage,
+            hasPrevPage: result.hasPrevPage,
+            nextPage: result.nextPage,
+            prevPage: result.prevPage
+        }});
+    } catch (error) {
+        next(error);
+    }
+}

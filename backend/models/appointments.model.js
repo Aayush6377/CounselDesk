@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const AppointmentsSchema = new mongoose.Schema({
     userId: {
@@ -15,12 +16,11 @@ const AppointmentsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'timeSlot',
         required: true,
-        unique: true,
     },
     status: {
         type: String,
         required: true,
-        enum: ['scheduled', 'completed', 'cancelledByUser', 'cancelledByLawyer', 'noShow', 'pending'],
+        enum: ['scheduled', 'completed', 'pending', 'cancelled'],
         default: 'pending'
     },
     paymentId: {
@@ -29,6 +29,8 @@ const AppointmentsSchema = new mongoose.Schema({
         ref: "payment"
     }
 }, {timestamps: true});
+
+AppointmentsSchema.plugin(mongooseAggregatePaginate);
 
 AppointmentsSchema.index({userId: 1});
 AppointmentsSchema.index({lawyerId: 1});

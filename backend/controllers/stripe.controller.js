@@ -178,3 +178,68 @@ export const confirmBooking = async (req,res,next) => {
         next(error);
     }
 }
+
+export const cancelAppointment = async (req,res,next) => {
+    const dbSession = await mongoose.startSession();
+    dbSession.startTransaction();
+    try {
+        const { appointmentId } = req.body;
+        const { userId, role } = req;
+
+        const appointment = await APPOINTMENT.findById(appointmentId)
+            .populate('paymentId', 'amount').populate('timeSlotId', 'startTime').session(dbSession);
+
+        if (!appointment) {
+            throw createError("Appointment not found.", 404);
+        }
+
+        if (!(["user", "lawyer"].includes(role))) {
+            throw createError("You are not authorized to cancel this appointment.", 403);
+        }
+        
+        if (appointment.status !== 'scheduled') {
+            throw createError(`Cannot cancel an appointment with status: ${appointment.status}.`, 400);
+        }
+
+        const now = moment().tz('Asia/Kolkata');
+        const appointmentStartTime = moment(appointment.timeSlotId.startTime).tz('Asia/Kolkata');
+        
+        const hoursUntilAppointment = appointmentStartTime.diff(now, 'hours', true);
+
+        if (hoursUntilAppointment <= 1) {
+            throw createError("Appointments cannot be canceled less than 1 hour before the scheduled time.", 400);
+        }
+        
+        const { lawyerId, timeSlotId, paymentId } = appointment;
+        const refundAmount = paymentId.amount * 0.95;
+
+        appointment.status = 'cancelled';
+        await appointment.save({ session: dbSession });
+
+        await TIMESLOT.findByIdAndUpdate(timeSlotId, { status: 'available' }, { session: dbSession });
+
+        await LAWYER.findByIdAndUpdate(lawyerId, {
+            $inc: { totalEarnings: -refundAmount }
+        }, { session: dbSession });
+
+        const refundPayment = new PAYMENT({
+            userId,
+            lawyerId,
+            appointmentId,
+            amount: -paymentId.amount, 
+            type: 'refund',
+            status: 'success',
+            transactionId: `refund_${paymentId._id}_${Date.now()}`
+        });
+        await refundPayment.save({ session: dbSession });
+        
+        await dbSession.commitTransaction();
+
+        res.status(200).json({ success: true, message: "Appointment successfully cancelled." });
+    } catch (error) {
+        await dbSession.abortTransaction();
+        next(error);
+    } finally{
+        dbSession.endSession();
+    }
+}

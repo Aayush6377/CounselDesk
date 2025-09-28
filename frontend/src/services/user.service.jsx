@@ -43,7 +43,7 @@ export const getLawyerTimeSlots = async (lawyerId) => {
         const res = await api.get(`/api/user/lawyer/timeSlots/${lawyerId}`);
         return res.data;
     } catch (error) {
-        console.error("Failed to fetch lawyer time slots:", error);
+        console.error(error);
         throw error;
     }
 };
@@ -53,7 +53,7 @@ export const createCheckoutSession = async (bookingDetails) => {
         const res = await api.post("/api/user/payment/consultancy/checkout-session", bookingDetails);
         return res.data;
     } catch (error) {
-        console.error("Failed to fetch lawyer time slots:", error);
+        console.error(error);
         throw error;
     }
 }
@@ -63,7 +63,29 @@ export const confirmBooking = async (session_id) => {
         const res = await api.post("/api/user/payment/confirm-booking", { session_id });
         return res.data;
     } catch (error) {
-        console.error("Failed to fetch lawyer time slots:", error);
+        console.error(error);
+        throw error;
+    }
+}
+
+export const getUserAppointments = async (page = 1) => {
+    try {
+        const res = await api.get("/api/user/appointments/list", {
+            params: {page}
+        });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const cancelAppointment = async (appointmentId) => {
+    try {
+        const res = api.put("/api/user/payment/cancel/appointment",{appointmentId});
+        return res.data;
+    } catch (error) {
+        console.error(error);
         throw error;
     }
 }
