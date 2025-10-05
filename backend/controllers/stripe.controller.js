@@ -214,7 +214,7 @@ export const cancelAppointment = async (req,res,next) => {
         const refundAmount = paymentId.amount * 0.95;
 
         appointment.status = 'cancelled';
-        await appointment.save({ session: dbSession });
+        
 
         await TIMESLOT.findByIdAndUpdate(timeSlotId, { status: 'available' }, { session: dbSession });
 
@@ -229,9 +229,12 @@ export const cancelAppointment = async (req,res,next) => {
             amount: -paymentId.amount, 
             type: 'refund',
             status: 'success',
-            transactionId: `refund_${paymentId._id}_${Date.now()}`
+            transactionId: `re_${paymentId._id}_${Date.now()}`
         });
         await refundPayment.save({ session: dbSession });
+
+        appointment.paymentId = refundPayment._id;
+        await appointment.save({ session: dbSession });
         
         await dbSession.commitTransaction();
 

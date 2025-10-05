@@ -40,7 +40,7 @@ const lawyerChildrens = [
         element: <Profile />
     },
     {
-        path: "appointment-details",
+        path: "appointment-details/:appointmentId",
         element: <AppointmentDetails />
     },
     ...sharedChildrens

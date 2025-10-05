@@ -36,7 +36,7 @@ const userChildrens = [
         element: <UserAppointments />
       },
       {
-        path: "appointment-details/:appointId",
+        path: "appointment-details/:appointmentId",
         element: <UserAppointmentDetails />
       },
       {
@@ -48,7 +48,7 @@ const userChildrens = [
         element: <UserProfile />
       },
       {
-        path: "lawyer-reviews",
+        path: "lawyer-reviews/:lawyerId",
         element: <LawyerReviews />
       },
       ...sharedChildrens

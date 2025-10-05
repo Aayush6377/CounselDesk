@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ReviewComponent.css';
 import { IoStar } from "react-icons/io5";
+import { addReview, getReviewDetails, updateReview } from '../../../services/user.service';
+import { useParams } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 const ReviewComponent = () => {
+  const { appointmentId } = useParams();
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
+  const queryClient = useQueryClient();
+
+  const { data: review } = useQuery({
+    queryKey: ["ReviewDetails", appointmentId],
+    queryFn: () => getReviewDetails(appointmentId),
+  });
+
+  useEffect(() => {
+    if (review){
+      setRating(review.data.rating);
+      setReviewText(review.data.comment);
+    }
+  }, [review]);
 
   const handleRatingChange = (e) => {
     setRating(Number(e.target.value));
@@ -14,13 +32,31 @@ const ReviewComponent = () => {
     setReviewText(e.target.value);
   };
 
+  const { mutate: add, isPending: isAdding  } = useMutation({
+    mutationFn: () => addReview(rating, reviewText, appointmentId),
+    onSuccess: () => {
+      toast.success("Review added successfully");
+      queryClient.invalidateQueries({ queryKey: ["ReviewDetails", appointmentId] });
+    },
+    onError: (err) => { toast.error(err.response?.data?.message || "Failed to add review."); }
+  })
+
+  const { mutate: update, isPending: isUpdating } = useMutation({
+      mutationFn: (reviewId) => updateReview(rating, reviewText, reviewId),
+      onSuccess: () => {
+        toast.success("Review updated successfully!");
+        queryClient.invalidateQueries({ queryKey: ["ReviewDetails", appointmentId] });
+      },
+      onError: (err) => { toast.error(err.response?.data?.message || "Failed to update review."); }
+  });
+
   const handleSubmitReview = (e) => {
     e.preventDefault();
-    console.log({ rating, reviewText });
-    alert('Thank you for your review!');
-    // Reset the form
-    setRating(0);
-    setReviewText('');
+    if (review) {
+        update(review.data._id);
+    } else {
+        add();
+    }
   };
 
   return (
@@ -70,9 +106,10 @@ const ReviewComponent = () => {
         <div className="flex justify-end">
           <button
             type="submit"
+            disabled={isAdding || isUpdating}
             className="w-full sm:w-auto py-2 px-6 rounded-lg bg-[var(--primary-color)]/80 text-[var(--secondary-color)] hover:bg-[var(--primary-color)] transition-colors text-base font-bold cursor-pointer"
           >
-            Submit Review
+            {(isAdding || isUpdating) ? "Submitting..." : (review ? "Update Review" : "Submit Review")}
           </button>
         </div>
       </form>

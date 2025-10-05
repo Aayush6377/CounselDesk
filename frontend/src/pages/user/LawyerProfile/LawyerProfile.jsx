@@ -10,6 +10,11 @@ import Loader from '../../../components/Loader/Loader';
 import moment from 'moment-timezone';
 import Error from '../../../components/Error/Error';
 import createTitleFromStatus from '../../../utils/createTitleFromStatus';
+import { images } from '../../../assets/assets';
+
+const formatReviewDate = (dateString) => {
+    return moment(dateString).fromNow();
+};
 
 const LawyerProfile = () => {
   const { lawyerId } = useParams();
@@ -20,6 +25,7 @@ const LawyerProfile = () => {
   });
 
   const lawyerProfile = result?.data;
+  const reviews = result?.reviews;
   const availability = result?.availability?.map(slot => {
     const startIST = moment.utc(slot.startTime).tz('Asia/Kolkata');
     const endIST = moment.utc(slot.endTime).tz('Asia/Kolkata');
@@ -145,30 +151,36 @@ const LawyerProfile = () => {
             </div>
 
             {/* Client Reviews Section */}
-            {/* <div className="bg-black/20 border border-white/10 rounded-xl p-8">
-              <h2 className="text-[var(--accent-color)] text-2xl font-bold mb-6">Client Reviews</h2>
-              <div className="space-y-6">
-                {lawyerProfile.reviews.slice(0,3).map((review, index) => (
-                  <React.Fragment key={index}>
-                    <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-center bg-no-repeat aspect-square bg-cover rounded-full flex-shrink-0" style={{ backgroundImage: `url("${review.profileImage}")` }}></div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-[var(--accent-color)] font-semibold">{review.userName}</h4>
-                          <span className="text-gray-500 text-sm">{review.date}</span>
-                        </div>
-                        <div className="flex items-center my-1">
-                          {renderRating(review.rating)}
-                        </div>
-                        <p className="text-gray-400 text-sm">{review.comment}</p>
-                      </div>
+            <div className="bg-black/20 border border-white/10 rounded-xl p-8">
+                <h2 className="text-[var(--accent-color)] text-2xl font-bold mb-6">Client Reviews</h2>
+                {reviews && reviews.length > 0 ? (
+                    <div className="space-y-6">
+                        {reviews.map((review) => (
+                            <div key={review._id} className="flex gap-4">
+                                <div 
+                                    className="w-12 h-12 bg-center bg-cover rounded-full flex-shrink-0" 
+                                    style={{ backgroundImage: `url("${review.user.profileImage || images.defaultProfile}")` }}
+                                ></div>
+                                <div className="flex-1">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="text-[var(--accent-color)] font-semibold">{review.user.name}</h4>
+                                        <span className="text-gray-500 text-sm">{formatReviewDate(review.createdAt)}</span>
+                                    </div>
+                                    <div className="flex items-center my-1">
+                                        {renderRating(review.rating)}
+                                    </div>
+                                    <p className="text-gray-400 text-sm">{review.comment}</p>
+                                </div>
+                            </div>
+                        ))}
+                        <Link to={`/user/lawyer-reviews/${lawyerId}`} className="inline-block mt-6 text-sm text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors font-semibold">
+                            Show all reviews
+                        </Link>
                     </div>
-                    {index < lawyerProfile.reviews.length - 1 && <div className="border-t border-white/10"></div>}
-                  </React.Fragment>
-                ))}
-              </div>
-              <Link to="/user/lawyer-reviews" className="mt-6 text-sm text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors font-semibold">Show all reviews</Link>
-            </div> */}
+                ) : (
+                    <p className="text-gray-400">This lawyer does not have any reviews yet.</p>
+                )}
+            </div>
           </div>
         </div>
       </div>

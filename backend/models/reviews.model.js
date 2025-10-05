@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const ReviewSchema = new mongoose.Schema({
     userId: {
@@ -9,11 +10,12 @@ const ReviewSchema = new mongoose.Schema({
     lawyerId: {
         type: mongoose.Types.ObjectId,
         required: true,
-        ref: "lawyer"
+        ref: "lawyer",
     },
     appointmentId: {
         type: mongoose.Types.ObjectId,
         required: true,
+        unique: true,
         ref: "appointment"
     },
     rating: {
@@ -29,6 +31,7 @@ const ReviewSchema = new mongoose.Schema({
     }
 }, {timestamps: true});
 
+ReviewSchema.plugin(mongoosePaginate);
 ReviewSchema.index({userId: 1, appointmentId: 1}, {unique: 1});
 ReviewSchema.index({lawyerId: 1});
 

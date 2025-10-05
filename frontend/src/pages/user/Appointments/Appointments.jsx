@@ -160,7 +160,7 @@ const Appointments = () => {
                 onConfirm={handleConfirmCancel}
                 title="Appointment Cancellation"
                 message="Are you sure you want to cancel this appointment? This action cannot be undone."
-                confirmText="Cancel"
+                confirmText="Yes, Cancel"
                 isConfirming={isCancelling}
             />
         </main>

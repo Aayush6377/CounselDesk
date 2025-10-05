@@ -2,13 +2,16 @@ import LAWYER from "../models/lawyers.model.js";
 import SCHEDULE from "../models/schedule.model.js";
 import USER from "../models/users.model.js";
 import TIMESLOT from "../models/timeSlot.model.js";
+import APPOINTMENT from "../models/appointments.model.js";
 import createError from "../utils/createError.js";
 import generateSlotsForNextDays from "../utils/slotGenerator.js";
 import deleteUploadedFiles, { deleteUploadedImage } from "../utils/deleteFile.js";
 import path from "path";
 import moment from "moment-timezone";
 import Stripe from "stripe";
-import { frontend } from "../server.js";
+import mongoose from "mongoose";
+import REVIEW from "../models/reviews.model.js";
+
 
 export const generateFileUrl = (req, file) => {
     const baseUrl = `${req.protocol}://${req.get('host')}`;
@@ -210,6 +213,148 @@ export const scheduleUnavailableToday = async (req, res, next) => {
 
         res.status(200).json({ success: true, message });
 
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getLawyerAppointments = async (req,res,next) => {
+    try {
+        const { page = 1, limit = 6 } = req.query;
+        const lawyerId = req.lawyerId;
+        const now = moment().tz("Asia/Kolkata").toDate();
+
+        const timeSlotsToEnd = await TIMESLOT.find({endTime: {$lt: now}}).select("_id");
+        const timeSlotIdsToEnd = timeSlotsToEnd.map(slot => slot._id);
+
+        await APPOINTMENT.updateMany({lawyerId, status: "scheduled", timeSlotId: {$in: timeSlotIdsToEnd}}, {$set: {status: "completed"}});
+
+        const pipeleine = new mongoose.Aggregate([
+            { $match: { lawyerId: new mongoose.Types.ObjectId(lawyerId), status: { $in: ['scheduled', 'completed', 'cancelled'] } } }, 
+            { $lookup: { from: "timeslots", localField: "timeSlotId", foreignField: "_id", as: "timeSlot" } }, 
+            { $unwind: "$timeSlot" },
+            { $lookup: { from: "users", localField: "userId", foreignField: "_id", as: "userId" } },
+            { $unwind: "$userId" },
+            { $addFields: {
+                sortPriority: {
+                    $cond: {
+                        if: { $eq: ["$status", "scheduled"] },
+                        then: 1,
+                        else: 2
+                    }
+                }
+            } },
+            { $sort: { sortPriority:1 ,"timeSlot.startTime": -1, updatedAt: -1 } },
+            { $project: {
+                _id: 1,
+                status: 1,
+                clientName: "$userId.name",
+                clientProfileImage: "$userId.profileImage",
+                startTime: "$timeSlot.startTime",
+                endTime: "$timeSlot.endTime"
+            }}
+        ]);
+
+        const result = await APPOINTMENT.aggregatePaginate(pipeleine,{ page: parseInt(page,10), limit: parseInt(limit, 10) });
+        res.status(200).json({ success: true, data: result.docs, pagination: {
+            currentPage: result.page,
+            totalPages: result.totalPages,
+            totalResults: result.totalDocs,
+            hasNextPage: result.hasNextPage,
+            hasPrevPage: result.hasPrevPage,
+            nextPage: result.nextPage,
+            prevPage: result.prevPage
+        }});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getAppointmentDetails = async (req,res,next) => {
+    try {
+        const { appointmentId } = req.params;
+        const lawyerId = req.lawyerId;
+
+        if (!mongoose.isValidObjectId(appointmentId)){
+            throw createError("Invalid Appointment ID", 400);
+        }
+
+        const appointment = await APPOINTMENT.findOne({_id: appointmentId, lawyerId})
+        .populate([{path: "userId", select: "name email profileImage -_id"},
+             {path: "paymentId", select: "amount transactionId type -_id"},
+            {path: "timeSlotId", select: "startTime endTime -_id"}]).select("-__v -lawyerId");
+
+        if (!appointment){
+            throw createError("Appointment Not Found", 404);
+        }
+
+        res.status(200).json({success: true, data: appointment});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getReviewStats = async(req,res,next) => {
+    try {
+        const lawyerId = req.lawyerId;
+
+        const lawyer = await LAWYER.findById(lawyerId).select("rating reviewsCount");
+
+        const reviews = await REVIEW.aggregate([
+            { $match: { lawyerId: new mongoose.Types.ObjectId(lawyerId) }},
+            { $group: { _id: "$rating", count: { $sum: 1 } } },
+            { $project: { stars: "$_id", count: 1 , _id: 0} }
+        ]);
+
+        const reviewMap = new Map();
+        for(let i = 5; i>=1; i--) reviewMap.set(i, 0);
+        reviews.forEach(review => reviewMap.set(review.stars, review.count));
+        const fullReviewStat = Array.from(reviewMap, ([stars, count]) => ({ stars, count }));
+
+        res.status(200).json({success: true, data: {rating: lawyer.rating, reviewsCount: lawyer.reviewsCount, reviews:  fullReviewStat}});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getReviewsList = async (req, res, next) => {
+    try {
+        const lawyerId = req.lawyerId;
+        const { page = 1, limit = 5, sortBy = 'newest' } = req.query;
+
+        let sortOption = { createdAt: -1 }; 
+        switch (sortBy) {
+            case 'oldest':
+                sortOption = { createdAt: 1 };
+                break;
+            case 'highest':
+                sortOption = { rating: -1, createdAt: -1 };
+                break;
+            case 'lowest':
+                sortOption = { rating: 1, createdAt: -1 };
+                break;
+        }
+        
+        const options = {
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
+            sort: sortOption,
+            populate: {
+                path: 'userId',
+                select: 'name profileImage -_id'
+            },
+            select: 'rating comment createdAt userId' 
+        };
+
+        const paginatedReviews = await REVIEW.paginate({ lawyerId }, options);
+        
+        res.status(200).json({ success: true, reviews: paginatedReviews.docs, pagination: {
+            currentPage: paginatedReviews.page,
+            totalPages: paginatedReviews.totalPages,
+            totalResults: paginatedReviews.totalDocs,
+            hasNextPage: paginatedReviews.hasNextPage,
+            nextPage: paginatedReviews.nextPage }
+        });
     } catch (error) {
         next(error);
     }

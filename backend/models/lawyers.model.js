@@ -36,6 +36,11 @@ const LawyerSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    totalRatingSum: {
+        type: Number,
+        default: 0,
+        select: false 
+    },
     fees: {
         type: Number,
         default: 0
@@ -127,6 +132,14 @@ const LawyerSchema = new mongoose.Schema({
         }
     }
 }, {timestamps: true});
+
+LawyerSchema.pre("findOneAndUpdate", function(next) {
+    const update = this.getUpdate();
+    if (update.rating) {
+        update.rating = Math.round(update.rating * 100) / 100;
+    }
+    next(); 
+});
 
 const LAWYER = mongoose.model("lawyer",LawyerSchema);
 

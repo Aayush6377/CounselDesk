@@ -7,6 +7,8 @@ import createError from "../utils/createError.js";
 import TIMESLOT from "../models/timeSlot.model.js";
 import moment from "moment-timezone";
 import APPOINTMENT from "../models/appointments.model.js";
+import { generateInvoicePDF } from "../assets/invoice.js";
+import REVIEW from "../models/reviews.model.js";
 
 export const profileUpdate = async (req,res,next) => {
     try {
@@ -155,7 +157,41 @@ export const lawyerProfile = async (req,res, next) => {
         const now = moment().tz("Asia/Kolkata").toDate();
         const availability = await TIMESLOT.find({lawyerId: lawyer._id, status: "available", startTime: {$gte: now}},{startTime: 1, endTime: 1, status: 1, _id: 0}).sort("startTime").limit(3);
 
-        res.json({success: true, data: lawyer, availability});
+        const reviews = await REVIEW.aggregate([
+            { $match: { lawyerId: lawyer._id } },
+            { $sort: { rating: -1, createdAt: -1 } },
+            {
+                $group: {
+                    _id: "$userId",
+                    doc: { $first: "$$ROOT" }
+                }
+            },
+            { $replaceRoot: { newRoot: "$doc" } },
+            { $sort: { rating: -1, createdAt: -1 } },
+            { $limit: 3 },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userId'
+                }
+            },
+            { $unwind: '$userId' },
+            {
+                $project: {
+                    rating: 1,
+                    comment: 1,
+                    createdAt: 1,
+                    user: {
+                        name: '$userId.name',
+                        profileImage: '$userId.profileImage'
+                    }
+                }
+            }
+        ]);
+
+        res.json({success: true, data: lawyer, availability, reviews});
     } catch (error) {
         next(error);
     }
@@ -220,7 +256,7 @@ export const getUserAppointments = async (req,res,next) => {
                     }
                 }
             },
-            { $sort: { sortPriority:1 ,"timeSlot.startTime": 1, updatedAt: -1 }},
+            { $sort: { sortPriority:1 ,"timeSlot.startTime": -1, updatedAt: -1 }},
             {
                 $project: {
                     _id: 1,
@@ -244,6 +280,180 @@ export const getUserAppointments = async (req,res,next) => {
             nextPage: result.nextPage,
             prevPage: result.prevPage
         }});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getAppointmentDetails = async (req,res,next) => {
+    try {
+        const { appointmentId } = req.params;
+        const userId = req.userId;
+
+        if (!mongoose.isValidObjectId(appointmentId)){
+            throw createError("Invalid Appointment ID", 400);
+        }
+
+        const appointment = await APPOINTMENT.findOne({_id: appointmentId, userId})
+        .populate([{path: "lawyerId", select: "specialization rating reviewsCount -_id", populate: {path: "userId", select: "name profileImage -_id"}},
+             {path: "paymentId", select: "amount transactionId -_id"},
+            {path: "timeSlotId", select: "startTime endTime -_id"}]).select("-__v -userId");
+
+        if (!appointment){
+            throw createError("Appointment Not Found", 404);
+        }
+
+        res.status(200).json({success: true, data: appointment});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const generateInvoice = async (req,res,next) => {
+    try {
+        const { appointmentId } = req.params;
+        const userId = req.userId;
+
+        if (!mongoose.isValidObjectId(appointmentId)){
+            throw createError("Invalid Appointment ID", 400);
+        }
+
+        const appointment = await APPOINTMENT.findOne({_id: appointmentId, userId}).populate([
+            { path: 'userId', select: 'name email' },
+            { path: 'paymentId', select: 'amount transactionId' },
+            { path: 'timeSlotId', select: 'startTime' },
+            { path: 'lawyerId', select: 'specialization', populate: { path: 'userId', select: 'name' } }
+        ]);
+
+        if (!appointment) {
+            throw createError("Appointment Not Found", 404);
+        }
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=invoice-${appointment._id}.pdf`);
+
+        generateInvoicePDF(res, appointment);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const addReviw = async (req,res,next) => {
+    try {
+        const { rating, comment, appointmentId } = req.body;
+        const userId = req.userId;
+
+        const appointment = await APPOINTMENT.findById(appointmentId).select('lawyerId');
+        const review = await REVIEW.findOne({appointmentId});
+
+        if (review){
+            throw createError("You have already submitted a review for this appointment", 400);
+        }
+
+        const lawyerId = appointment.lawyerId;
+        const lawyer = await LAWYER.findById(lawyerId).select('+totalRatingSum');
+        const newAverageRating = (lawyer.totalRatingSum + rating) / (lawyer.reviewsCount + 1);
+
+        await REVIEW.create({userId, lawyerId, appointmentId, rating, comment});
+
+        await LAWYER.findByIdAndUpdate(lawyerId,{
+            $inc: {
+                reviewsCount: 1,
+                totalRatingSum: rating
+            },
+            rating: newAverageRating
+        });
+
+        res.status(201).json({ success: true, message: "Review added successfully" });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getReviewsList = async (req,res,next) => {
+    try {
+        const { lawyerId } = req.params;
+        const { page = 1, limit = 5 } = req.query;
+
+        if (!mongoose.isValidObjectId(lawyerId)){
+            throw createError("Invalid Lawyer ID", 400);
+        }
+
+        const lawyer = await LAWYER.findOne({userId: lawyerId}).populate({path: "userId", select: "name"}).select("userId specialization rating reviewsCount");
+
+        if (!lawyer){
+            throw createError("Lawyer Not Found", 404);
+        }
+
+        const reviews = await REVIEW.paginate({ lawyerId: lawyer._id }, {
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
+            sort: { rating: -1, createdAt: -1 }, 
+            populate: {
+                path: 'userId',
+                select: 'name profileImage'
+            },
+            select: "userId rating comment createdAt"
+        });
+
+        res.status(200).json({ success: true, lawyer, reviews: reviews.docs, pagination: {
+            currentPage: reviews.page,
+            totalPages: reviews.totalPages,
+            totalResults: reviews.totalDocs,
+            hasNextPage: reviews.hasNextPage,
+            hasPrevPage: reviews.hasPrevPage,
+            nextPage: reviews.nextPage,
+            prevPage: reviews.prevPage
+        }});
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getReviewDetails = async (req,res,next) => {
+    try {
+        const { appointmentId } = req.params;
+        const userId = req.userId;
+
+        if (!mongoose.isValidObjectId(appointmentId)){
+            throw createError("Invalid Appointment ID", 400);
+        }
+
+        const review = await REVIEW.findOne({appointmentId, userId}).select("rating comment");
+
+        if (!review){
+            throw createError("Review Not Found", 404);
+        }
+
+        res.status(200).json({ success: true, data: review });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const updateReview = async (req,res,next) => {
+    try {
+        const { rating, comment, reviewId } = req.body;
+
+        const review = await REVIEW.findById(reviewId);
+
+        const lawyerId = review.lawyerId;
+        const oldRating = review.rating;
+        
+        review.rating = rating;
+        review.comment = comment;
+        await review.save();
+
+        const lawyer = await LAWYER.findById(lawyerId).select('+totalRatingSum');
+        const newTotalRatingSum = lawyer.totalRatingSum - oldRating + rating;
+        const newAverageRating = newTotalRatingSum / lawyer.reviewsCount;
+
+        await LAWYER.findByIdAndUpdate(lawyerId,{
+            totalRatingSum: newTotalRatingSum,
+            rating: newAverageRating
+        });
+
+        res.status(201).json({ success: true, message: "Review updated successfully" });
     } catch (error) {
         next(error);
     }

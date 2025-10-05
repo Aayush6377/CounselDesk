@@ -67,3 +67,47 @@ export const scheduleDetails = async () => {
         throw error;
     }
 }
+
+export const getLawyerAppointments = async (page = 1) => {
+    try {
+        const res = await api.get("/api/lawyer/appointments/list",{
+            params: {page}
+        });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const getAppointmentDetails = async (appointmentId) => {
+    try {
+        const res = await api.get(`/api/lawyer/appointment/details/${appointmentId}`);
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const getReviewStats = async () => {
+    try {
+        const res = await api.get("/api/lawyer/reviews/stats");
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const getLawyerReviewsList = async (page = 1, sortBy = 'newest') => {
+    try {
+        const res = await api.get('/api/lawyer/reviews/list', {
+            params: { page, sortBy }
+        });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};

@@ -20,11 +20,12 @@ const LawyerProfile = () => {
     });
 
     const lawyerProfile = result?.data;
+    const reviews = result?.reviews;
     const availability = result?.availability?.map(slot => {
         const startIST = moment.utc(slot.startTime).tz('Asia/Kolkata');
         const endIST = moment.utc(slot.endTime).tz('Asia/Kolkata');
 
-        const formattedDate = startIST.format('MMMM Do, YYYY');
+        const formattedDate = startIST.format('D MMM YYYY');
         const formattedTime = `${startIST.format('h:mm A')} - ${endIST.format('h:mm A')}`;
 
         return {
@@ -151,24 +152,31 @@ const LawyerProfile = () => {
                                 </ul>
                             </div>
                             {/* Client Reviews */}
-                            {/* <div className="bg-[#2D2D2D] rounded-lg shadow-lg p-8 animate-fadeIn stagger-5">
-                                <h3 className="text-2xl font-bold text-white mb-6">Client Reviews</h3>
-                                <div className="space-y-6">
-                                    {lawyerProfile.reviews.map((review, index) => (
-                                        <div key={index} className="border-b border-gray-700 pb-6">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <div className="flex items-center gap-3">
-                                                    <h4 className="font-semibold text-white">{review.userName}</h4>
+                            {reviews && reviews.length > 0 ? (
+                                <div className="bg-[#2D2D2D] rounded-lg shadow-lg p-8 animate-fadeIn stagger-5">
+                                    <h3 className="text-2xl font-bold text-white mb-6">Client Reviews</h3>
+                                    <div className="space-y-6">
+                                        {reviews.map((review, index) => (
+                                            <div key={index} className="border-b border-gray-700 pb-6">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <div className="flex items-center gap-3">
+                                                        <h4 className="font-semibold text-white">{review.user.name}</h4>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-yellow-400">
+                                                        {renderRating(review.rating)}
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-1 text-yellow-400">
-                                                    {renderRating(review.rating)}
-                                                </div>
+                                                <p className="text-gray-300">"{review.comment}"</p>
                                             </div>
-                                            <p className="text-gray-300">"{review.comment}"</p>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
-                            </div> */}
+                            ) : (
+                                <div className="bg-[#2D2D2D] rounded-lg shadow-lg p-8 animate-fadeIn stagger-5">
+                                    <h3 className="text-2xl font-bold text-white mb-6">Client Reviews</h3>
+                                    <p className="text-gray-400 text-center">No reviews are available.</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

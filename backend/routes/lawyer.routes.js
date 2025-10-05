@@ -20,4 +20,12 @@ router.post("/schedule/update", scheduleUpdateValidator, handleFormError, lawyer
 router.put("/schedule/unavailable/today", scheduleTodayValidator, handleFormError,lawyerController.scheduleUnavailableToday);
 router.get("/schedule/details", lawyerController.scheduleDetails);
 
+//Appointment routes
+router.get("/appointments/list", lawyerController.getLawyerAppointments);
+router.get("/appointment/details/:appointmentId", lawyerController.getAppointmentDetails);
+
+//Review routes
+router.get("/reviews/stats", lawyerController.getReviewStats);
+router.get("/reviews/list", lawyerController.getReviewsList);
+
 export default router;
