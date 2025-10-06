@@ -1,5 +1,7 @@
 import { Router } from "express";
 import * as lawyerController from "../controllers/lawyer.controller.js";
+import { getPlansData } from "../controllers/landing.controller.js";
+import { createSubscriptionCheckoutSession, confirmSubscriptionPurchase, getSubscriptionDetails, cancelSubscription } from "../controllers/stripe.controller.js";
 import handleFormError, {validationAndCleanup} from "../utils/handleFormError.js";
 import fileUploaderMiddleware, { imageUploader } from "../middlewares/multer.js";
 import { profileSetupValidator, profileUpdateValidator, isLawyer, scheduleUpdateValidator, scheduleTodayValidator } from "../middlewares/lawyer.middleware.js";
@@ -27,5 +29,12 @@ router.get("/appointment/details/:appointmentId", lawyerController.getAppointmen
 //Review routes
 router.get("/reviews/stats", lawyerController.getReviewStats);
 router.get("/reviews/list", lawyerController.getReviewsList);
+
+//Subscription routes
+router.get("/subscriptions/plans/details", getPlansData);
+router.post("/payment/subscription/checkout-session", createSubscriptionCheckoutSession);
+router.post("/payment/confirm-purchase", confirmSubscriptionPurchase);
+router.put("/payment/cancel/subscription", cancelSubscription);
+router.get("/subscription/curent-plan/details", getSubscriptionDetails);
 
 export default router;

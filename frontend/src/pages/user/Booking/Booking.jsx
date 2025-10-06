@@ -64,13 +64,17 @@ const Booking = () => {
       return moment(date).format('dddd, MMMM Do YYYY');
   };
 
-  const handleTimeSelect = (timeString) => {
-    const fullSlot = allSlots.find(slot => 
-        moment(slot.startTime).tz('Asia/Kolkata').format('hh:mm A') === timeString
-    );
-    setSelectedSlot(fullSlot);
-    setSelectedTime(timeString);
-  }
+const handleTimeSelect = (timeString) => {
+  const fullSlot = allSlots.find(slot => {
+    const slotMoment = moment(slot.startTime).tz('Asia/Kolkata');
+    const isSameDay = slotMoment.isSame(selectedDate, 'day');
+    const isSameTime = slotMoment.format('hh:mm A') === timeString;
+    return isSameDay && isSameTime;
+  });
+
+  setSelectedSlot(fullSlot);
+  setSelectedTime(timeString);
+};
 
   const handleConfirmAndPay = async () => {
     if (!selectedSlot || !selectedTime) {

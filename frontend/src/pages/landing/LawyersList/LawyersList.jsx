@@ -33,7 +33,7 @@ const LawyersList = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {lawyersList.map((lawyer, index) => {
-            const isLocked = lawyer.subscription !== "Free"
+            const isLocked = lawyer.subscription !== "free"
 
             return (
               <div

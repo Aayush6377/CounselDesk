@@ -82,7 +82,7 @@ export const getUserAppointments = async (page = 1) => {
 
 export const cancelAppointment = async (appointmentId) => {
     try {
-        const res = api.put("/api/user/payment/cancel/appointment",{appointmentId});
+        const res = await api.put("/api/user/payment/cancel/appointment",{appointmentId});
         return res.data;
     } catch (error) {
         console.error(error);

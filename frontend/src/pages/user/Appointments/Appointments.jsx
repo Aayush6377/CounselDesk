@@ -97,13 +97,7 @@ const Appointments = () => {
         const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
         const errorTitle = createTitleFromStatus(errorCode);
 
-        return (
-        <Error 
-            errorCode={errorCode}
-            title={errorTitle}
-            message={errorMessage} 
-        />
-        );
+        return <Error errorCode={errorCode} title={errorTitle} message={errorMessage} />
     }
 
     return (

@@ -23,14 +23,14 @@ const ConfirmModal = ({
                     <button
                         onClick={onClose}
                         disabled={isConfirming}
-                        className="py-2 px-6 rounded-lg bg-gray-700/50 text-white hover:bg-gray-600/70 transition-colors font-semibold disabled:opacity-50"
+                        className="py-2 px-6 rounded-lg bg-gray-700/50 text-white hover:bg-gray-600/70 transition-colors font-semibold disabled:opacity-50 cursor-pointer"
                     >
                         {cancelText}
                     </button>
                     <button
                         onClick={onConfirm}
                         disabled={isConfirming}
-                        className="py-2 px-6 rounded-lg bg-red-500/80 text-white hover:bg-red-500 transition-colors font-bold disabled:bg-red-500/40 disabled:cursor-not-allowed"
+                        className="py-2 px-6 rounded-lg bg-red-500/80 text-white hover:bg-red-500 transition-colors font-bold disabled:bg-red-500/40 disabled:cursor-not-allowed cursor-pointer"
                     >
                         {isConfirming ? 'Processing...' : confirmText}
                     </button>

@@ -9,6 +9,7 @@ import { createCheckoutSession, confirmBooking, cancelAppointment } from "../con
 const router = Router();
 router.use(isLogin);
 
+//Profile route
 router.put("/profile/update", imageUploader, profileUpdateValidator , handleFormError ,userController.profileUpdate);
 
 //Lawyer details

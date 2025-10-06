@@ -1,6 +1,6 @@
 import { FaRegCheckCircle } from "react-icons/fa";
 
-const PricingCard = ({ plan, onUpgrade }) => (
+const PricingCard = ({ plan, onUpgrade, isRedirecting }) => (
   <div className={`relative flex flex-col bg-black/20 border rounded-xl p-8 transition-transform duration-300 ${
       plan.isPopular 
         ? 'border-[var(--primary-color)]/50 glow-effect' 
@@ -27,20 +27,20 @@ const PricingCard = ({ plan, onUpgrade }) => (
         </li>
       ))}
     </ul>
-    {plan.isCurrent ? (
+    {plan.planId === 'free' ? (
       <button disabled className="w-full mt-8 py-3 px-6 rounded-lg bg-gray-700 text-white font-semibold cursor-not-allowed opacity-50">
         Current Plan
       </button>
     ) : (
       <button 
-        onClick={() => onUpgrade(plan.id)}
-        className={`w-full mt-8 py-3 px-6 rounded-lg font-semibold transition-colors duration-300 ${
+        onClick={() => onUpgrade(plan.planId)}
+        className={`w-full mt-8 py-3 px-6 rounded-lg font-semibold transition-colors cursor-pointer duration-300 ${
           plan.isPopular 
             ? 'bg-[var(--primary-color)] text-[var(--secondary-color)] hover:bg-[var(--accent-color)]'
             : 'bg-transparent border-2 border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-[var(--secondary-color)]'
         }`}
       >
-        Upgrade to {plan.title}
+        {isRedirecting ? `Redirecting to Payment...` : `Upgrade to ${plan.title}`}
       </button>
     )}
   </div>

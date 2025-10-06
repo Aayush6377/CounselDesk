@@ -11,7 +11,7 @@ import Loader from '../../../components/Loader/Loader';
 const TimeSlot = ({ time, available, booked, cancelled }) => {
   if (booked) {
     return (
-      <span className="py-1 px-2.5 bg-gray-700 text-gray-400 rounded-md line-through">
+      <span className="py-1 px-2.5 bg-gray-700 text-gray-400 rounded-md">
         {time}
       </span>
     );

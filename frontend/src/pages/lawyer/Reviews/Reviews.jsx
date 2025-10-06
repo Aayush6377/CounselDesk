@@ -6,6 +6,7 @@ import { getReviewStats, getLawyerReviewsList } from '../../../services/lawyer.s
 import Loader from '../../../components/Loader/Loader';
 import createTitleFromStatus from '../../../utils/createTitleFromStatus';
 import Error from '../../../components/Error/Error';
+import { images } from '../../../assets/assets';
 
 const ReviewStats = () => {
   const { data, isLoading, isError, error } = useQuery({
@@ -60,7 +61,7 @@ const ReviewCard = ({ review }) => {
     });
     return (
         <div className="flex flex-col sm:flex-row items-start gap-6 p-6 bg-black/20 border border-white/10 rounded-xl hover:border-[var(--primary-color)]/50 transition-all duration-300">
-            <img alt={review.userId.name} className="flex-shrink-0 w-16 h-16 rounded-full object-cover" src={review.userId.profileImage} />
+            <img alt={review.userId.name} className="flex-shrink-0 w-16 h-16 rounded-full object-cover" src={review.userId.profileImage || images.defaultProfile} />
             <div className="flex flex-col gap-2 flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="text-[var(--accent-color)] text-lg font-bold leading-tight">{review.userId.name}</p>

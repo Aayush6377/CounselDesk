@@ -14,7 +14,7 @@ export const isLawyerFree = async (req,res,next) => {
         if (!res){
             throw createError("Lawyer Not Found", 404);
         }
-        if (res.subscription.plan !== "Free"){
+        if (res.subscription.plan !== "free"){
             throw createError("Lawyer is premium, pls login to view profile",400);
         }
 

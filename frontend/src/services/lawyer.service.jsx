@@ -111,3 +111,53 @@ export const getLawyerReviewsList = async (page = 1, sortBy = 'newest') => {
         throw error;
     }
 };
+
+export const getPlansData = async () => {
+    try {
+        const res = await api.get("/api/lawyer/subscriptions/plans/details");
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const createSubscriptionCheckoutSession = async (planId) => {
+    try {
+        const res = await api.post("/api/lawyer/payment/subscription/checkout-session",{ planId });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const confirmSubscriptionPurchase = async (session_id) => {
+    try {
+        const res = await api.post("/api/lawyer/payment/confirm-purchase", { session_id });
+        return  res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const cancelSubscription = async () => {
+    try {
+        const res = await api.put("/api/lawyer/payment/cancel/subscription");
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const getSubscriptionDetails = async () => {
+    try {
+        const res = await api.get("/api/lawyer/subscription/curent-plan/details");
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

@@ -23,3 +23,13 @@ export const getLawyerDetails = async (lawyerId) => {
         throw error;
     }
 }
+
+export const getPlansData = async () => {
+    try {
+        const res = await api.get("/api/landing/subscriptions/plans/details");
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

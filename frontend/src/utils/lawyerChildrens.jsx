@@ -7,6 +7,7 @@ import Reviews from "../pages/lawyer/Reviews/Reviews";
 import Subscription from "../pages/lawyer/Subscription/Subscription";
 import Profile from "../pages/lawyer/Profile/Profile";
 import AppointmentDetails from "../pages/lawyer/Appointments/AppointmentDetails";
+import SubscriptionSuccess from "../pages/lawyer/Subscription/SubscriptionSuccess";
 
 const lawyerChildrens = [
     {
@@ -34,6 +35,10 @@ const lawyerChildrens = [
         path: "subscription",
         element: <Subscription />
 
+    },
+    {
+        path: "subscription/success",
+        element: <SubscriptionSuccess />
     },
     {
         path: "profile",

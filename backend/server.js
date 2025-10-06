@@ -4,6 +4,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from 'url';
 import cookieParser from "cookie-parser";
+import { seedPlans } from "./assets/plans.seed.js";
 import connectDB from "./config/connectDB.js";
 import authRouter from "./routes/auth.routes.js";
 import lawyerRouter from "./routes/lawyer.routes.js";
@@ -12,11 +13,12 @@ import landingRouter from "./routes/landing.routes.js";
 
 dotenv.config();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 connectDB();
+seedPlans();
 
 export const frontend = "http://localhost:5173";
 

@@ -52,8 +52,8 @@ const LawyerSchema = new mongoose.Schema({
     subscription: {
         plan: {
             type: String,
-            enum: ["Free", "Monthly", "Yearly"],
-            default: "Free",
+            enum: ['free', 'monthly', 'yearly'],
+            default: "free",
             required: true
         },
         price: {
@@ -69,9 +69,13 @@ const LawyerSchema = new mongoose.Schema({
         },
         status: {
             type: String,
-            enum: ["active", "expired"],
+            enum: ["active", "expired", "canceled"],
             default: "expired",
             required: true
+        },
+        stripeSubscriptionId: { 
+            type: String,
+            select: false,
         }
     },
     address: {
@@ -113,6 +117,12 @@ const LawyerSchema = new mongoose.Schema({
     stripeAccountId: {
         type: String,
         select: false 
+    },
+    stripeCustomerId: {
+        type: String,
+        select: false,
+        unique: true,
+        sparse: true 
     },
     documents: {
         barCouncilCertificate: {

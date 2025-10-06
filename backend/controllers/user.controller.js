@@ -65,8 +65,8 @@ export const lawyersList = async (req, res, next) => {
                 $cond: {
                     if: {
                         $and: [
-                            { $in: ['$lawyerDetails.subscription.plan', ['Monthly', 'Yearly']] },
-                            { $eq: ['$lawyerDetails.subscription.status', 'active'] }
+                            { $in: ['$lawyerDetails.subscription.plan', ['monthly', 'yearly']] },
+                            { $in: ['$lawyerDetails.subscription.status', ['active', 'canceled']] }
                         ]
                     },
                     then: 1,
