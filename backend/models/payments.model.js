@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const PaymentSchema = new mongoose.Schema({
     userId: {
@@ -38,6 +39,8 @@ const PaymentSchema = new mongoose.Schema({
         unique: true
     }
 }, {timestamps: true});
+
+PaymentSchema.plugin(mongoosePaginate);
 
 PaymentSchema.index({userId: 1});
 PaymentSchema.index({lawyerId: 1});

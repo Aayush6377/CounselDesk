@@ -1,33 +1,43 @@
 import TransactionTable from "./TransactionTable";
-import { FaCalendarAlt, FaWallet } from "react-icons/fa"; 
-
-const summaryData = [
-  {
-    title: "This Month's Earnings",
-    icon: <FaCalendarAlt className="text-xl" />, 
-    amount: 1250,
-    description: "Earnings for September",
-  },
-  {
-    title: 'Total Lifetime Earnings',
-    icon: <FaWallet className="text-xl" />, 
-    amount: 24650,
-    description: 'All-time earnings received',
-  },
-];
-
-const transactionsData = [
-    { id: 1, date: 'Sep 08, 2025', type: 'Consultancy Fee', client: 'Alex Thompson', amount: 250, status: 'completed' },
-    { id: 2, date: 'Sep 07, 2025', type: 'Consultancy Fee', client: 'Jessica Tan', amount: 300, status: 'pending' },
-    { id: 3, date: 'Sep 05, 2025', type: 'Platform Fee', client: '-', amount: -25, status: 'paid' },
-    { id: 4, date: 'Sep 03, 2025', type: 'Consultancy Fee', client: 'Michael Wong', amount: 150, status: 'completed' },
-    { id: 5, date: 'Sep 01, 2025', type: 'Consultancy Fee', client: 'Sarah Jenkins', amount: 450, status: 'completed' },
-    { id: 6, date: 'Aug 28, 2025', type: 'Consultancy Fee', client: 'Emily Carter', amount: 200, status: 'completed' },
-    { id: 7, date: 'Aug 25, 2025', type: 'Consultancy Fee', client: 'Daniel Lee', amount: 175, status: 'completed' },
-];
+import { FaCalendarAlt, FaWallet } from "react-icons/fa";
+import { getEarningsData } from "../../../services/lawyer.service";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../../components/Loader/Loader";
+import createTitleFromStatus from "../../../utils/createTitleFromStatus";
+import Error from "../../../components/Error/Error";
+import { useEffect, useState } from "react";
 
 
 const Earnings = () => {
+  const [pagination, setPagination] = useState({});
+  const [curPage, setCurPage] = useState(1);
+
+  const { data: result, isLoading, isError, error } = useQuery({
+    queryKey: ["EarningData", curPage],
+    queryFn: () => getEarningsData(curPage)
+  });
+
+  useEffect(() => {
+    if (result){
+      setPagination(result?.transactions?.pagination);
+    }
+  }, [result]);
+
+  if (isLoading){
+      return <Loader />;
+  }
+
+  if (isError){
+      const errorCode = error.response?.data?.status || 500;
+      const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+      const errorTitle = createTitleFromStatus(errorCode);
+
+      return <Error errorCode={errorCode} title={errorTitle} message={errorMessage} />
+  }
+
+  const summary = result?.summary;
+  const transactions = result?.transactions?.docs;
+
   return (
     <main className="bg-[var(--secondary-color)] px-4 sm:px-10 lg:px-24 xl:px-40 flex flex-1 justify-center py-8 pt-15">
       <div className="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-12 animate-fadeIn">
@@ -39,14 +49,13 @@ const Earnings = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            {summaryData.map((card, index) => (
-                <SummaryCard key={index} {...card} />
-            ))}
+            <SummaryCard title="This Month's Earnings" icon={<FaCalendarAlt className="text-xl" />} amount={summary.thisMonth.amount} description={summary.thisMonth.description}/>
+            <SummaryCard title="Total Lifetime Earnings" icon={<FaWallet className="text-xl" />} amount={summary.lifetime.amount} description={summary.lifetime.description} />
         </div>
 
         <div>
             <h2 className="text-[var(--accent-color)] text-2xl font-bold leading-tight tracking-tight mb-4">Transaction History</h2>
-            <TransactionTable transactions={transactionsData} />
+            <TransactionTable transactions={transactions} pagination={pagination} setCurPage={setCurPage}/>
         </div>
       </div>
     </main>

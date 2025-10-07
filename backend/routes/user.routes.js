@@ -33,4 +33,7 @@ router.put("/review/update", reviewValidator, handleFormError, userController.up
 router.get("/review/details/:appointmentId", userController.getReviewDetails);
 router.get("/reviews/list/:lawyerId", userController.getReviewsList);
 
+//Payment History
+router.get("/payments/history", userController.getPaymentHistory);
+
 export default router;

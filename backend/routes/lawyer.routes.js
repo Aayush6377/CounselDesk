@@ -37,4 +37,7 @@ router.post("/payment/confirm-purchase", confirmSubscriptionPurchase);
 router.put("/payment/cancel/subscription", cancelSubscription);
 router.get("/subscription/curent-plan/details", getSubscriptionDetails);
 
+//Earning routes
+router.get("/earning/details", lawyerController.getEarningsData);
+
 export default router;

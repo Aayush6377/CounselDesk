@@ -9,6 +9,8 @@ import moment from "moment-timezone";
 import APPOINTMENT from "../models/appointments.model.js";
 import { generateInvoicePDF } from "../assets/invoice.js";
 import REVIEW from "../models/reviews.model.js";
+import PAYMENT from "../models/payments.model.js";
+import { populate } from "dotenv";
 
 export const profileUpdate = async (req,res,next) => {
     try {
@@ -454,6 +456,43 @@ export const updateReview = async (req,res,next) => {
         });
 
         res.status(201).json({ success: true, message: "Review updated successfully" });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getPaymentHistory = async (req,res,next) => {
+    try {
+        const userId = req.userId;
+        const { page = 1, limit = 15 } = req.query;
+
+        const payments = await PAYMENT.paginate({ userId , status: "success"}, { page: parseInt(page,10), limit: parseInt(limit, 10), 
+            sort: { createdAt: -1},
+            populate: {
+                path: "lawyerId",
+                select: "specialization userId -_id",
+                populate: {
+                    path: "userId",
+                    select: "name profileImage -_id"
+                }
+            },
+            select: "lawyerId createdAt type amount status -_id"
+        });
+
+        payments.docs = payments.docs.map(p => ({
+            ...p.toObject(),
+            amount: -p.amount
+        }));
+
+        res.status(200).json({ success: true, payments: payments.docs, pagination: {
+            currentPage: payments.page,
+            totalPages: payments.totalPages,
+            totalResults: payments.totalDocs,
+            hasNextPage: payments.hasNextPage,
+            hasPrevPage: payments.hasPrevPage,
+            nextPage: payments.nextPage,
+            prevPage: payments.prevPage
+        }});
     } catch (error) {
         next(error);
     }

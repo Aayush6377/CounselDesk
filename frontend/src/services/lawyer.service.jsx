@@ -161,3 +161,15 @@ export const getSubscriptionDetails = async () => {
         throw error;
     }
 }
+
+export const getEarningsData = async (page = 1) => {
+    try {
+        const res = await api.get("/api/lawyer/earning/details", {
+            params: { page }
+        });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

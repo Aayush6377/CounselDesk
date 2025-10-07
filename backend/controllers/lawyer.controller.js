@@ -11,6 +11,7 @@ import moment from "moment-timezone";
 import Stripe from "stripe";
 import mongoose from "mongoose";
 import REVIEW from "../models/reviews.model.js";
+import PAYMENT from "../models/payments.model.js";
 
 
 export const generateFileUrl = (req, file) => {
@@ -359,3 +360,82 @@ export const getReviewsList = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getEarningsData = async (req,res,next) => {
+    try {
+        const lawyerId = req.lawyerId;
+        const { page = 1, limit = 10 } = req.query;
+
+        const lawyer = await LAWYER.findById(lawyerId).select('totalEarnings');
+        if (!lawyer) {
+            return next(createError("Lawyer not found.", 404));
+        }
+
+        const startOfMonth = moment.tz('Asia/Kolkata').startOf('month').toDate();
+        const endOfMonth = moment.tz('Asia/Kolkata').endOf('month').toDate();
+
+        const monthlyEarningsResult = await PAYMENT.aggregate([
+            {
+                $match: {
+                    lawyerId: lawyerId,
+                    status: 'success',
+                    type: {$in: ['consultancy', 'refund'] },
+                    createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: '$amount' }
+                }
+            }
+        ]);
+
+        const thisMonthEarnings = (monthlyEarningsResult[0]?.total || 0) * 0.95;
+
+        const transactions = await PAYMENT.paginate({ lawyerId: lawyer._id, status: "success" }, {page: parseInt(page, 10), limit: parseInt(limit, 10),
+            sort: {createdAt: -1 },
+            populate: {
+                path: 'userId',
+                select: 'name'
+            },
+            select: 'createdAt type amount status userId'
+        });
+
+        const responseData = {
+            summary: {
+                thisMonth: {
+                    amount: thisMonthEarnings,
+                    description: `Earnings for ${moment().format('MMMM')}`
+                },
+                lifetime: {
+                    amount: lawyer.totalEarnings,
+                    description: 'All-time earnings received'
+                }
+            },
+            transactions: {
+                docs: transactions.docs.map(tx => ({
+                    id: tx._id,
+                    date: tx.createdAt,
+                    type: tx.type,
+                    client: tx.type === 'subscription' ? '-' : tx.userId.name ,
+                    amount: tx.type === 'subscription' ? -tx.amount : tx.amount * 0.95,
+                    status: tx.status,
+                })),
+                pagination: {
+                    currentPage: transactions.page,
+                    totalPages: transactions.totalPages,
+                    totalResults: transactions.totalDocs,
+                    hasNextPage: transactions.hasNextPage,
+                    hasPrevPage: transactions.hasPrevPage,
+                    nextPage: transactions.nextPage,
+                    prevPage: transactions.prevPage
+                }
+            }
+        };
+
+        res.status(200).json({ success: true, ...responseData });
+    } catch (error) {
+        next(error);
+    }
+}

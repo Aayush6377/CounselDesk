@@ -155,12 +155,20 @@ export const getReviewDetails = async (appointmentId) => {
 
 export const getLawyerReviews = async (lawyerId, page = 1) => {
     try {
-        const res = await api.get(`/api/user/reviews/list/${lawyerId}`, {
-            params: { page }
-        });
+        const res = await api.get(`/api/user/reviews/list/${lawyerId}`, { params: { page } });
         return res.data;
     } catch (error) {
-        console.error("Failed to fetch lawyer reviews:", error);
+        console.error(error);
         throw error;
     }
 };
+
+export const getPaymentHistory = async (page = 1) => {
+    try {
+        const res = await api.get("/api/user/payments/history", { params: { page } });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+} 
