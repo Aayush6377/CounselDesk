@@ -3,17 +3,54 @@ import { useStore } from '../../../hooks/useStore';
 import { FaRobot, FaSearch } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoCalendar } from "react-icons/io5";
-import { MdGavel } from "react-icons/md";
+import { MdGavel, MdEventAvailable } from "react-icons/md";
+import { useQuery } from '@tanstack/react-query';
+import Loader from '../../../components/Loader/Loader';
+import Error from '../../../components/Error/Error';
+import createTitleFromStatus from '../../../utils/createTitleFromStatus';
+import moment from 'moment-timezone';
+import { getDashboardData } from '../../../services/user.service';
+
+const cartItem = [
+    {icon: <MdGavel />, title: "Recent Consultations", description: "Review your past discussions with legal experts.", button: "View History", link: "payment-history"},
+    {icon: <FaSearch />, title: "Find a Lawyer", description: "Search our network of verified legal professionals.", button: "Start Search", link: "lawyers"},
+    {icon: <IoCalendar />, title: "Appointments", description: "Manage your upcoming meetings and schedules.", button: "Manage Appointments", link: "appointments"}
+];
+
+const formatDate = (dateString) => {
+    if (!dateString) return 'Date not available';
+    const appointmentTime = moment(dateString).tz('Asia/Kolkata');
+    return appointmentTime.calendar(null, {
+      sameDay: '[Today,] h:mm A',
+      nextDay: '[Tomorrow,] h:mm A',
+      nextWeek: 'dddd, h:mm A',
+      sameElse: 'MMM Do, YYYY, h:mm A'
+    });
+};
 
 const Dashboard = () => {
-    const { userDetails, lawyerList } = useStore();
+  const { userDetails } = useStore();
 
-    const cartItem = [
-        {icon: <MdGavel />, title: "Recent Consultations", description: "Review your past discussions with legal experts.", button: "View History", link: "payment-history"},
-        {icon: <FaSearch />, title: "Find a Lawyer", description: "Search our network of verified legal professionals.", button: "Start Search", link: "lawyers"},
-        {icon: <IoCalendar />, title: "Appointments", description: "Manage your upcoming meetings and schedules.", button: "Manage Appointments", link: "appointments"}
-    ];
+  const { data: result, isLoading, isError, error } = useQuery({
+    queryKey: ["DashboardData"],
+    queryFn: getDashboardData
+  });
 
+  if (isLoading){
+      return <Loader />;
+  }
+
+  if (isError){
+      const errorCode = error.response?.data?.status || 500;
+      const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+      const errorTitle = createTitleFromStatus(errorCode);
+
+      return <Error errorCode={errorCode} title={errorTitle} message={errorMessage} />
+  }
+
+  const nextAppointment = result?.data?.nextAppointment;
+  const lawyerList = result?.data?.recommendedLawyers;
+  
   return (
     <main className="bg-[var(--secondary-color)] px-4 sm:px-10 lg:px-24 xl:px-40 flex flex-1 justify-center py-8 pt-15">
       <div className="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-12 animate-fadeIn">
@@ -48,41 +85,55 @@ const Dashboard = () => {
         {/* Upcoming and Recommended Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <h2 className="text-[var(--accent-color)] text-2xl font-bold leading-tight tracking-tight mb-4">Upcoming Appointments</h2>
-            <div className="flex flex-col gap-6">
-              {/* Appointment Card */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 bg-black/20 border border-white/10 rounded-xl hover:border-[var(--primary-color)]/50 transition-all duration-300">
-                <div className="flex-shrink-0 w-full sm:w-48 h-32 bg-center bg-no-repeat bg-cover rounded-lg" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCjp-HfRlBvgqPtt01d0WxGyvNNWcmdqaV06Pgt9HvpRf6a7O-q7kgINluPJOkD8qHa4uRzObkVgHst7XAY9U-lP77L9a_PULxxCpprV0MuV2HPptMiV1G16xSQLCntaD43vq2h8fxuY_UpjN1AqKvl3W8WjDA0Z2-9MhRxyjG-ii9AcKnO93XZHsdnlo_RljCDz-50oajLGm8vmYFo2_Wu7GCeBNfkBZsBiFlmv3giRu4cKRR80nYnQ6hVguVuL4RoMA51hjL1yL2t")' }}></div>
-                <div className="flex flex-col gap-2 flex-1">
-                  <p className="text-[var(--accent-color)] text-lg font-bold leading-tight">Family Law Consultation</p>
-                  <p className="text-[#9dabb9] text-base font-normal leading-normal">with Attorney Sarah Chen</p>
-                  <p className="text-gray-400 text-sm font-normal leading-normal line-clamp-2">Discussing child custody arrangements and visitation schedules.</p>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm mt-2"><span className="material-symbols-outlined text-base">event</span> <span>Tomorrow, 10:00 AM</span></div>
-                  <button className="flex items-center gap-2 mt-4 w-fit cursor-pointer rounded-md h-9 px-3 bg-black/30 text-[var(--accent-color)] text-sm font-medium leading-normal hover:bg-[var(--primary-color)] hover:text-[var(--secondary-color)] transition-colors">
-                    <Link to="/user/appointment-details/apt_003" className="truncate">View Details</Link>
-                    <span className="material-symbols-outlined text-base"><IoIosArrowForward className='mt-[5px]'/></span>
-                  </button>
-                </div>
+              <h2 className="text-[var(--accent-color)] text-2xl font-bold leading-tight tracking-tight mb-4">Upcoming Appointments</h2>
+              <div className="flex flex-col gap-6">
+                  {nextAppointment ? (
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 bg-black/20 border border-white/10 rounded-xl hover:border-[var(--primary-color)]/50 transition-all duration-300">
+                          <div className="flex-shrink-0 w-full sm:w-48 h-32 bg-center bg-no-repeat bg-cover rounded-lg" style={{ backgroundImage: `url("${nextAppointment.lawyerProfileImage}")` }}></div>
+                          <div className="flex flex-col gap-2 flex-1">
+                              <p className="text-[var(--accent-color)] text-lg font-bold leading-tight">{nextAppointment.specialization} Consultation</p>
+                              <p className="text-[#9dabb9] text-base font-normal leading-normal">with {nextAppointment.lawyerName}</p>
+                              <p className="text-gray-400 text-sm font-normal leading-normal line-clamp-2">{nextAppointment.description}</p>
+                              <div className="flex items-center gap-2 text-gray-400 text-sm mt-2"><span className="material-symbols-outlined text-base"><MdEventAvailable /></span> <span>{formatDate(nextAppointment.startTime)}</span></div>
+                              <Link to={`/user/appointment-details/${nextAppointment.id}`} className="flex items-center gap-2 mt-4 w-fit cursor-pointer rounded-md h-9 px-3 bg-black/30 text-[var(--accent-color)] text-sm font-medium leading-normal hover:bg-[var(--primary-color)] hover:text-[var(--secondary-color)] transition-colors">
+                                  <span className="truncate">View Details</span>
+                                  <span className="material-symbols-outlined text-base"><IoIosArrowForward className='mt-[5px]'/></span>
+                              </Link>
+                          </div>
+                      </div>
+                  ) : (
+                      <div className="flex flex-col items-center justify-center gap-4 p-8 bg-black/20 border border-white/10 rounded-xl text-center">
+                          <p className="text-gray-400">You have no upcoming appointments scheduled.</p>
+                          <Link to="lawyers" className="py-2 px-4 rounded-lg bg-[var(--primary-color)]/80 text-[var(--secondary-color)] hover:bg-[var(--primary-color)] transition-colors text-sm font-medium">
+                              Book a Consultation
+                          </Link>
+                      </div>
+                  )}
               </div>
-            </div>
           </div>
 
           {/* Recommended Section */}
           <div className="flex flex-col">
-            <h2 className="text-[var(--accent-color)] text-2xl font-bold leading-tight tracking-tight mb-4">Recommended For You</h2>
-            <div className="flex flex-col gap-2 bg-black/20 border border-white/10 rounded-xl p-4">
-              {lawyerList.slice(0,3).map((lawyer,index) => (
-                <Link to={`lawyer-profile`} key={index} className="group flex items-center gap-4 rounded-lg p-3 hover:bg-black/50 transition-colors cursor-pointer">
-                    <div className="w-12 h-12 bg-center bg-no-repeat aspect-square bg-cover rounded-full" style={{ backgroundImage: `url("${lawyer.profileImage}")` }}></div>
-                    <div>
-                    <p className="text-[var(--accent-color)] text-base font-bold leading-normal">{lawyer.name}</p>
-                    <p className="text-gray-400 text-sm font-normal leading-normal">{lawyer.specialization}</p>
-                    </div>
-                    <span className="material-symbols-outlined text-white ml-auto opacity-0 group-hover:opacity-100 transition-opacity"><IoIosArrowForward className='mt-[5px]'/></span>
-                </Link>
-              ))}
+                <h2 className="text-[var(--accent-color)] text-2xl font-bold leading-tight tracking-tight mb-4">Recommended For You</h2>
+                <div className="flex flex-col gap-2 bg-black/20 border border-white/10 rounded-xl p-4">
+                    {(lawyerList && lawyerList.length > 0) ? (
+                        lawyerList.map((lawyer) => (
+                            <Link to={`/user/lawyer-profile/${lawyer.id}`} key={lawyer.id} className="group flex items-center gap-4 rounded-lg p-3 hover:bg-black/50 transition-colors cursor-pointer">
+                                <div className="w-12 h-12 bg-center bg-no-repeat aspect-square bg-cover rounded-full" style={{ backgroundImage: `url("${lawyer.profileImage}")` }}></div>
+                                <div>
+                                    <p className="text-[var(--accent-color)] text-base font-bold leading-normal">{lawyer.name}</p>
+                                    <p className="text-gray-400 text-sm font-normal leading-normal">{lawyer.specialization}</p>
+                                </div>
+                                <span className="material-symbols-outlined text-white ml-auto opacity-0 group-hover:opacity-100 transition-opacity"><IoIosArrowForward className='mt-[5px]'/></span>
+                            </Link>
+                        ))
+                    ) : (
+                        <div className="p-4 text-center text-gray-500 text-sm">
+                            No recommendations available at the moment.
+                        </div>
+                    )}
+                </div>
             </div>
-          </div>
         </div>
       </div>
     </main>

@@ -94,11 +94,11 @@ const LawyerProfile = () => {
                                 <div className="space-y-3 text-gray-300">
                                     <div className="flex justify-between">
                                         <span>Consultation Fee:</span>
-                                        <span className="font-semibold text-white">₹{lawyerProfile.fees} / hour</span>
+                                        <span className="font-semibold text-white">₹{lawyerProfile.fees}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span>Subscription:</span>
-                                        <span className="bg-[var(--primary-color)] text-white text-xs font-bold px-2 py-1 rounded-full">{lawyerProfile.subscription.plan.toUpperCase()}</span>
+                                        <span className="bg-[var(--primary-color)] text-white text-xs font-bold px-2 py-1 rounded-full capitalize">{lawyerProfile.subscription.plan}</span>
                                     </div>
                                 </div>
                             </div>

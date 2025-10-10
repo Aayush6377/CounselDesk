@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const UsersSchema = new mongoose.Schema({
     name: {
@@ -46,6 +47,12 @@ const UsersSchema = new mongoose.Schema({
     profileImage: {
         type: String
     },
+    status: {
+        type: String,
+        enum: ['active', 'suspended'],
+        default: 'active',
+        required: true,
+    },
     bioDataProvided:{
         type: Boolean,
         default: false
@@ -57,6 +64,7 @@ const UsersSchema = new mongoose.Schema({
 },{minimize: false, timestamps: true});
 
 UsersSchema.plugin(mongooseAggregatePaginate);
+UsersSchema.plugin(mongoosePaginate);
 
 UsersSchema.pre("save", async function(next){
     if (!this.isModified("password")){

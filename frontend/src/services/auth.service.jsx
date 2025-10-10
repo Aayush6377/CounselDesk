@@ -9,8 +9,8 @@ export const googleAuth = async (credentialResponse, role) => {
         });
         return res.data;
     } catch (error) {
-        console.error("Authentication failed", error.response?.data?.message || error.message);
-        return null;
+        console.log(error);
+        throw error;
     }
 }
 
@@ -19,7 +19,8 @@ export const localSignup = async ({ name, email, password, confirmPassword ,role
         const res = await api.post("/api/auth/local/signup", {name, email, password, confirmPassword, role});
         return res.data;
     } catch (error) {
-        return error.response.data;
+        console.log(error);
+        throw error;
     }
 }
 
@@ -28,7 +29,8 @@ export const localLogin = async ({email, password}) => {
         const res = await api.post("/api/auth/local/login", {email, password});
         return res.data;
     } catch (error) {
-        return error.response.data;
+        console.log(error);
+        throw error;
     }
 }
 
@@ -37,7 +39,8 @@ export const resetPassword = async ({email, password, confirmPassword}) => {
         const res = await api.post("/api/auth/local/resetPassword", {email, password, confirmPassword});
         return res.data;
     } catch (error) {
-        return error.response.data;
+        console.log(error);
+        throw error;
     }
 }
 
@@ -46,8 +49,8 @@ export const logoutUser = async () => {
         const res = api.post("/api/auth/logout");
         return res.data;
     } catch (error) {
-        console.error("Logout failed:", error.response?.data?.message || error.message);
-        return { success: false };
+        console.log(error);
+        throw error;
     }
 }
 
@@ -56,8 +59,8 @@ export const refreshAccessToken = async () => {
         const res = await api.post("/api/auth/refresh", {}, { withCredentials: true });
         return res.data;
     } catch (error) {
-        console.error("Failed to refresh token:", error.response?.data?.message || error.message);
-        return { success: false };
+        console.log(error);
+        throw error;
     }
 }
 
@@ -66,7 +69,8 @@ export const sendOtp = async (email, useCase = "signup") => {
         const res = await api.post("/api/auth/otp/send", {email,useCase});
         return res.data;
     } catch (error) {
-        return error.response?.data?.message || error.message;
+        console.log(error);
+        throw error;
     }
 }
 
@@ -75,6 +79,7 @@ export const verifyOtp = async (otp, token) => {
         const res = await api.post("/api/auth/otp/verify", {otp, token});
         return res.data;
     } catch (error) {
-        return error.response?.data?.message || error.message;
+        console.log(error);
+        throw error;
     }
 }

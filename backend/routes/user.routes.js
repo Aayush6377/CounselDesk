@@ -12,6 +12,9 @@ router.use(isLogin);
 //Profile route
 router.put("/profile/update", imageUploader, profileUpdateValidator , handleFormError ,userController.profileUpdate);
 
+//Dashboard details
+router.get("/dashboard/details", userController.getDashboardData);
+
 //Lawyer details
 router.get("/lawyers/list", userController.lawyersList);
 router.get("/lawyer/profile/:lawyerId", isLawyer,userController.lawyerProfile);

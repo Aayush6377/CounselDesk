@@ -23,6 +23,10 @@ const isLogin = async (req, res, next) => {
             throw createError("User not found", 404);
         }
 
+        if (user.status === 'suspended') {
+            return next(createError("Your account has been suspended. Please contact support.", 403));
+        }
+
         req.userId = decoded.userId;
         req.role = decoded.role;
         req.email = user.email;

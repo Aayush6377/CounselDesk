@@ -20,6 +20,67 @@ export const generateFileUrl = (req, file) => {
     return `${baseUrl}${relativePath.replace(/\\/g, '/')}`;
 }
 
+const getMonthlyStats = async(lawyerId) => {
+    const startOfMonth = moment.tz('Asia/Kolkata').startOf('month').toDate();
+    const endOfMonth = moment.tz('Asia/Kolkata').endOf('month').toDate();
+
+    const [monthlyEarningsResult, monthlyBookings] = await Promise.all([
+        PAYMENT.aggregate([
+            {
+                $match: {
+                    lawyerId: lawyerId,
+                    status: 'success',
+                    type: {$in: ['consultancy', 'refund'] },
+                    createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+                }
+            },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]),
+        APPOINTMENT.countDocuments({ lawyerId, status: { $in: ['scheduled', 'completed'] }, createdAt: { $gte: startOfMonth, $lte: endOfMonth } })
+    ]);
+
+    const earnings = (monthlyEarningsResult[0]?.total || 0) * 0.95;
+    return { earnings, bookings: monthlyBookings };
+}
+
+export const getDashboardData = async (req,res,next) => {
+    try {
+        const lawyerId = req.lawyerId;
+        const now = new Date();
+
+        const [ lawyer, totalBookings, monthlyData, upcomingAppointments, recentReviews ] = await Promise.all([
+            LAWYER.findById(lawyerId).select("totalEarnings rating reviewsCount subscription.plan"),
+            APPOINTMENT.countDocuments({ lawyerId, status: { $in: ['scheduled', 'completed'] } }),
+            getMonthlyStats(lawyerId),
+            APPOINTMENT.find({ lawyerId: lawyerId, status: 'scheduled' }).populate({ path: 'timeSlotId', match: { startTime: { $gt: now } } })
+            .populate({ path: 'userId', select: 'name profileImage' }).sort({ 'timeSlotId.startTime': 1 }).limit(2),
+            REVIEW.find({ lawyerId: lawyerId }).sort({ createdAt: -1 }).limit(3).populate({ path: 'userId', select: 'name profileImage' })
+        ]);
+
+        const responseData = {
+            stats: { totalBookings, totalEarnings: lawyer.totalEarnings, rating: lawyer.rating, reviewsCount: lawyer.reviewsCount, subscriptionPlan: lawyer.subscription.plan, thisMonthEarnings: monthlyData.earnings, thisMonthBookings: monthlyData.bookings },
+            upcomingAppointments: upcomingAppointments.filter(apt => apt.timeSlotId).map(apt => ({
+                _id: apt._id,
+                name: apt.userId.name,
+                date: apt.timeSlotId.startTime,
+                image: apt.userId.profileImage,
+            })),
+            recentReviews: recentReviews.map(review => ({
+                _id: review._id,
+                name: review.userId.name,
+                name: review.userId.name,
+                message: review.comment,
+                time: review.createdAt,
+                image: review.userId.profileImage,
+            })),
+        };
+
+        res.status(200).json({ success: true, data: responseData });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const profileSetup = async (req,res,next) => {
     try {
         const userId = req.userId;

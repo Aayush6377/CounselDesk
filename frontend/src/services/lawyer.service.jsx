@@ -38,6 +38,16 @@ export const profileUpdate = async (lawyerData) => {
     }
 }
 
+export const getDashboardData = async () => {
+    try {
+        const res = await api.get("/api/lawyer/dashboard/details");
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export const scheduleUpdate = async ({startTime, endTime, breakStartTime, breakEndTime, slotDuration, selectedDays}) => {
     try {
         const res = await api.post("/api/lawyer/schedule/update", {startTime, endTime, breakStartTime, breakEndTime, slotDuration, selectedDays});

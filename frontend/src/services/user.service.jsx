@@ -172,3 +172,13 @@ export const getPaymentHistory = async (page = 1) => {
         throw error;
     }
 } 
+
+export const getDashboardData = async () => {
+    try {
+        const res = await api.get("/api/user/dashboard/details");
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

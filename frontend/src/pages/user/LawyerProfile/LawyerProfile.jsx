@@ -106,11 +106,11 @@ const LawyerProfile = () => {
                 </div>
                 <div>
                   <p className="text-[var(--primary-color)] text-sm font-semibold">Consultation Fee</p>
-                  <p className="text-gray-300">₹{lawyerProfile.fees} / hour</p>
+                  <p className="text-gray-300">₹{lawyerProfile.fees}</p>
                 </div>
                 <div>
                   <p className="text-[var(--primary-color)] text-sm font-semibold">Subscription Plan</p>
-                  <p className="text-gray-300">{lawyerProfile.subscription.plan}</p>
+                  <p className="text-gray-300 capitalize">{lawyerProfile.subscription.plan}</p>
                 </div>
               </div>
             </div>

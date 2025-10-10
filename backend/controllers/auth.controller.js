@@ -50,6 +50,10 @@ export const authByGoogle = async (req,res,next) => {
             }
         }
 
+        if (user.status === 'suspended') {
+            return next(createError("Your account has been suspended. Please contact support.", 403));
+        }
+
         user.name = name;
         user.email = email;
         if (!user.profileImage) user.profileImage = picture;
@@ -121,6 +125,10 @@ export const loginByLocal = async (req,res,next) => {
         const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
         const user = await USER.findOne({email});
+
+        if (user.status === 'suspended') {
+            return next(createError("Your account has been suspended. Please contact support.", 403));
+        }
 
         const accessToken = jwt.sign({ userId: user._id, role: user.role }, ACCESS_TOKEN_SECRET, {expiresIn: "15m"});
         const refreshToken = jwt.sign({ userId: user._id, role: user.role }, REFRESH_TOKEN_SECRET,{expiresIn: "7d"});

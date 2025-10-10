@@ -34,6 +34,52 @@ export const profileUpdate = async (req,res,next) => {
     }
 }
 
+export const getDashboardData = async (req,res,next) => {
+    try {
+        const userId = req.userId;
+        const now = new Date();
+
+        const upcomingAppointments = await APPOINTMENT.find({ userId, status: "scheduled" })
+        .populate({ path: "timeSlotId", select: "startTime", match: { startTime: { $gt: now } } })
+        .populate({ path: "lawyerId", select: "specialization userId", populate: { path: 'userId', select: 'name profileImage' } });
+
+        const nextAppointment = upcomingAppointments
+            .filter(apt => apt.timeSlotId)
+            .sort((a, b) => new Date(a.timeSlotId.startTime) - new Date(b.timeSlotId.startTime))[0];
+
+        const recommendedLawyers = await LAWYER.find()
+            .sort({ rating: -1 })
+            .limit(3)
+            .populate({
+                path: 'userId',
+                select: 'name profileImage'
+            })
+            .select('userId specialization rating');
+
+        const responseData = {
+            nextAppointment: nextAppointment ? {
+                id: nextAppointment._id,
+                lawyerName: nextAppointment.lawyerId.userId.name,
+                lawyerProfileImage: nextAppointment.lawyerId.userId.profileImage,
+                specialization: nextAppointment.lawyerId.specialization,
+                startTime: nextAppointment.timeSlotId.startTime,
+                description: `Discussing your ${nextAppointment.lawyerId.specialization} case.`
+            } : null, 
+            recommendedLawyers: recommendedLawyers.map(lawyer => ({
+                id: lawyer.userId._id, 
+                name: lawyer.userId.name,
+                profileImage: lawyer.userId.profileImage,
+                specialization: lawyer.specialization,
+            }))
+        };
+
+        res.status(200).json({ success: true, data: responseData });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const lawyersList = async (req, res, next) => {
     try {
         const { search = "", specialization = "", rating = 0, limit = 12, page=1, address } = req.query;
@@ -481,7 +527,7 @@ export const getPaymentHistory = async (req,res,next) => {
 
         payments.docs = payments.docs.map(p => ({
             ...p.toObject(),
-            amount: -p.amount
+            amount: -(p.type === 'refund' ? p.amount * 0.95 : p.amount)
         }));
 
         res.status(200).json({ success: true, payments: payments.docs, pagination: {

@@ -4,11 +4,12 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from 'url';
 import cookieParser from "cookie-parser";
-import { seedPlans } from "./assets/plans.seed.js";
+import seeders from "./assets/plans.seed.js";
 import connectDB from "./config/connectDB.js";
 import authRouter from "./routes/auth.routes.js";
 import lawyerRouter from "./routes/lawyer.routes.js";
 import userRouter from "./routes/user.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 import landingRouter from "./routes/landing.routes.js";
 
 dotenv.config();
@@ -18,7 +19,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 connectDB();
-seedPlans();
+//seeders();
 
 export const frontend = "http://localhost:5173";
 
@@ -34,6 +35,7 @@ app.use(cors({
 app.use("/api/auth",authRouter);
 app.use("/api/lawyer",lawyerRouter);
 app.use("/api/user", userRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/landing", landingRouter);
 
 app.use((err,req,res,next) => {

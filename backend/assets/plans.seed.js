@@ -1,4 +1,5 @@
 import PLAN from "../models/plan.model.js";
+import USER from "../models/users.model.js";
 
 const plansToSeed = [
   {
@@ -47,7 +48,7 @@ const plansToSeed = [
   },
 ];
 
-export const seedPlans = async () => {
+const seedPlans = async () => {
     try {
         const planCount = await PLAN.countDocuments();
 
@@ -61,3 +62,30 @@ export const seedPlans = async () => {
         console.error(error);
     }
 }
+
+const seedAdmin = async () => {
+  try {
+    const email = "admintest123@gmail.com";
+    const password = "admin@123";
+
+    const adminExists = await USER.findOne({ email });
+    if (adminExists) {
+        return;
+    }
+
+    await USER.create({ name: "Admin", email, password, authProvider: "local", role: "admin", bioDataProvided: true, verified: true });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const runSeeders = async () => {
+    try {
+        await seedPlans();
+        await seedAdmin();
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export default runSeeders;

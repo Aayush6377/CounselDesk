@@ -35,8 +35,8 @@ const PaymentSchema = new mongoose.Schema({
     },
     transactionId: {
         type: String,
-        required: true,
-        unique: true
+        unique: true,
+        sparse: true,
     }
 }, {timestamps: true});
 

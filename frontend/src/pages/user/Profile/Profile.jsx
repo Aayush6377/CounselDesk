@@ -12,10 +12,7 @@ const Profile = () => {
     const { userDetails, logout, setUserDetails } = useStore();
     const [formData, setFormData] = useState({name: userDetails?.name || ""});
     const [profileImage, setProfileImage] = useState(userDetails?.profileImage || images.defaultProfile);
-    const [ security, setSecurity ] = useState({
-        password: "",
-        confirmPassword: ""
-    });
+    const [ security, setSecurity ] = useState({ password: "", confirmPassword: "" });
     const [errors, setErrors] = useState({});
 
     const { mutate, isPending } = useMutation({
@@ -34,6 +31,22 @@ const Profile = () => {
             }
         }
     });
+
+    const { mutate: updatePassword , isPending: isUpdatingPassword} = useMutation({
+        mutationFn: (details) => resetPassword(details),
+        onSuccess: () => {
+            toast.success("Password changed successfully.");
+            setSecurity({ password: "", confirmPassword: "" });
+        },
+        onError: (err) => {
+            if (err.response?.data?.errors) {
+                setErrors(err.response.data.errors);
+                toast.error(err.response.data.message);
+            } else {
+                toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+            }
+        }
+    })
 
     const handleFormChange = (e) => {
         e.preventDefault();
@@ -69,17 +82,7 @@ const Profile = () => {
 
     const handleUpdatePassword = async (e) => {
         e.preventDefault();
-
-        const res = await resetPassword({email: userDetails.email, password: security.password, confirmPassword: security.confirmPassword});
-
-        if (res.success){
-            toast.success("Password changed successfully.");
-            setSecurity({ password: "", confirmPassword: "" });
-        }
-        else{
-            setErrors(res.errors);
-            toast.error(res.message);
-        }
+        updatePassword({email: userDetails.email, password: security.password, confirmPassword: security.confirmPassword});
     };
 
     const handleDeleteAccount = () => {
@@ -168,7 +171,7 @@ const Profile = () => {
                         {/* Submit Button for Password Form */}
                         <div className="flex justify-end mt-6">
                             <button type="submit" className="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center overflow-hidden rounded-lg h-12 px-8 bg-gray-700/60 text-white text-base font-bold leading-normal tracking-wide hover:bg-gray-600/80 transition-all duration-300 transform hover:scale-105">
-                                <span className="truncate">Update Password</span>
+                                <span className="truncate"> { isUpdatingPassword ? 'Updating...' : 'Update Password' }</span>
                             </button>
                         </div>
                     </div>
