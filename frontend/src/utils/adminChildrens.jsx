@@ -22,7 +22,7 @@ const adminChildrens = [
         element: <LawyerRequests />
     },
     {
-        path: "lawyer-review",
+        path: "lawyer/profile/:lawyerId",
         element: <LawyerProfileReview />
     },
     {
@@ -34,7 +34,7 @@ const adminChildrens = [
         element: <ContactSubmissions />
     },
     {
-        path: "contact-submission-details",
+        path: "contact-submission-details/:contactId",
         element: <SubmissionDetails />
     },
     {

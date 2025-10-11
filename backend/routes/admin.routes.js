@@ -8,9 +8,22 @@ const router = Router();
 router.use(isLogin);
 router.use(isAdmin);
 
+//Dashboard details
+router.get("/dashboard/details", adminController.getDashboardData);
+
 //User Management
 router.get("/users/details", adminController.getUserData);
 router.put("/user/update/status", adminController.updateUserStatus);
+
+//Lawyer verification requests
+router.get("/lawyers/list", adminController.getLawyersData);
+router.get("/lawyer/profile/:lawyerId", adminController.getLawyerProfile);
+router.put("/lawyer/update/verificationStatus", adminController.updateVerificationStatus);
+
+//Contact Submissions
+router.get("/contact/list", adminController.getContactSubmissionList);
+router.get("/contact/detail/:contactId", adminController.getContactDetails);
+router.delete("/contact/delete/:contactId", adminController.removeContactSubmission);
 
 //Create new Admins
 router.post("/create/new-admin",createAdminValidator, handleFormError, adminController.createNewAdmin);

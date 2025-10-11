@@ -132,3 +132,59 @@ export const adminCreationMailContent = (details) => ({
     </div>
     `
 });
+
+export const verificationApprovedMailContent = (lawyerName) => ({
+    subject: "Congratulations! Your CounselDesk Profile is Approved.",
+    html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #E8D7B5; border-radius: 10px; overflow: hidden;">
+      <div style="background-color: #A89166; color: #ffffff; padding: 20px; text-align: center;">
+        <h1 style="margin: 0;">CounselDesk</h1>
+      </div>
+      <div style="padding: 30px; line-height: 1.6;">
+        <h2 style="color: #1A1A1A;">Your Profile is Live!</h2>
+        <p style="font-size: 16px;">Hello ${lawyerName},</p>
+        <p style="font-size: 16px;">
+          We are pleased to inform you that your profile and documents have been successfully verified. Your CounselDesk profile is now active and visible to potential clients.
+        </p>
+        <div style="text-align: center; margin: 40px 0;">
+          <a href="${frontend}/user-lawyer" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px;">Go to Your Dashboard</a>
+        </div>
+        <p style="font-size: 16px;">Welcome aboard! We're excited to have you as a verified member of our legal network.</p>
+      </div>
+      <div style="background-color: #E8D7B5; padding: 15px; text-align: center; font-size: 12px;">
+        <p style="margin: 0;">&copy; ${new Date().getFullYear()} CounselDesk. All rights reserved.</p>
+      </div>
+    </div>
+    `
+});
+
+export const verificationRejectedMailContent = (lawyerName, rejectReason) => ({
+    subject: "Action Required: Update Your CounselDesk Profile Submission.",
+    html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #E8D7B5; border-radius: 10px; overflow: hidden;">
+      <div style="background-color: #A89166; color: #ffffff; padding: 20px; text-align: center;">
+        <h1 style="margin: 0;">CounselDesk</h1>
+      </div>
+      <div style="padding: 30px; line-height: 1.6;">
+        <h2 style="color: #1A1A1A;">Update Required for Your Profile</h2>
+        <p style="font-size: 16px;">Hello ${lawyerName},</p>
+        <p style="font-size: 16px;">
+          Thank you for your submission. After reviewing your profile, we found that it could not be approved at this time. Your submitted profile data and documents have been removed from our system.
+        </p>
+        <div style="background-color: #f9f9f9; border: 1px solid #E8D7B5; border-radius: 8px; padding: 20px; margin-top: 20px;">
+          <h3 style="color: #1A1A1A; margin-top: 0;">Reason for Rejection:</h3>
+          <p style="font-size: 16px; color: #1A1A1A; font-style: italic;">${rejectReason}</p>
+        </div>
+        <p style="font-size: 16px; margin-top: 20px;">
+          You are welcome to resubmit your profile with the necessary corrections.
+        </p>
+        <div style="text-align: center; margin: 40px 0;">
+          <a href="${frontend}/user-lawyer/bio-data" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px;">Resubmit Profile</a>
+        </div>
+      </div>
+      <div style="background-color: #E8D7B5; padding: 15px; text-align: center; font-size: 12px;">
+        <p style="margin: 0;">&copy; ${new Date().getFullYear()} CounselDesk. All rights reserved.</p>
+      </div>
+    </div>
+    `
+});

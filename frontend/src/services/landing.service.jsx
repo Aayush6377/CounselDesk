@@ -33,3 +33,13 @@ export const getPlansData = async () => {
         throw error;
     }
 }
+
+export const addContactSubmission = async ({ name, email, message, phone }) => {
+    try {
+        const res = await api.post("/api/landing/contact/add",{ name, email, message, phone });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

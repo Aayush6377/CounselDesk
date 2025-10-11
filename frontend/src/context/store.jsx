@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { lawyers, dummyAppointments } from "../assets/assets";
 import StoreContext from './store-context';
 import { logoutUser, refreshAccessToken } from '../services/auth.service';
 import { useMutation } from '@tanstack/react-query';
@@ -69,8 +68,6 @@ export const StoreProvider = ({ children }) => {
   });
 
   const [appLoading, setAppLoading] = useState(true);
-  const [lawyerList, setLawyerList] = useState(lawyers);
-  const [appointments, setAppointments] = useState(dummyAppointments);
 
   useEffect(() => {
     checkLogin();
@@ -84,10 +81,6 @@ export const StoreProvider = ({ children }) => {
     setLogedin,
     userDetails,
     setUserDetails,
-    lawyerList,
-    setLawyerList,
-    appointments,
-    setAppointments,
     logout,
   };
 

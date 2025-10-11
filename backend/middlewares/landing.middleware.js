@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import LAWYER from "../models/lawyers.model.js";
 import createError from "../utils/createError.js";
-
+import { body } from "express-validator";
 
 export const isLawyerFree = async (req,res,next) => {
     try {
@@ -23,3 +23,24 @@ export const isLawyerFree = async (req,res,next) => {
         next(error);
     }
 }
+
+export const contactSubmissionValidator = [
+  body("name")
+    .trim()
+    .notEmpty().withMessage("Full name is required.")
+    .isLength({ min: 3, max: 100 }).withMessage("Full name must be between 3 and 100 characters."),
+
+  body("email")
+    .trim()
+    .notEmpty().withMessage("Email is required.")
+    .isEmail().withMessage("Invalid email format."),
+
+  body("phone")
+    .optional()
+    .isMobilePhone("en-IN").withMessage("Invalid Indian phone number format."),
+
+  body("message")
+    .trim()
+    .notEmpty().withMessage("Message is required.")
+    .isLength({ min: 5 }).withMessage("Message must be at least 5 characters long.")
+];

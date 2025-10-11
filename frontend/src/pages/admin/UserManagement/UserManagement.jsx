@@ -18,7 +18,7 @@ const filterButtons = [{ label: "All", value: ""},{ label: "Users", value: "user
 const tableHeaders = ['User', 'Role', 'Status', 'Join Date', 'Actions'];
 
 const formatJoinDate = (dateString) => {
-    return moment(dateString).format('MMM Do, YYYY');
+    return moment(dateString).tz("Asia/Kolkata").format('MMM Do, YYYY');
 }
 
 const getStatusStyles = (status) => {
@@ -67,7 +67,7 @@ const UserManagement = () => {
         setUserData(result.data);
         setPagination(result.pagination);
     }
-}, [result]);
+  }, [result]);
 
   const handleSearchChange = (e) => {
       setLiveSearchTerm(e.target.value);

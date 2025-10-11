@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { lawyersList, lawyerProfile } from "../controllers/user.controller.js";
-import { isLawyerFree } from "../middlewares/landing.middleware.js";
-import { getPlansData } from "../controllers/landing.controller.js";
+import { contactSubmissionValidator, isLawyerFree } from "../middlewares/landing.middleware.js";
+import { getPlansData, addContactSubmission } from "../controllers/landing.controller.js";
+import handleFormError from "../utils/handleFormError.js";
 
 const router = Router();
 
@@ -11,5 +12,8 @@ router.get("/lawyer/profile/:lawyerId", isLawyerFree,lawyerProfile);
 
 //Subscription routes
 router.get("/subscriptions/plans/details", getPlansData);
+
+//Contact us routes
+router.post("/contact/add", contactSubmissionValidator, handleFormError, addContactSubmission);
 
 export default router;

@@ -141,7 +141,7 @@ export const profileSetup = async (req,res,next) => {
 
         await LAWYER.create({
             userId, specialization, bio, qualifications, 
-            phone, fees, address, bankDetails, documents, stripeAccountId
+            phone, fees, address, bankDetails, documents, stripeAccountId, verificationStatus: "pending",
         });
 
         res.status(201).json({success: true, message: "Lawyer data has successfully been added."});

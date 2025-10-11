@@ -1,35 +1,68 @@
-import React from 'react';
+import RejectModal from '../../../components/RejectModal/RejectModal';
+import Error from '../../../components/Error/Error';
+import Loader from '../../../components/Loader/Loader';
+import { getLawyerProfile, updateVerificationStatus } from '../../../services/admin.service';
+import createTitleFromStatus from '../../../utils/createTitleFromStatus';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaFilePdf } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
-
-const lawyerProfileData = {
-  general: {
-    name: 'Harvey Specter',
-    specialization: 'Corporate Law',
-    avatar: 'https://randomuser.me/api/portraits/men/54.jpg',
-    bio: 'A seasoned corporate lawyer with over 15 years of experience in mergers and acquisitions, corporate governance, and securities law. Known for a strategic approach and an impeccable track record of closing complex deals.',
-  },
-  personalInfo: {
-    fullName: 'Harvey Reginald Specter',
-    phone: '+1 234 567 8900',
-    address: 'Pearson Hardman, 601 Lexington Avenue, New York, NY, 10022',
-  },
-  professionalDetails: {
-    qualifications: 'Juris Doctor (J.D.), Harvard Law School',
-    fees: '$500 / hour',
-  },
-  documents: [
-    { id: 1, name: 'Bar Council Certificate.pdf', url: '#' },
-    { id: 2, name: 'Practice Certificate.pdf', url: '#' },
-    { id: 3, name: 'Government ID.pdf', url: '#' },
-    { id: 4, name: 'Law Degree.pdf', url: '#' },
-  ],
-};
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const LawyerProfileReview = () => {
-  const { general, personalInfo, professionalDetails, documents } = lawyerProfileData;
   const navigate = useNavigate();
+  const { lawyerId } = useParams();
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  
+  const { data: result, isPending, isError, error } = useQuery({
+    queryKey: ["LawyerProfile", lawyerId],
+    queryFn: () => getLawyerProfile(lawyerId)
+  });
+
+  const { mutate: updateStatus, isPending: isUpdating } = useMutation({
+    mutationFn: ({ status, rejectReason }) => updateVerificationStatus({ lawyerId: lawyerId, status, rejectReason }),
+    onSuccess: (res) => {
+        toast.success(res.message || "Lawyer request updated!");
+        setIsRejectModalOpen(false);
+    },
+    onError: (err) => {
+        toast.error(err?.response?.data?.message || "Failed to update request.");
+        setIsRejectModalOpen(false);
+    }
+  });
+
+  const lawyerProfile = result?.data;
+
+  const handleApprove = () => {
+      updateStatus({ status: 'approved' });
+  };
+
+  const handleOpenRejectModal = () => {
+      setIsRejectModalOpen(true);
+  };
+
+  const handleConfirmReject = (rejectReason) => {
+      updateStatus({ status: 'rejected', rejectReason });
+  };
+
+  if (isPending){
+    return <Loader />;
+  }
+
+  if (isError){
+    const errorCode = error.response?.data?.status || 500;
+    const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+    const errorTitle = createTitleFromStatus(errorCode);
+
+    return (
+      <Error 
+        errorCode={errorCode}
+        title={errorTitle}
+        message={errorMessage} 
+      />
+    );
+  }
 
   return (
     <main className="bg-[var(--secondary-color)] px-4 sm:px-10 flex flex-1 justify-center py-8 pt-15">
@@ -47,14 +80,13 @@ const LawyerProfileReview = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
           {/* Left Column: Profile Details */}
           <div className="lg:col-span-2 flex flex-col gap-8">
-            {/* General Info Card */}
             <div className="bg-black/20 border border-white/10 rounded-xl p-6">
               <div className="flex flex-col sm:flex-row items-start gap-6">
-                <img className="w-28 h-28 rounded-full border-4 border-[var(--primary-color)] object-cover" src={general.avatar} alt={general.name} />
+                <img className="w-28 h-28 rounded-full border-4 border-[var(--primary-color)] object-cover" src={lawyerProfile.userId.profileImage} alt={lawyerProfile.userId.name} />
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold text-[var(--accent-color)]">{general.name}</h2>
-                  <p className="text-lg font-medium text-[var(--primary-color)]">{general.specialization}</p>
-                  <p className="text-gray-400 mt-2 text-sm">{general.bio}</p>
+                  <h2 className="text-2xl font-bold text-[var(--accent-color)]">{lawyerProfile.userId.name}</h2>
+                  <p className="text-lg font-medium text-[var(--primary-color)]">{lawyerProfile.specialization}</p>
+                  <p className="text-gray-400 mt-2 text-sm">{lawyerProfile.bio}</p>
                 </div>
               </div>
             </div>
@@ -64,16 +96,16 @@ const LawyerProfileReview = () => {
               <h3 className="text-xl font-bold text-[var(--accent-color)] mb-4">Personal & Contact Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-500">Full Name</p>
-                  <p className="text-gray-300">{personalInfo.fullName}</p>
+                  <p className="text-gray-500">Email</p>
+                  <p className="text-gray-300">{lawyerProfile.userId.email}</p>
                 </div>
                 <div>
                   <p className="text-gray-500">Phone</p>
-                  <p className="text-gray-300">{personalInfo.phone}</p>
+                  <p className="text-gray-300">{lawyerProfile.phone}</p>
                 </div>
                 <div className="col-span-1 md:col-span-2">
                   <p className="text-gray-500">Address</p>
-                  <p className="text-gray-300">{personalInfo.address}</p>
+                  <p className="text-gray-300">{lawyerProfile.address.city}, {lawyerProfile.address.state}, {lawyerProfile.address.pincode}</p>
                 </div>
               </div>
             </div>
@@ -84,11 +116,11 @@ const LawyerProfileReview = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-gray-500">Qualifications</p>
-                  <p className="text-gray-300">{professionalDetails.qualifications}</p>
+                  <p className="text-gray-300">{lawyerProfile.qualifications}</p>
                 </div>
                 <div>
                   <p className="text-gray-500">Fees</p>
-                  <p className="text-gray-300">{professionalDetails.fees}</p>
+                  <p className="text-gray-300">{lawyerProfile.fees.toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 })}</p>
                 </div>
               </div>
             </div>
@@ -96,15 +128,14 @@ const LawyerProfileReview = () => {
 
           {/* Right Column: Actions & Documents */}
           <div className="flex flex-col gap-8">
-            {/* Action Center Card */}
             <div className="bg-black/20 border border-white/10 rounded-xl p-6">
               <h3 className="text-xl font-bold text-[var(--accent-color)] mb-4">Action Center</h3>
               <div className="flex flex-col gap-3">
-                <button className="flex w-full items-center justify-center gap-2 cursor-pointer rounded-md h-12 px-4 bg-green-600/80 text-white text-base font-bold leading-normal hover:bg-green-600 transition-colors">
+                <button onClick={handleApprove} disabled={isUpdating} className="flex w-full items-center justify-center gap-2 cursor-pointer rounded-md h-12 px-4 bg-green-600/80 text-white text-base font-bold leading-normal hover:bg-green-600 transition-colors">
                   <FaCheckCircle />
                   <span>Approve Profile</span>
                 </button>
-                <button className="flex w-full items-center justify-center gap-2 cursor-pointer rounded-md h-12 px-4 bg-red-600/80 text-white text-base font-bold leading-normal hover:bg-red-600 transition-colors">
+                <button onClick={handleOpenRejectModal} disabled={isUpdating} className="flex w-full items-center justify-center gap-2 cursor-pointer rounded-md h-12 px-4 bg-red-600/80 text-white text-base font-bold leading-normal hover:bg-red-600 transition-colors">
                   <FaTimesCircle />
                   <span>Reject Profile</span>
                 </button>
@@ -115,16 +146,18 @@ const LawyerProfileReview = () => {
             <div className="bg-black/20 border border-white/10 rounded-xl p-6">
               <h3 className="text-xl font-bold text-[var(--accent-color)] mb-4">Uploaded Documents</h3>
               <div className="space-y-3">
-                {documents.map(doc => (
-                  <a 
-                    href={doc.url} 
-                    key={doc.id} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                {Object.entries(lawyerProfile.documents).map(([name, url], index) => (
+                  <a
+                    href={url}
+                    key={index}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg bg-black/30 hover:bg-black/50 transition-colors"
                   >
                     <FaFilePdf className="text-[var(--primary-color)] text-lg" />
-                    <span className="text-gray-300 text-sm">{doc.name}</span>
+                    <span className="text-gray-300 text-sm capitalize">
+                      {name.replace(/([A-Z])/g, ' $1')}
+                    </span>
                   </a>
                 ))}
               </div>
@@ -132,6 +165,12 @@ const LawyerProfileReview = () => {
           </div>
         </div>
       </div>
+      <RejectModal
+          isOpen={isRejectModalOpen}
+          onClose={() => setIsRejectModalOpen(false)}
+          onConfirm={handleConfirmReject}
+          isPending={isUpdating}
+      />
     </main>
   );
 };

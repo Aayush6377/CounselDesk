@@ -106,7 +106,7 @@ const LawyerProfile = () => {
                 </div>
                 <div>
                   <p className="text-[var(--primary-color)] text-sm font-semibold">Consultation Fee</p>
-                  <p className="text-gray-300">₹{lawyerProfile.fees}</p>
+                  <p className="text-gray-300">{lawyerProfile.fees.toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 })}</p>
                 </div>
                 <div>
                   <p className="text-[var(--primary-color)] text-sm font-semibold">Subscription Plan</p>

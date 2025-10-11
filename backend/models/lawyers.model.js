@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const LawyerSchema = new mongoose.Schema({
     userId: {
@@ -48,6 +49,12 @@ const LawyerSchema = new mongoose.Schema({
     totalEarnings: {
         type: Number,
         default: 0
+    },
+    verificationStatus: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+        required: true,
     },
     subscription: {
         plan: {
@@ -142,6 +149,8 @@ const LawyerSchema = new mongoose.Schema({
         }
     }
 }, {timestamps: true});
+
+LawyerSchema.plugin(mongoosePaginate);
 
 LawyerSchema.pre("findOneAndUpdate", function(next) {
     const update = this.getUpdate();

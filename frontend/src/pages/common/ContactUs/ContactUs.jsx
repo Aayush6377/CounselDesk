@@ -1,7 +1,11 @@
+import { useMutation } from '@tanstack/react-query';
+import { useStore } from '../../../hooks/useStore';
 import { useState } from 'react';
 import { BiLogoGmail } from "react-icons/bi";
 import { IoCall } from "react-icons/io5";
 import { IoLocation } from "react-icons/io5";
+import { addContactSubmission } from '../../../services/landing.service';
+import { toast } from 'react-toastify';
 
 const contactInfo = [
   {
@@ -33,21 +37,44 @@ const contactInfo = [
   }
 ];
 
-const ContactUs = () => {
+const ContactUs = () => { 
+    const { userDetails } = useStore();
     const [formData,setFormData] = useState({
-        name: "",
-        email: "",
-        phone: "",
+        name: userDetails?.name || "",
+        email: userDetails?.email || "",
         message: ""
+    });
+    const [errors, setErrors] = useState({});
+
+    const { mutate: addContact, isPending } = useMutation({
+      mutationFn: () => addContactSubmission(formData),
+      onSuccess: (res) => {
+        setFormData({
+            name: userDetails?.name || "",
+            email: userDetails?.email || "",
+            message: ""
+        });
+        toast.success(res.message || "Your message has been received! We will get back to you shortly");
+      },
+      onError: (err) => {
+        if (err.response?.data?.errors) {
+            setErrors(err.response.data.errors);
+            toast.error(err.response.data.message);
+        } else {
+            toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+        }
+      }
     });
 
     const handleChange = (e) => {
+        e.preventDefault();
         setFormData(prev => ({...prev, [e.target.name]: e.target.value}));
+        setErrors(prev => ({...prev, [e.target.name]: ""}));
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        addContact();
     }
 
   return (
@@ -77,6 +104,7 @@ const ContactUs = () => {
                     required
                     className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                   />
+                  {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>} 
                 </div>
                 <div>
                   <label className="sr-only" htmlFor="email">Email</label>
@@ -90,6 +118,7 @@ const ContactUs = () => {
                     required
                     className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                   />
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>} 
                 </div>
                 <div>
                   <label className="sr-only" htmlFor="phone">Phone</label>
@@ -97,12 +126,12 @@ const ContactUs = () => {
                     id="phone"
                     name="phone"
                     type="tel"
-                    value={formData.phone}
+                    value={formData?.phone}
                     onChange={handleChange}
                     placeholder="Phone Number (Optional)"
-                    required
                     className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                   />
+                  {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>} 
                 </div>
                 <div>
                   <label className="sr-only" htmlFor="message">Message</label>
@@ -116,13 +145,15 @@ const ContactUs = () => {
                     required
                     className="block w-full bg-[#2D2D2D] border border-[#3E3E3E] rounded-md py-3 px-4 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition-colors"
                   />
+                  {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>} 
                 </div>
                 <div>
                   <button
                     type="submit"
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-[var(--primary-color)] hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-[var(--primary-color)] transition-all duration-300 transform hover:scale-105"
+                    disabled={isPending}
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-[var(--primary-color)] hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-[var(--primary-color)] transition-all duration-300 transform hover:scale-105 cursor-pointer"
                   >
-                    Send Message
+                    {isPending ? "Sending..." : "Send Message"}
                   </button>
                 </div>
               </form>

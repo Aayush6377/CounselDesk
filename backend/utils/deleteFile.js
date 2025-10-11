@@ -36,4 +36,19 @@ export const deleteUploadedImage = async (oldImageUrl) => {
     }
 }
 
+export const deleteFileByUrl = async (fileUrl) => {
+    if (!fileUrl) return;
+
+    try {
+        const urlParts = new URL(fileUrl);
+        const relativePath = urlParts.pathname.startsWith('/') ? urlParts.pathname.substring(1) : urlParts.pathname;
+        const filePath = path.join(process.cwd(), relativePath);
+
+        await unlink(filePath);
+        console.log(`Successfully deleted file: ${filePath}`);
+    } catch (err) {
+        console.error(`Failed to delete file at ${fileUrl}. It might not exist. Error:`, err.message);
+    }
+};
+
 export default deleteUploadedFiles;
