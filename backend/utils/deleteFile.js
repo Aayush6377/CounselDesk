@@ -45,7 +45,6 @@ export const deleteFileByUrl = async (fileUrl) => {
         const filePath = path.join(process.cwd(), relativePath);
 
         await unlink(filePath);
-        console.log(`Successfully deleted file: ${filePath}`);
     } catch (err) {
         console.error(`Failed to delete file at ${fileUrl}. It might not exist. Error:`, err.message);
     }

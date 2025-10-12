@@ -5,13 +5,14 @@ import { NavLink } from 'react-router-dom';
 import { IoMdPersonAdd } from "react-icons/io";
 import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getUserData, updateUserStatus } from '../../../services/admin.service';
+import { getUserData, updateUserStatus, deleteUserAccount } from '../../../services/admin.service';
 import createTitleFromStatus from '../../../utils/createTitleFromStatus';
 import Loader from '../../../components/Loader/Loader';
 import Error from '../../../components/Error/Error';
 import { images } from '../../../assets/assets';
 import moment from 'moment-timezone';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const filterButtons = [{ label: "All", value: ""},{ label: "Users", value: "user"},{ label: "Lawyers", value: "lawyer"},{ label: "Admins", value: "admin"}];
 
@@ -42,6 +43,7 @@ const UserManagement = () => {
   const [liveSearchTerm, setLiveSearchTerm] = useState('');
   const [pagination, setPagination] = useState({});
   const [userData, setUserData] = useState([]);
+  const [modalState, setModalState] = useState({ isOpen: false, data: null });
 
   const { data: result,  isPending, isError, error} = useQuery({
       queryKey: ["UserData", filters.page],
@@ -95,6 +97,29 @@ const UserManagement = () => {
       toast.error(err?.response?.data?.message || err.message || "Unable to update status, please try again.");
     }
   });
+
+  //Delete account api call
+  const { mutate: deleteUser, isPending: isDeleting } = useMutation({
+      mutationFn: deleteUserAccount,
+      onSuccess: (res) => {
+          queryClient.invalidateQueries({queryKey: ["UserData", filters.page]});
+          toast.success(res.message || "User deleted successfully!");
+          setModalState({ isOpen: false, data: null });
+      },
+      onError: (err) => {
+          toast.error(err?.response?.data?.message || "Failed to delete user.");
+          setModalState({ isOpen: false, data: null });
+      }
+  });
+
+  const openConfirmModal = (userId) => {
+      setModalState({ isOpen: true, data: userId });
+  };
+
+  const handleConfirmAction = () => {
+      if (!modalState.data) return;
+      deleteUser(modalState.data);
+  };
 
   if (isPending){
       return <Loader />;
@@ -199,7 +224,7 @@ const UserManagement = () => {
                              : <button onClick={() => updateStatus({status: 'suspended', userId: user._id})} className="p-2 text-gray-400 hover:text-yellow-400 transition-colors cursor-pointer">
                                 <MdBlock className="text-xl" />
                               </button>}
-                            <button className="p-2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+                            <button onClick={() => openConfirmModal(user._id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
                               <MdDelete className="text-xl" />
                             </button>
                           </div>
@@ -260,7 +285,7 @@ const UserManagement = () => {
                           : <button onClick={() => updateStatus({status: 'suspended', userId: user._id})} className="p-2 text-gray-400 hover:text-yellow-400 transition-colors cursor-pointer">
                             <MdBlock className="text-xl" />
                           </button>}
-                        <button className="p-2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+                        <button onClick={() => openConfirmModal(user._id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
                           <MdDelete className="text-xl" />
                         </button>
                       </div>
@@ -300,6 +325,15 @@ const UserManagement = () => {
           </div>
         </div>
       </div>
+      <ConfirmModal
+          isOpen={modalState.isOpen}
+          onClose={() => setModalState({ isOpen: false, data: null })}
+          onConfirm={handleConfirmAction}
+          title="Confirm Deletion"
+          message={`Are you sure you want to permanently delete this account? This action is irreversible.`}
+          confirmText="Delete"
+          isConfirming={isDeleting}
+      />
     </main>
   );
 };

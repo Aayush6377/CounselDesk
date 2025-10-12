@@ -11,6 +11,7 @@ import createTitleFromStatus from '../../../utils/createTitleFromStatus';
 import Error from '../../../components/Error/Error';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
+import { images } from '../../../assets/assets';
 
 const getStatusClasses = (status) => {
     switch (status) {
@@ -102,7 +103,7 @@ const AppointmentDetails = () => {
                 <div className="w-full bg-black/20 border border-white/10 rounded-2xl p-6 sm:p-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="md:col-span-1 flex flex-col items-center text-center">
-                            <img alt="Lawyer Avatar" className="w-32 h-32 rounded-full object-cover border-4 border-[var(--primary-color)]/50 glow-effect mb-4" src={appointmentData.lawyerId.userId.profileImage} />
+                            <img alt="Lawyer Avatar" className="w-32 h-32 rounded-full object-cover border-4 border-[var(--primary-color)]/50 glow-effect mb-4" src={appointmentData.lawyerId.userId.profileImage || images.defaultProfile} />
                             <h2 className="text-2xl font-bold text-[var(--accent-color)]">{appointmentData?.lawyerId?.userId?.name}</h2>
                             <p className="text-base text-gray-400">{appointmentData.lawyerId.specialization}</p>
                             <div className="flex items-center gap-1 mt-2 text-[var(--primary-color)]">

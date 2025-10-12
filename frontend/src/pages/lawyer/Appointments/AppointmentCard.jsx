@@ -2,6 +2,7 @@ import moment from "moment-timezone";
 import { StatusBadge, ActionButtons } from "./Buttons";
 import { FaRegCalendar } from "react-icons/fa";
 import { MdSchedule } from "react-icons/md";
+import { images } from "../../../assets/assets";
 
 const formatDate = (dateString) => {
     return moment(dateString).tz('Asia/Kolkata').format('D MMM YYYY');
@@ -18,7 +19,7 @@ const AppointmentCard = ({ appointment }) => {
         <div className="flex items-center gap-4">
           <div 
             className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border-2 border-[var(--primary-color)]" 
-            style={{ backgroundImage: `url("${appointment.clientProfileImage}")` }}
+            style={{ backgroundImage: `url("${appointment.clientProfileImage || images.defaultProfile}")` }}
           ></div>
           <div>
             <h3 className="text-[var(--accent-color)] text-lg font-bold">{appointment.clientName}</h3>

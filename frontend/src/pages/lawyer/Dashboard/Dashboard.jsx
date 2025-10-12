@@ -9,6 +9,7 @@ import Error from '../../../components/Error/Error';
 import createTitleFromStatus from '../../../utils/createTitleFromStatus';
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment-timezone";
+import { images } from "../../../assets/assets";
 
 const formatDate = (dateString) => {
     if (!dateString) return 'Date not available';
@@ -91,7 +92,7 @@ const Dashboard = () => {
                       {upcomingAppointments && upcomingAppointments.length > 0 ? (
                           upcomingAppointments.map((appointment) => (
                               <div key={appointment._id} className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 bg-black/20 border border-white/10 rounded-xl hover:border-[var(--primary-color)]/50 transition-all duration-300">
-                                  <div className="flex-shrink-0 w-20 h-20 bg-center bg-no-repeat bg-cover rounded-full" style={{ backgroundImage: `url("${appointment.image}")` }}></div>
+                                  <div className="flex-shrink-0 w-20 h-20 bg-center bg-no-repeat bg-cover rounded-full" style={{ backgroundImage: `url("${appointment.image || images.defaultProfile}")` }}></div>
                                   <div className="flex flex-col gap-1 flex-1">
                                       <p className="text-[#E8D7B5] text-lg font-bold leading-tight">{appointment.name}</p>
                                       <div className="flex items-center gap-4 text-gray-400 text-sm mt-2">
@@ -119,7 +120,7 @@ const Dashboard = () => {
                         recentReviews.map((review) => (
                             <Link to="/user-lawyer/reviews" key={review._id} className="group flex items-center gap-4 rounded-lg p-3 hover:bg-black/50 transition-colors cursor-pointer">
                                 <div className="relative">
-                                    <div className="w-12 h-12 bg-center bg-no-repeat aspect-square bg-cover rounded-full" style={{ backgroundImage: `url("${review.image}")` }}></div>
+                                    <div className="w-12 h-12 bg-center bg-no-repeat aspect-square bg-cover rounded-full" style={{ backgroundImage: `url("${review.image || images.defaultProfile}")` }}></div>
                                 </div>
                                 <div>
                                     <p className="text-[#E8D7B5] text-base font-bold leading-normal">{review.name}</p>

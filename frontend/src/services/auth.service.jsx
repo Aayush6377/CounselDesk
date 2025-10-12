@@ -54,6 +54,16 @@ export const logoutUser = async () => {
     }
 }
 
+export const deleteAccount = () => {
+    try {
+        const res = api.delete("/api/auth/delete");
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export const refreshAccessToken = async () => {
     try {
         const res = await api.post("/api/auth/refresh", {}, { withCredentials: true });

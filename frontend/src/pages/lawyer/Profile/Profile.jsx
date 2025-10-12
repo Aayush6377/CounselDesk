@@ -5,9 +5,10 @@ import { IoLogOut } from "react-icons/io5";
 import { useStore } from '../../../hooks/useStore';
 import { useMutation } from '@tanstack/react-query';
 import { profileUpdate } from '../../../services/lawyer.service';
-import { resetPassword } from '../../../services/auth.service';
+import { deleteAccount, resetPassword } from '../../../services/auth.service';
 import { toast } from 'react-toastify';
 import CustomSelect from '../../../components/CustomSelect/CustomSelect';
+import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 
 const specializationOptions = [
@@ -23,7 +24,7 @@ const specializationOptions = [
 ];
 
 const Profile = () => {
-    const { userDetails, logout, setUserDetails } = useStore();
+    const { userDetails, logout, setUserDetails, setLogedin } = useStore();
     const [ security, setSecurity ] = useState({
         password: "",
         confirmPassword: ""
@@ -31,6 +32,7 @@ const Profile = () => {
     const [formData, setFormData] = useState(userDetails);
     const [profileImage, setProfileImage] = useState(formData?.profileImage || images.defaultProfile);
     const [errors, setErrors] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { mutate, isPending } = useMutation({
         mutationFn: (data) => profileUpdate(data),
@@ -63,7 +65,25 @@ const Profile = () => {
                 toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
             }
         }
-    })
+    });
+
+    const { mutate: deleteUserAccount, isPending: isDeleting } = useMutation({
+        mutationFn: deleteAccount,
+        onSuccess: () => {
+            toast.success("Account Deleted successfully");
+            localStorage.removeItem("accessToken");
+            setLogedin(false);
+            setUserDetails({});
+        },
+        onError: (err) => {
+            if (err.response?.data?.errors) {
+                setErrors(err.response.data.errors);
+                toast.error(err.response.data.message);
+            } else {
+                toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+            }
+        }
+    });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -129,11 +149,9 @@ const Profile = () => {
         updatePassword({email: userDetails.email, password: security.password, confirmPassword: security.confirmPassword});
     };
 
-    const handleDeleteAccount = () => {
-        if (window.confirm('Are you sure you want to permanently delete your account? This action is irreversible.')) {
-            console.log('Account deleted');
-        }
-    };
+    const handleConfirmDelete = () => {
+        deleteUserAccount();
+    }
 
     return (
         <main className="bg-[var(--secondary-color)] px-4 sm:px-10 lg:px-24 xl:px-40 flex flex-1 justify-center py-8 pt-15">
@@ -291,13 +309,22 @@ const Profile = () => {
                             <h3 className="text-red-400 font-semibold">Delete Account</h3>
                             <p className="text-gray-400 text-sm mt-1">Permanently delete your account and all associated data. This action is irreversible.</p>
                         </div>
-                        <button onClick={handleDeleteAccount} className="flex items-center gap-2 w-full sm:w-auto cursor-pointer justify-center rounded-lg h-10 px-4 bg-red-800/40 text-red-300 text-sm font-medium hover:bg-red-800/60 transition-colors">
+                        <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 w-full sm:w-auto cursor-pointer justify-center rounded-lg h-10 px-4 bg-red-800/40 text-red-300 text-sm font-medium hover:bg-red-800/60 transition-colors">
                            <MdDeleteForever className="text-base" />
-                            <span>Delete Account</span>
+                            <span>{ isDeleting ? "Deleting..." : "Delete Account" }</span>
                         </button>
                     </div>
                 </div>
             </div>
+            <ConfirmModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Account"
+                message="Are you sure you want to permanently delete your account? All of your data will be removed. This action cannot be undone."
+                confirmText="Delete Account"
+                isConfirming={isDeleting}
+            />
         </main>
     );
 };

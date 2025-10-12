@@ -46,7 +46,7 @@ export const loginValidator = [
     .matches(/^[\w\.-]+@[\w\.-]+\.\w+$/).withMessage("Email is not in proper format")
     .custom(async (value, {req}) => {
         const user = await USER.findOne({email: value}).select("+password");
-        if (!user){
+        if (!user || user.status === 'deleted'){
             return Promise.reject("Email not found, please signup");
         }
         req.user = user;
@@ -114,3 +114,21 @@ export const otpVerifyValidator = [
     .notEmpty().withMessage("OTP is required")
     .isLength({min: 6, max: 6}).withMessage("OTP must be 6 digit long")
 ];
+
+export const deleteMiddleware = async (req,res,next) => {
+    try {
+        const userId = req.userId;
+
+        const userToDelete = await USER.findById(userId);
+
+        if (!userToDelete || userToDelete.status === 'deleted') {
+            throw createError("User not found.", 404);
+        }
+
+        req.userToDelete = userId;
+        req.logout = true;
+        next();
+    } catch (error) {
+        next(error);
+    }
+}

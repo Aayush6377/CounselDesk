@@ -1,9 +1,18 @@
 import USER from "../models/users.model.js";
+import REVIEW from "../models/reviews.model.js";
+import APPOINTMENT from "../models/appointments.model.js";
+import TIMESLOT from "../models/timeSlot.model.js";
+import LAWYER from "../models/lawyers.model.js";
+import PAYMENT from "../models/payments.model.js";
+import SCHEDULE from "../models/schedule.model.js";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import createError from "../utils/createError.js";
 import { generateOtp, sendEmail } from "../utils/sendEmail.js";
 import { otpMailContent, welcomeMailContent } from "../assets/mails.js";
+import mongoose from "mongoose";
+import { deleteUploadedImage } from "../utils/deleteFile.js";
+
 
 const googleCLient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -183,11 +192,63 @@ export const logout = async (req,res,next) => {
     }
 }
 
-export const deleteAccount = (req,res,next) => {
+export const deleteAccount = async (req,res,next) => {
+    const dbSession = await mongoose.startSession();
+
+    dbSession.startTransaction();
     try {
-         
+        const userId = req.userToDelete;
+        const logout = req.logout ?? true;
+
+        const user = await USER.findByIdAndUpdate(userId, { 
+            name: "Deleted User", email: `deleted_${userId}@anonymous.com`, profileImage: null,
+            password: null, oauthId: null, status: "deleted", bioDataProvided: false, verified: false
+        }, { session: dbSession, new: false });
+
+        let lawyerProfile = null;
+
+        if (user.role === "admin"){
+            await USER.findByIdAndDelete(userId);
+        }
+
+        else if (user.role === "user"){
+            await REVIEW.deleteMany({ userId }, { session: dbSession });
+
+            const upcomingUserAppointments = await APPOINTMENT.find({ userId, status: 'scheduled' }).populate('timeSlotId').session(dbSession);
+
+            for (const appointment of upcomingUserAppointments) {
+                if (appointment.timeSlotId) {
+                    await TIMESLOT.findByIdAndUpdate(appointment.timeSlotId._id, { status: 'available' }, { session: dbSession });
+                }
+                appointment.status = 'cancelled';
+                await appointment.save({ session: dbSession });
+            }
+        }
+
+        else if (user.role === "lawyer"){
+            lawyerProfile = await LAWYER.findOne({ userId: userId }).session(dbSession);
+            if (lawyerProfile) {
+                const lawyerId = lawyerProfile._id;
+                
+                await REVIEW.deleteMany({ lawyerId }, { session: dbSession });
+                await APPOINTMENT.deleteMany({ lawyerId }, { session: dbSession });
+                await PAYMENT.deleteMany({ lawyerId }, { session: dbSession });
+                await SCHEDULE.deleteOne({ lawyerId }, { session: dbSession });
+                await TIMESLOT.deleteMany({ lawyerId }, { session: dbSession });
+                await LAWYER.findByIdAndDelete(lawyerId, { session: dbSession });
+            }
+        }
+        await dbSession.commitTransaction();
+
+        await deleteUploadedImage(user.profileImage);
+
+        if (logout) res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV === "production" });
+        res.status(200).json({ success: true, message: "Your account has been successfully anonymized and deactivated." });
     } catch (error) {
+        await dbSession.abortTransaction();
         next(error);
+    } finally{
+        dbSession.endSession();
     }
 }
 

@@ -6,13 +6,15 @@ import { IoLogOut } from "react-icons/io5";
 import { profileUpdate } from '../../../services/user.service';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { resetPassword } from '../../../services/auth.service';
+import { deleteAccount, resetPassword } from '../../../services/auth.service';
+import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const Profile = () => {
-    const { userDetails, logout, setUserDetails } = useStore();
+    const { userDetails, logout, setUserDetails, setLogedin } = useStore();
     const [formData, setFormData] = useState({name: userDetails?.name || ""});
     const [profileImage, setProfileImage] = useState(userDetails?.profileImage || images.defaultProfile);
     const [ security, setSecurity ] = useState({ password: "", confirmPassword: "" });
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [errors, setErrors] = useState({});
 
     const { mutate, isPending } = useMutation({
@@ -35,7 +37,7 @@ const Profile = () => {
     const { mutate: updatePassword , isPending: isUpdatingPassword} = useMutation({
         mutationFn: (details) => resetPassword(details),
         onSuccess: () => {
-            toast.success("Password changed successfully.");
+            toast.success("Password changed successfully");
             setSecurity({ password: "", confirmPassword: "" });
         },
         onError: (err) => {
@@ -47,6 +49,24 @@ const Profile = () => {
             }
         }
     })
+
+    const { mutate: deleteUserAccount, isPending: isDeleting } = useMutation({
+        mutationFn: deleteAccount,
+        onSuccess: () => {
+            toast.success("Account Deleted successfully");
+            localStorage.removeItem("accessToken");
+            setLogedin(false);
+            setUserDetails({});
+        },
+        onError: (err) => {
+            if (err.response?.data?.errors) {
+                setErrors(err.response.data.errors);
+                toast.error(err.response.data.message);
+            } else {
+                toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+            }
+        }
+    });
 
     const handleFormChange = (e) => {
         e.preventDefault();
@@ -85,11 +105,9 @@ const Profile = () => {
         updatePassword({email: userDetails.email, password: security.password, confirmPassword: security.confirmPassword});
     };
 
-    const handleDeleteAccount = () => {
-        if (window.confirm('Are you sure you want to permanently delete your account? This action is irreversible.')) {
-            console.log('Account deleted');
-        }
-    };
+    const handleConfirmDelete = () => {
+        deleteUserAccount();
+    }
 
     return (
         <main className="bg-[var(--secondary-color)] px-4 sm:px-10 lg:px-24 xl:px-40 flex flex-1 justify-center py-8 pt-15">
@@ -200,15 +218,24 @@ const Profile = () => {
                             <p className="text-gray-400 text-sm mt-1">Permanently delete your account and all associated data. This action is irreversible.</p>
                         </div>
                         <button
-                            onClick={handleDeleteAccount}
+                            onClick={() => setIsModalOpen(true)}
                             className="flex items-center gap-2 w-full sm:w-auto cursor-pointer justify-center rounded-lg h-10 px-4 bg-red-800/40 text-red-300 text-sm font-medium hover:bg-red-800/60 transition-colors"
                         >
                             <span className="material-symbols-outlined text-base"><MdDeleteForever /></span>
-                            <span>Delete Account</span>
+                            <span>{ isDeleting ? "Deleting..." : "Delete Account" }</span>
                         </button>
                     </div>
                 </div>
             </div>
+             <ConfirmModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Account"
+                message="Are you sure you want to permanently delete your account? All of your data will be removed. This action cannot be undone."
+                confirmText="Delete Account"
+                isConfirming={isDeleting}
+            />
         </main>
     )
 }

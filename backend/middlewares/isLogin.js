@@ -19,7 +19,7 @@ const isLogin = async (req, res, next) => {
 
         const user = await USER.findById(decoded.userId);
         
-        if (!user) {
+        if (!user || user.status === 'deleted') {
             throw createError("User not found", 404);
         }
 

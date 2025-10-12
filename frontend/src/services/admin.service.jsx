@@ -33,6 +33,16 @@ export const updateUserStatus = async (status, userId) => {
     }
 }
 
+export const deleteUserAccount = async (userId) => {
+    try {
+        const res = await api.delete(`/api/admin/user/delete/${userId}`);
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export const createNewAdmin = async ({ name, email }) => {
     try {
         const res = await api.post("/api/admin/create/new-admin", { name, email });

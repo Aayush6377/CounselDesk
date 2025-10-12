@@ -9,6 +9,7 @@ import createTitleFromStatus from '../../../utils/createTitleFromStatus';
 import Loader from '../../../components/Loader/Loader';
 import Error from '../../../components/Error/Error';
 import moment from 'moment-timezone';
+import { images } from '../../../assets/assets';
 
 const renderStatusBadge = (status) => {
     switch (status) {
@@ -108,7 +109,7 @@ const AppointmentDetails = () => {
                         <div className="bg-black/20 border border-white/10 rounded-xl p-6 flex flex-col items-center text-center h-full justify-center">
                             <div
                                 className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 border-4 border-[var(--primary-color)] mb-4"
-                                style={{ backgroundImage: `url("${appointmentData?.userId?.profileImage}")` }}
+                                style={{ backgroundImage: `url("${appointmentData?.userId?.profileImage || images.defaultProfile}")` }}
                             ></div>
                             <h3 className="text-[var(--accent-color)] text-2xl font-bold">{appointmentData?.userId?.name}</h3>
                         </div>
@@ -123,7 +124,7 @@ const AppointmentDetails = () => {
                                 </div>
                                 <div className="sm:col-span-2">
                                     <label className="text-gray-400 text-sm">User Email</label>
-                                    <p className="text-[var(--accent-color)] text-lg font-medium">{appointmentData?.userId?.email}</p>
+                                    <p className="text-[var(--accent-color)] text-lg font-medium break-all">{appointmentData?.userId?.email}</p>
                                 </div>
                                 <div>
                                     <label className="text-gray-400 text-sm">Slot Date</label>

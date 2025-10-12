@@ -1,7 +1,8 @@
 import { Router } from "express";
 import * as adminController from "../controllers/admin.controller.js";
+import { deleteAccount } from "../controllers/auth.controller.js";
 import isLogin from "../middlewares/isLogin.js";
-import { isAdmin, createAdminValidator } from "../middlewares/admin.middleware.js";
+import { isAdmin, createAdminValidator, deleteMiddleware } from "../middlewares/admin.middleware.js";
 import handleFormError from "../utils/handleFormError.js";
 
 const router = Router();
@@ -14,6 +15,7 @@ router.get("/dashboard/details", adminController.getDashboardData);
 //User Management
 router.get("/users/details", adminController.getUserData);
 router.put("/user/update/status", adminController.updateUserStatus);
+router.delete("/user/delete/:userId", deleteMiddleware, deleteAccount);
 
 //Lawyer verification requests
 router.get("/lawyers/list", adminController.getLawyersData);

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import USER from "../models/users.model.js";
 import createError from "../utils/createError.js";
 import { body } from "express-validator";
@@ -35,6 +36,32 @@ export const isAdmin = async(req,res,next) => {
             throw createError("User Not authorized", 403);
         }
 
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const deleteMiddleware = async (req,res,next) => {
+    try {
+        const { userId } = req.params;
+
+        if (!mongoose.isValidObjectId(userId)){
+            throw createError("Invalid User ID", 400);
+        }
+
+        const userToDelete = await USER.findById(userId);
+
+        if (!userToDelete || userToDelete.status === 'deleted') {
+            throw createError("User not found.", 404);
+        }
+
+        if (userToDelete.role === "admin"){
+            throw createError("This account can't be deleted", 400);
+        }
+
+        req.userToDelete = userId;
+        req.logout = false;
         next();
     } catch (error) {
         next(error);

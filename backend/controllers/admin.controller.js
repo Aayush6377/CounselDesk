@@ -16,8 +16,8 @@ export const getDashboardData = async (req,res,next) => {
 
         const [ totalUsers, usersThisWeek, totalLawyers, lawyersThisMonth, totalLawyerRequests, requestsThisWeek,
         totalContactSubmissions, submissionsThisMonth, recentLawyerRequests, recentContactSubmissions ] = await Promise.all([
-            USER.countDocuments(),
-            USER.countDocuments({ createdAt: { $gte: startOfWeek } }),
+            USER.countDocuments({ status: { $in: ["active", "suspended"] } }),
+            USER.countDocuments({  status: { $in: ["active", "suspended"] }, createdAt: { $gte: startOfWeek } }),
             LAWYER.countDocuments({ verificationStatus: 'approved' }),
             LAWYER.countDocuments({ verificationStatus: 'approved', createdAt: { $gte: startOfMonth } }),
             LAWYER.countDocuments({ verificationStatus: 'pending' }),
@@ -41,7 +41,7 @@ export const getUserData = async (req,res,next) => {
         const { role = "", page = 1, limit = 10, search = "" } = req.query;
         const userId = req.userId;
 
-        const query = { _id: { $ne: new mongoose.Types.ObjectId(userId) } };
+        const query = { _id: { $ne: new mongoose.Types.ObjectId(userId) } , status: { $in: ["active", "suspended"] } };
 
         if (role){
             query.role = role;
@@ -207,6 +207,12 @@ export const updateVerificationStatus = async (req,res,next) => {
             throw createError("Lawyer is already verified.", 400);
         }
 
+        let filesToDelete = [];
+        Object.values(lawyer.documents).forEach(url => {
+            if (url) filesToDelete.push(url);
+        });
+        await Promise.all(filesToDelete.map(url => deleteFileByUrl(url)));
+
         if (status === "approved") {
             lawyer.verificationStatus = "approved"; 
             user.verified = true;
@@ -219,14 +225,7 @@ export const updateVerificationStatus = async (req,res,next) => {
             res.status(200).json({ success: true, message: `Lawyer ${user.name} has been approved.` });
 
         } else {
-            const documentsToDelete = [
-                lawyer.documents.barCouncilCertificate,
-                lawyer.documents.practiceCertificate,
-                lawyer.documents.governmentId,
-                lawyer.documents.lawDegree,
-            ];
-    
-            await Promise.all(documentsToDelete.map(url => deleteFileByUrl(url)));
+            
             await LAWYER.findByIdAndDelete(lawyerId);
             user.bioDataProvided = false;
             await user.save();
