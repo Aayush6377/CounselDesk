@@ -9,6 +9,7 @@ import UserPaymentHistory from "../pages/user/PaymentHistory/PaymentHistory";
 import UserProfile from "../pages/user/Profile/Profile";
 import LawyerReviews from "../pages/user/LawyerReviews/LawyerReviews";
 import BookingSuccess from "../pages/user/Booking/BookingSuccess";
+import MeetingPage from "../components/MeetingPage/MeetingPage";
 
 const userChildrens = [
       { 
@@ -50,6 +51,10 @@ const userChildrens = [
       {
         path: "lawyer-reviews/:lawyerId",
         element: <LawyerReviews />
+      },
+      {
+        path: "meeting/:appointmentId",
+        element: <MeetingPage />
       },
       ...sharedChildrens
 ];

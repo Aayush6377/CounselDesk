@@ -37,7 +37,7 @@ const AppointmentCard = ({ appointment }) => {
       </div>
       <div className="border-t border-white/10 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
         <StatusBadge status={appointment.status} />
-        <ActionButtons appointmentId = {appointment._id}/>
+        <ActionButtons appointmentId = {appointment._id} status={appointment.status}/>
       </div>
     </div>
   );

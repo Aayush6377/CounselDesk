@@ -146,6 +146,7 @@ export const confirmBooking = async (req,res,next) => {
 
         const totalAmount = session.amount_total / 100;
         const lawyerEarnings = totalAmount * 0.95;
+        const meetingLink = `https://meet.jit.si/CounselDesk/${appointmentId}`;
 
         await Promise.all([
             LAWYER.findByIdAndUpdate(lawyerId, { $inc: { totalEarnings: lawyerEarnings } }),
@@ -153,7 +154,7 @@ export const confirmBooking = async (req,res,next) => {
             TIMESLOT.findByIdAndUpdate(timeSlotId, { status: 'booked' })
         ]);
         
-        const confirmedAppointment = await APPOINTMENT.findByIdAndUpdate(appointmentId, { status: 'scheduled' }, { new: true });
+        const confirmedAppointment = await APPOINTMENT.findByIdAndUpdate(appointmentId, { status: 'scheduled', meetingLink }, { new: true });
 
         if (!confirmedAppointment) {
             return next(createError("Could not find the appointment to confirm.", 404));
@@ -171,7 +172,8 @@ export const confirmBooking = async (req,res,next) => {
             lawyerName: confirmedAppointment.lawyerId.userId.name,
             appointmentDate: moment(confirmedAppointment.timeSlotId.startTime).tz('Asia/Kolkata').format('dddd, MMMM Do YYYY'),
             appointmentTime: moment(confirmedAppointment.timeSlotId.startTime).tz('Asia/Kolkata').format('hh:mm A'),
-            consultationFee: confirmedAppointment.paymentId.amount
+            consultationFee: confirmedAppointment.paymentId.amount,
+            meetingLink: confirmedAppointment.meetingLink
         });
         await sendEmail({to: email, ...content});
         

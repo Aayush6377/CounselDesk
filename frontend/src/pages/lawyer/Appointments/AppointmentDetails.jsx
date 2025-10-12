@@ -1,8 +1,8 @@
 import React from 'react';
 import { IoArrowBack } from "react-icons/io5";
-import { MdCalendarToday, MdSchedule, MdCheckCircle, MdHourglassEmpty, MdCancel } from "react-icons/md";
+import { MdCalendarToday, MdSchedule, MdCheckCircle, MdHourglassEmpty, MdCancel, MdVideocam } from "react-icons/md";
 import { RiRefundFill } from "react-icons/ri";
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getAppointmentDetails } from '../../../services/lawyer.service';
 import { useQuery } from '@tanstack/react-query';
 import createTitleFromStatus from '../../../utils/createTitleFromStatus';
@@ -145,6 +145,26 @@ const AppointmentDetails = () => {
                                     <label className="text-gray-400 text-sm">Appointment status</label>
                                     {renderStatusBadge(appointmentData.status)}
                                 </div>
+                                {['scheduled', 'completed'].includes(appointmentData.status) && (
+                                    <div className="sm:col-span-2">
+                                        <label className="text-gray-400 text-sm">Meeting Link</label>
+                                        <p className="text-blue-400 text-lg font-medium break-all cursor-pointer hover:underline">
+                                            <Link to={`/user-lawyer/meeting/${appointmentData._id}`} target="_blank" rel="noopener noreferrer">{appointmentData.meetingLink}</Link>
+                                        </p>
+                                    </div>
+                                )}
+
+                                {appointmentData.status === 'scheduled' && (
+                                    <div className="sm:col-span-2">
+                                        <Link 
+                                            to={`/user-lawyer/meeting/${appointmentData._id}`} target="_blank"
+                                            className="inline-flex items-center gap-2 mt-4 rounded-lg bg-[var(--primary-color)] px-6 py-3 text-base font-semibold text-[var(--secondary-color)] transition-transform duration-300 hover:scale-105 hover:bg-[#c0a97c]"
+                                        >
+                                            <MdVideocam className="text-xl" />
+                                            Join Meeting
+                                        </Link>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

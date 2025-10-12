@@ -8,6 +8,7 @@ import Subscription from "../pages/lawyer/Subscription/Subscription";
 import Profile from "../pages/lawyer/Profile/Profile";
 import AppointmentDetails from "../pages/lawyer/Appointments/AppointmentDetails";
 import SubscriptionSuccess from "../pages/lawyer/Subscription/SubscriptionSuccess";
+import MeetingPage from "../components/MeetingPage/MeetingPage";
 
 const lawyerChildrens = [
     {
@@ -47,6 +48,10 @@ const lawyerChildrens = [
     {
         path: "appointment-details/:appointmentId",
         element: <AppointmentDetails />
+    },
+    {
+        path: "meeting/:appointmentId",
+        element: <MeetingPage />
     },
     ...sharedChildrens
 ];

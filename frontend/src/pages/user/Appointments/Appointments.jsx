@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment-timezone';
 import createTitleFromStatus from '../../../utils/createTitleFromStatus';
 import { toast } from 'react-toastify';
+import { FaVideo } from 'react-icons/fa';
 
 const formatDate = (dateString) => {
     return moment(dateString).tz('Asia/Kolkata').format('dddd, MMMM Do YYYY');
@@ -132,9 +133,15 @@ const Appointments = () => {
                                                 <Link to={`/user/book-appointment/${apt.lawyerId}`} className="py-2 px-4 rounded-lg bg-[var(--primary-color)]/80 text-[var(--secondary-color)] hover:bg-[var(--primary-color)] transition-colors text-sm font-medium">Book Again</Link>
                                             )}
                                             {apt.status === 'scheduled' && (
-                                                <button onClick={() => handleOpenCancelModal(apt._id)} className="py-2 px-4 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors text-sm font-medium cursor-pointer">
-                                                    {isCancelling ? 'Cancelling...' : 'Cancel'}
-                                                </button>
+                                               <>
+                                                    <Link to={`/user/meeting/${apt._id}`} target="_blank" className="flex items-center gap-2 py-2 px-4 rounded-lg bg-[var(--primary-color)] text-[var(--secondary-color)] hover:bg-[#c0a97c] transition-colors text-sm font-bold">
+                                                        <FaVideo />
+                                                        <span>Join Meeting</span>
+                                                    </Link>
+                                                    <button onClick={() => handleOpenCancelModal(apt._id)} className="py-2 px-4 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors text-sm font-medium cursor-pointer">
+                                                        {isCancelling ? 'Cancelling...' : 'Cancel'}
+                                                    </button>
+                                                </>
                                             )}
                                         </div>
                                     </div>

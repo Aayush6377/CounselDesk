@@ -84,11 +84,20 @@ export const appointmentConfirmationMailContent = (details) => ({
             <li style="padding: 8px 0;"><strong>Fee Paid:</strong> ₹${details.consultationFee}</li>
           </ul>
         </div>
-        <div style="text-align: center; margin: 40px 0;">
-          <a href="${frontend}/user/appointments" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">View My Appointments</a>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${details.meetingLink}" target="_blank" style="background-color: #2563eb; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">
+            Join Video Meeting
+          </a>
         </div>
-        <p style="font-size: 16px; color: #1A1A1A;">
-          Please be prepared for your session at the scheduled time. If you need to reschedule or cancel, please do so through your dashboard at least 24 hours in advance.
+
+        <p style="font-size: 14px; color: #666666; text-align: center;">
+            Or copy and paste this link into your browser:<br>
+            <a href="${details.meetingLink}" style="color: #A89166; text-decoration: none; word-break: break-all;">${details.meetingLink}</a>
+        </p>
+        
+        <p style="font-size: 16px; color: #1A1A1A; margin-top: 30px;">
+          Please be prepared for your session at the scheduled time. If you need to reschedule or cancel, you can do so from your dashboard.
         </p>
       </div>
       <div style="background-color: #E8D7B5; color: #1A1A1A; padding: 15px; text-align: center; font-size: 12px;">

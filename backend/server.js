@@ -6,11 +6,14 @@ import { fileURLToPath } from 'url';
 import cookieParser from "cookie-parser";
 import seeders from "./assets/plans.seed.js";
 import connectDB from "./config/connectDB.js";
+
+//Routes
 import authRouter from "./routes/auth.routes.js";
 import lawyerRouter from "./routes/lawyer.routes.js";
 import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import landingRouter from "./routes/landing.routes.js";
+import jitsiRouter from "./routes/jitsi.routes.js";
 
 dotenv.config();
 
@@ -37,6 +40,7 @@ app.use("/api/lawyer",lawyerRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/landing", landingRouter);
+app.use("/api/jitsi", jitsiRouter);
 
 app.use((err,req,res,next) => {
     const status = err.status || 500;

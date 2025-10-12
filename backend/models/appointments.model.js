@@ -27,6 +27,10 @@ const AppointmentsSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         required: true,
         ref: "payment"
+    },
+    meetingLink: {
+        type: String,
+        default: null
     }
 }, {timestamps: true});
 
