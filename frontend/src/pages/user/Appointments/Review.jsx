@@ -38,7 +38,13 @@ const ReviewComponent = () => {
       toast.success("Review added successfully");
       queryClient.invalidateQueries({ queryKey: ["ReviewDetails", appointmentId] });
     },
-    onError: (err) => { toast.error(err.response?.data?.message || "Failed to add review."); }
+    onError: (err) => { 
+      if (err.response?.data?.errors) {
+          toast.error(err.response.data.errors.rating || err.response.data.errors.comment || "Failed to add a review");
+      } else {
+          toast.error(err?.response?.data?.message || err.message || "Failed to add a review");
+      }
+    }
   })
 
   const { mutate: update, isPending: isUpdating } = useMutation({
@@ -47,7 +53,13 @@ const ReviewComponent = () => {
         toast.success("Review updated successfully!");
         queryClient.invalidateQueries({ queryKey: ["ReviewDetails", appointmentId] });
       },
-      onError: (err) => { toast.error(err.response?.data?.message || "Failed to update review."); }
+      onError: (err) => { 
+        if (err.response?.data?.errors) {
+            toast.error(err.response.data.errors.rating || err.response.data.errors.comment || "Failed to add a review");
+        } else {
+            toast.error(err?.response?.data?.message || err.message || "Failed to update the review");
+        }
+      }
   });
 
   const handleSubmitReview = (e) => {

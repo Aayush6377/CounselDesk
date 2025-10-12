@@ -84,38 +84,38 @@ const AppointmentDetails = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1 flex flex-col items-center text-center">
               <img alt="Lawyer Avatar" className="w-32 h-32 rounded-full object-cover border-4 border-[var(--primary-color)]/50 glow-effect mb-4" src={appointmentData.lawyerId.userId.profileImage} />
-              <h2 className="text-2xl font-bold text-[var(--accent-color)]">{appointmentData.lawyerId.userId.name}</h2>
+              <h2 className="text-2xl font-bold text-[var(--accent-color)]">{appointmentData?.lawyerId?.userId?.name}</h2>
               <p className="text-base text-gray-400">{appointmentData.lawyerId.specialization}</p>
               <div className="flex items-center gap-1 mt-2 text-[var(--primary-color)]">
-                {renderRating(appointmentData.lawyerId.rating)}
-                <span className="text-sm text-gray-300 ml-1">({appointmentData.lawyerId.reviewsCount})</span>
+                {renderRating(appointmentData?.lawyerId?.rating)}
+                <span className="text-sm text-gray-300 ml-1">({appointmentData?.lawyerId?.reviewsCount})</span>
               </div>
             </div>
 
             <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
               <div>
                 <p className="text-sm font-medium text-gray-400">Appointment Date</p>
-                <p className="text-lg font-semibold text-[var(--accent-color)]">{formatDate(appointmentData.timeSlotId.startTime)}</p>
+                <p className="text-lg font-semibold text-[var(--accent-color)]">{formatDate(appointmentData?.timeSlotId?.startTime)}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-400">Time Slot</p>
-                <p className="text-lg font-semibold text-[var(--accent-color)]">{formatTime(appointmentData.timeSlotId.startTime)} - {formatTime(appointmentData.timeSlotId.endTime)}</p>
+                <p className="text-lg font-semibold text-[var(--accent-color)]">{formatTime(appointmentData?.timeSlotId?.startTime)} - {formatTime(appointmentData?.timeSlotId?.endTime)}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-400">Status</p>
-                <span className={`text-lg font-semibold px-2 py-1 rounded-full ${getStatusClasses(appointmentData.status)}`}>{appointmentData.status}</span>
+                <span className={`text-lg font-semibold px-2 py-1 rounded-full ${getStatusClasses(appointmentData?.status)}`}>{appointmentData?.status}</span>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-400">Appointment Fees</p>
-                <p className="text-lg font-semibold text-[var(--accent-color)]">₹{appointmentData.paymentId.amount}</p>
+                <p className="text-lg font-semibold text-[var(--accent-color)]">₹{appointmentData?.paymentId?.amount}</p>
               </div>
               <div className="sm:col-span-2">
                 <p className="text-sm font-medium text-gray-400">Payment ID</p>
-                <p className="text-lg font-semibold text-[var(--accent-color)] font-mono">{appointmentData.paymentId.transactionId}</p>
+                <p className="text-lg font-semibold text-[var(--accent-color)] font-mono">{appointmentData?.paymentId?.transactionId}</p>
               </div>
               <div className="sm:col-span-2">
                 <p className="text-sm font-medium text-gray-400">Booked On</p>
-                <p className="text-lg font-semibold text-[var(--accent-color)]">{formatDate(appointmentData.updatedAt)}</p>
+                <p className="text-lg font-semibold text-[var(--accent-color)]">{formatDate(appointmentData?.updatedAt)}</p>
               </div>
             </div>
           </div>

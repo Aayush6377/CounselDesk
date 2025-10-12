@@ -185,7 +185,7 @@ export const logout = async (req,res,next) => {
 
 export const deleteAccount = (req,res,next) => {
     try {
-        
+         
     } catch (error) {
         next(error);
     }

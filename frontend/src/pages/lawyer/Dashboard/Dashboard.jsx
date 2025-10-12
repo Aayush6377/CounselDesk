@@ -125,7 +125,7 @@ const Dashboard = () => {
                                     <p className="text-[#E8D7B5] text-base font-bold leading-normal">{review.name}</p>
                                     <p className="text-gray-400 text-sm font-normal leading-normal line-clamp-1">{review.message}</p>
                                 </div>
-                                <span className="text-gray-500 text-xs ml-auto">{review.time}</span>
+                                <span className="text-gray-500 text-xs ml-auto">{formatDate(review.time)}</span>
                             </Link>
                         ))
                     ) : (
