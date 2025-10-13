@@ -17,11 +17,12 @@ router.use(isLogin);
 router.post("/profile/setup", fileUploaderMiddleware, profileSetupValidator ,validationAndCleanup, lawyerController.profileSetup);
 
 router.use(isLawyer);
-//Dashboard details
-router.get("/dashboard/details", lawyerController.getDashboardData);
 
 router.put("/profile/update", imageUploader, profileUpdateValidator, handleFormError ,lawyerController.profileUpdate);
 router.get("/profile/details", lawyerController.profileDetails);
+
+//Dashboard details
+router.get("/dashboard/details", lawyerController.getDashboardData);
 
 //Schedule routes
 router.post("/schedule/update", scheduleUpdateValidator, handleFormError, lawyerController.scheduleUpdate);

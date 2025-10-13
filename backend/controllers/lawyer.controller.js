@@ -14,11 +14,15 @@ import REVIEW from "../models/reviews.model.js";
 import PAYMENT from "../models/payments.model.js";
 
 
+// export const generateFileUrl = (req, file) => {
+//     const baseUrl = `${req.protocol}://${req.get('host')}`;
+//     const relativePath = file.path.substring(file.path.indexOf(path.sep + 'uploads'));
+//     return `${baseUrl}${relativePath.replace(/\\/g, '/')}`;
+// }
+
 export const generateFileUrl = (req, file) => {
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    const relativePath = file.path.substring(file.path.indexOf(path.sep + 'uploads'));
-    return `${baseUrl}${relativePath.replace(/\\/g, '/')}`;
-}
+    return file.path;
+};
 
 const getMonthlyStats = async(lawyerId) => {
     const startOfMonth = moment.tz('Asia/Kolkata').startOf('month').toDate();

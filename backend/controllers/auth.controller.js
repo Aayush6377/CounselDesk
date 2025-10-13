@@ -242,6 +242,14 @@ export const deleteAccount = async (req,res,next) => {
 
         await deleteUploadedImage(user.profileImage);
 
+        if (user.role === "lawyer"){
+            let filesToDelete = [];
+            Object.values(lawyerProfile.documents).forEach(url => {
+                if (url) filesToDelete.push(url);
+            });
+            await Promise.all(filesToDelete.map(url => deleteFileByUrl(url)));
+        }
+
         if (logout) res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV === "production" });
         res.status(200).json({ success: true, message: "Your account has been successfully anonymized and deactivated." });
     } catch (error) {

@@ -1,26 +1,50 @@
 import multer from "multer";
-import path from "path";
-import { fileURLToPath } from 'url';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from "../config/cloadinary.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const storage = multer.diskStorage({
-    filename: (req,file,cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
-    },
-    destination: (req,file,cb) => {
-        let uploadPath;
-        if (file.fieldname === "profileImage") {
-            uploadPath = path.join(__dirname, "../uploads/images");
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: async (req, file) => {
+        let folder;
+        if (file.fieldname === 'profileImage') {
+            folder = 'counseldesk/images';
         } else {
-            uploadPath = path.join(__dirname, "../uploads/docs");
+            folder = 'counseldesk/docs';
         }
-        
-        cb(null, uploadPath);
-    }
+
+        const resource_type = file.mimetype.startsWith('image/') ? 'image' : 'raw';
+
+        return {
+            folder: folder,
+            resource_type: resource_type,
+            public_id: `${file.fieldname}-${Date.now()}`,
+        };
+    },
 });
+
+
+// import path from "path";
+// import { fileURLToPath } from 'url';
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
+// const storage = multer.diskStorage({
+//     filename: (req,file,cb) => {
+//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+//         cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
+//     },
+//     destination: (req,file,cb) => {
+//         let uploadPath;
+//         if (file.fieldname === "profileImage") {
+//             uploadPath = path.join(__dirname, "../uploads/images");
+//         } else {
+//             uploadPath = path.join(__dirname, "../uploads/docs");
+//         }
+        
+//         cb(null, uploadPath);
+//     }
+// }); 
 
 const limits = {
     fileSize: 1024*1024*5
@@ -72,15 +96,50 @@ const fileUploader = upload.fields([
     { name: 'fees', maxCount: 1 },
 ]);
 
-const fileUploaderMiddleware = (req, res, next) => {
+export const fileUploaderMiddleware = (req, res, next) => {
     fileUploader(req, res, (err) => {
         if (err) {
-            let fieldname = err.message.split(" ")[0];
-            if (err.hasOwnProperty('field')) fieldname = err.field;
-            return res.status(400).json({ success: false, message: "File upload failed", errors: {[fieldname]: err.message }});
+            let fieldName = 'file'; 
+            let errorMessage = "An unknown file upload error occurred.";
+
+            if (err instanceof multer.MulterError) {
+                fieldName = err.field || fieldName;
+                errorMessage = err.message;
+            } 
+   
+            else if (err instanceof Error) {
+                errorMessage = err.message;
+                if (errorMessage.startsWith('Profile image')) {
+                    fieldName = 'profileImage';
+                } else {
+                    const match = errorMessage.match(/^(\w+)/);
+                    if (match) {
+                        fieldName = match[1];
+                    }
+                }
+            }
+
+            return res.status(400).json({
+                success: false,
+                message: "File upload failed",
+                errors: { [fieldName]: errorMessage }
+            });
         }
+        
         next();
     });
 };
+
+
+// const fileUploaderMiddleware = (req, res, next) => {
+//     fileUploader(req, res, (err) => {
+//         if (err) {
+//             let fieldname = err.message.split(" ")[0];
+//             if (err.hasOwnProperty('field')) fieldname = err.field;
+//             return res.status(400).json({ success: false, message: "File upload failed", errors: {[fieldname]: err.message }});
+//         }
+//         next();
+//     });
+// };
 
 export default fileUploaderMiddleware;

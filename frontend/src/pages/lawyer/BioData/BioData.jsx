@@ -74,7 +74,7 @@ const BioData = () => {
         lawDegree: null,
     });
 
-    const { mutate, isLoading } = useMutation({
+    const { mutate, isPending: isLoading } = useMutation({
         mutationFn: profileSetup,
         onSuccess: () => {
             toast.success("Profile created successfully!");
@@ -84,6 +84,7 @@ const BioData = () => {
         onError: (err) => {
             if (err.response?.data?.errors) {
                 setErrors(err.response.data.errors);
+                toast.error(err.response.data.message);
             } else {
                 toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
             }
@@ -160,11 +161,7 @@ const BioData = () => {
         mutate(form);
     };
 
-    if (isLoading){
-      return <Loader />;
-    }
-
-  return (
+ return (
     <div className="relative flex size-full min-h-screen flex-col bg-gradient-to-b from-[var(--secondary-color)] to-[#0d1013] dark group/design-root overflow-x-hidden" style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif' }}>
       <div className="fixed top-0 left-0 w-full h-[600px] bg-gradient-to-b from-[rgba(168,145,102,0.1)] to-transparent -z-10 pointer-events-none"></div>
       <div className="layout-container flex h-full grow flex-col">
@@ -339,10 +336,8 @@ const BioData = () => {
                         <button 
                             type="submit" 
                             className="flex items-center gap-2 cursor-pointer justify-center overflow-hidden rounded-lg h-12 px-8 bg-[var(--primary-color)] text-[var(--secondary-color)] text-base font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect disabled:bg-gray-500 disabled:cursor-not-allowed"
-                            // IMPROVEMENT: Disable button during submission
                             disabled={isLoading}
                         >
-                            {/* IMPROVEMENT: Show loading state text */}
                             <span>{isLoading ? 'Submitting...' : 'Submit for Verification'}</span>
                         </button>
                     </div>

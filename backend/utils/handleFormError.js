@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator";
-import deleteUploadedFiles from "./deleteFile.js";
-import { unlink } from 'fs/promises';
+import deleteUploadedFiles, { deleteUploadedImage } from "./deleteFile.js";
+// import { unlink } from 'fs/promises';
 
 const handleFormError = async (req,res,next) => {
     const result = validationResult(req);
@@ -12,7 +12,8 @@ const handleFormError = async (req,res,next) => {
 
         if (req.file) {
             try {
-                await unlink(req.file.path);
+                // await unlink(req.file.path);
+                await deleteUploadedImage(req.file.path);
             } catch (err) {
                 console.error(`Error cleaning up file ${req.file.path}:`, err);
             }
@@ -23,7 +24,7 @@ const handleFormError = async (req,res,next) => {
     next();
 }
 
-export const validationAndCleanup = (req, res, next) => {
+export const validationAndCleanup = async (req, res, next) => {
     const bodyValidationErrors = validationResult(req);
     const hasBodyErrors = !bodyValidationErrors.isEmpty();
 
@@ -36,7 +37,9 @@ export const validationAndCleanup = (req, res, next) => {
     const hasFileErrors = missingFileFields.length > 0;
 
     if (hasBodyErrors || hasFileErrors) {
-        deleteUploadedFiles(uploadedFiles);
+        if (uploadedFiles) {
+            await deleteUploadedFiles(uploadedFiles);
+        }
 
         let errors = {};
         
