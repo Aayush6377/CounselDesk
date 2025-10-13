@@ -45,6 +45,10 @@ app.use("/api/landing", landingRouter);
 app.use("/api/jitsi", jitsiRouter);
 app.use("/api/cron", cronRouter);
 
+app.get("/", (req,res) => {
+    res.status(200).send("CounselDesk Backend is running");
+});
+
 app.use((err,req,res,next) => {
     const status = err.status || 500;
     const message = err.message || "Internal Server Error";
