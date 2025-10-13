@@ -45,7 +45,7 @@ app.use("/api/landing", landingRouter);
 app.use("/api/jitsi", jitsiRouter);
 app.use("/api/cron", cronRouter);
 
-app.get("/", (req,res) => {
+app.get("/api", (req,res) => {
     res.status(200).send("CounselDesk Backend is running");
 });
 
