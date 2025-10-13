@@ -197,6 +197,10 @@ export const isLawyer = async (req,res,next) => {
             throw createError("User is not a lawyer",400);
         }
 
+        if (lawyer.verificationStatus !== "approved"){
+            throw createError("Lawyer is not verified", 403);
+        }
+
         req.lawyerId = lawyer._id;
         next();
     } catch (error) {

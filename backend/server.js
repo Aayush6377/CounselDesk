@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import cookieParser from "cookie-parser";
 import seeders from "./assets/plans.seed.js";
 import connectDB from "./config/connectDB.js";
+import { startLocalCronJobs } from "./controllers/cron.controller.js";
 
 //Routes
 import authRouter from "./routes/auth.routes.js";
@@ -14,6 +15,7 @@ import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import landingRouter from "./routes/landing.routes.js";
 import jitsiRouter from "./routes/jitsi.routes.js";
+import cronRouter from "./routes/cron.routes.js";
 
 dotenv.config();
 
@@ -34,13 +36,14 @@ app.use(cors({
     credentials: true 
 }));
 
-
+startLocalCronJobs();
 app.use("/api/auth",authRouter);
 app.use("/api/lawyer",lawyerRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/landing", landingRouter);
 app.use("/api/jitsi", jitsiRouter);
+app.use("/api/cron", cronRouter);
 
 app.use((err,req,res,next) => {
     const status = err.status || 500;

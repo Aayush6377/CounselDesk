@@ -18,6 +18,17 @@ const generateSlotsForNextDays = async (lawyerId, schedule, daysToGenerate = 3) 
         const currentDay = moment().tz(timeZone).add(i, 'days');
         const dayOfWeek = dayMapping[currentDay.day()];
 
+        const startOfDay = currentDay.clone().startOf('day').toDate();
+        const endOfDayCheck = currentDay.clone().endOf('day').toDate();
+        const existingSlotsCount = await TIMESLOT.countDocuments({
+            lawyerId: lawyerId,
+            startTime: { $gte: startOfDay, $lt: endOfDayCheck }
+        });
+
+        if (existingSlotsCount > 0) {
+            continue;
+        }
+
         if (recurringDays[dayOfWeek]) {
             const [startHour, startMinute] = startTime.split(':').map(Number);
             const [endHour, endMinute] = endTime.split(':').map(Number);

@@ -26,6 +26,7 @@
     "mongoose-aggregate-paginate-v2": "^1.1.4",
     "mongoose-paginate-v2": "^1.9.1",
     "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
     "nodemailer": "^7.0.6",
     "pdfkit": "^0.17.2",
     "stripe": "^18.5.0"
