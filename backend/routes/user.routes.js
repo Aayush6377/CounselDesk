@@ -5,8 +5,10 @@ import * as userController from "../controllers/user.controller.js";
 import { isLawyer, profileUpdateValidator, reviewValidator } from "../middlewares/user.middleware.js";
 import handleFormError from "../utils/handleFormError.js";
 import { createCheckoutSession, confirmBooking, cancelAppointment } from "../controllers/stripe.controller.js";
+import { generalLimiter } from "../middlewares/rateLimiters.js";
 
 const router = Router();
+router.use(generalLimiter);
 router.use(isLogin);
 
 //Profile route

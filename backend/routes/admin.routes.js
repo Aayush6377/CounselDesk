@@ -4,8 +4,11 @@ import { deleteAccount } from "../controllers/auth.controller.js";
 import isLogin from "../middlewares/isLogin.js";
 import { isAdmin, createAdminValidator, deleteMiddleware } from "../middlewares/admin.middleware.js";
 import handleFormError from "../utils/handleFormError.js";
+import { generalLimiter } from "../middlewares/rateLimiters.js";
 
 const router = Router();
+
+router.use(generalLimiter);
 router.use(isLogin);
 router.use(isAdmin);
 

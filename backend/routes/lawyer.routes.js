@@ -6,9 +6,12 @@ import handleFormError, {validationAndCleanup} from "../utils/handleFormError.js
 import fileUploaderMiddleware, { imageUploader } from "../middlewares/multer.js";
 import { profileSetupValidator, profileUpdateValidator, isLawyer, scheduleUpdateValidator, scheduleTodayValidator } from "../middlewares/lawyer.middleware.js";
 import isLogin from "../middlewares/isLogin.js";
+import { generalLimiter } from "../middlewares/rateLimiters.js";
 
 const router = Router();
+router.use(generalLimiter);
 router.use(isLogin);
+
 
 //Profile routes
 router.post("/profile/setup", fileUploaderMiddleware, profileSetupValidator ,validationAndCleanup, lawyerController.profileSetup);
