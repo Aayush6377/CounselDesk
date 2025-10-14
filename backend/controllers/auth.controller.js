@@ -74,7 +74,7 @@ export const authByGoogle = async (req,res,next) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
+            sameSite: "None"
         });
 
         res.status(200).json({
@@ -112,7 +112,7 @@ export const signupByLocal = async (req,res,next) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
+            sameSite: "None"
         });
 
         res.status(200).json({
@@ -145,7 +145,7 @@ export const loginByLocal = async (req,res,next) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
+            sameSite: "None"
         });
 
         res.status(200).json({
