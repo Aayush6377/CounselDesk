@@ -63,8 +63,6 @@ export const authByGoogle = async (req,res,next) => {
             return next(createError("Your account has been suspended. Please contact support.", 403));
         }
 
-        user.name = name;
-        user.email = email;
         if (!user.profileImage) user.profileImage = picture;
         await user.save();
 
