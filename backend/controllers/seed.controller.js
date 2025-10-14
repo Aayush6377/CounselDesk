@@ -7,6 +7,7 @@ import SCHEDULE from "../models/schedule.model.js";
 import TIMESLOT from "../models/timeSlot.model.js";
 import USER from "../models/users.model.js";
 import generateSlotsForNextDays from "../utils/slotGenerator.js";
+import bcrypt from "bcryptjs";
 
 export const seedLawyers = async (req,res,next) => {
     try {
@@ -15,10 +16,13 @@ export const seedLawyers = async (req,res,next) => {
             const profileData = lawyerProfiles[i];
             const scheduleData = schedules[i];
 
+            const hashedPassword = await bcrypt.hash(userData.password, 12);
+
             let user = await USER.findOneAndUpdate(
                 { email: userData.email },
                 { 
                     ...userData,
+                    password: hashedPassword,
                     role: 'lawyer',
                     authProvider: "local",
                     verified: true,
