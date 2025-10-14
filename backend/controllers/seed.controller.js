@@ -24,7 +24,7 @@ export const seedLawyers = async (req,res,next) => {
                     verified: true,
                     bioDataProvided: true,
                 },
-                { upsert: true, new: true }
+                { upsert: true, new: true, runValidators: true }
             );
 
             let lawyer = await LAWYER.findOneAndUpdate(
@@ -36,13 +36,13 @@ export const seedLawyers = async (req,res,next) => {
                     stripeAccountId: `acct_test_${Date.now() + i}`,
                     stripeCustomerId: `cus_test_${Date.now() + i}`,
                 },
-                { upsert: true, new: true }
+                { upsert: true, new: true, runValidators: true }
             );
 
             let schedule = await SCHEDULE.findOneAndUpdate(
                 { lawyerId: lawyer._id },
                 { ...scheduleData },
-                { upsert: true, new: true }
+                { upsert: true, new: true, runValidators: true }
             );
 
             await TIMESLOT.deleteMany({ lawyerId: lawyer._id, status: { $ne: 'booked' } });
