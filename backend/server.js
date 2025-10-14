@@ -29,10 +29,25 @@ connectDB();
 app.use(express.json());
 //app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cookieParser(process.env.COOKIE_KEY));
-app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true 
-}));
+
+const allowedOrigins = [ "http://localhost:5173" ];
+
+if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+};
+
+app.use(cors(corsOptions));
 
 app.use("/api/auth",authRouter);
 app.use("/api/lawyer",lawyerRouter);
