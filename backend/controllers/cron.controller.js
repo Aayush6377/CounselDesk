@@ -6,6 +6,7 @@ import APPOINTMENT from '../models/appointments.model.js';
 import PAYMENT from '../models/payments.model.js';
 import generateSlotsForNextDays from '../utils/slotGenerator.js';
 import cron from "node-cron";
+import CONTACT from '../models/contact.model.js';
 
 export const dailyMaintenanceJob = async (req,res,next) => {
     console.log(`Starting daily maintenance job at ${new Date().toISOString()}`);
@@ -60,6 +61,9 @@ export const dailyMaintenanceJob = async (req,res,next) => {
             status: 'pending',
             createdAt: { $lt: oneHourAgo }
         });
+
+        //Delete all contact us
+        await CONTACT.deleteMany({});
 
         console.log(`Daily maintenance job finished successfully at ${new Date().toISOString()}`);
         res.status(200).json({ success: 1, message: `Daily maintenance job finished successfully at ${new Date().toISOString()}` });

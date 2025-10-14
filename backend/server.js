@@ -16,6 +16,7 @@ import adminRouter from "./routes/admin.routes.js";
 import landingRouter from "./routes/landing.routes.js";
 import jitsiRouter from "./routes/jitsi.routes.js";
 import cronRouter from "./routes/cron.routes.js";
+import seedRouter from "./routes/seed.routes.js";
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/landing", landingRouter);
 app.use("/api/jitsi", jitsiRouter);
 app.use("/api/cron", cronRouter);
+app.use("/api/seed", seedRouter);
 
 app.get("/", (req, res) => {
     res.status(200).send("CounselDesk Backend is running successfully.");
