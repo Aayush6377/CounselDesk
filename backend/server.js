@@ -26,17 +26,14 @@ const __dirname = path.dirname(__filename);
 connectDB();
 //seeders();
 
-export const frontend = "http://localhost:5173";
-
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+//app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cookieParser(process.env.COOKIE_KEY));
 app.use(cors({
-    origin: frontend, 
+    origin: process.env.FRONTEND_URL,
     credentials: true 
 }));
 
-startLocalCronJobs();
 app.use("/api/auth",authRouter);
 app.use("/api/lawyer",lawyerRouter);
 app.use("/api/user", userRouter);
@@ -45,8 +42,8 @@ app.use("/api/landing", landingRouter);
 app.use("/api/jitsi", jitsiRouter);
 app.use("/api/cron", cronRouter);
 
-app.get("/", (req,res) => {
-    res.status(200).send("CounselDesk Backend is running");
+app.get("/", (req, res) => {
+    res.status(200).send("CounselDesk Backend is running successfully.");
 });
 
 app.use((err,req,res,next) => {
@@ -55,6 +52,11 @@ app.use((err,req,res,next) => {
     res.status(status).json({status, message, success: false});
 });
 
-app.listen(port,() => {
-    console.log(`Server is running at http://localhost:${port}`);
-})
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Server is running locally at http://localhost:${port}`);
+        startLocalCronJobs();
+    });
+}
+
+export default app;

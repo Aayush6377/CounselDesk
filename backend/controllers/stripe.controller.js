@@ -6,7 +6,6 @@ import TIMESLOT from "../models/timeSlot.model.js";
 import PAYMENT from "../models/payments.model.js";
 import PLAN from "../models/plan.model.js";
 import APPOINTMENT from "../models/appointments.model.js";
-import { frontend } from "../server.js";
 import moment from "moment-timezone";
 import { sendEmail } from "../utils/sendEmail.js";
 import { appointmentConfirmationMailContent } from "../assets/mails.js";
@@ -91,8 +90,8 @@ export const createCheckoutSession = async(req,res,next) => {
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
-            success_url: `${frontend}/user/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${frontend}/user/book-appointment/${lawyerId}`,
+            success_url: `${process.env.FRONTEND_URL}/user/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.FRONTEND_URL}/user/book-appointment/${lawyerId}`,
             line_items: [{
                 price_data: {
                     currency: "inr",
@@ -319,8 +318,8 @@ export const createSubscriptionCheckoutSession = async (req,res,next) => {
                 price: plan.stripePriceId,
                 quantity: 1,
             }],
-            success_url: `${frontend}/user-lawyer/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${frontend}/user-lawyer/subscription`,
+            success_url: `${process.env.FRONTEND_URL}/user-lawyer/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.FRONTEND_URL}/user-lawyer/subscription`,
             metadata: {
                 lawyerId: lawyerId.toString(),
                 planId: plan.planId,

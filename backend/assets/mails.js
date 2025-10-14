@@ -1,5 +1,3 @@
-import { frontend } from "../server.js";
-
 export const otpMailContent = (otp) => ({
     subject: "Your OTP for CounselDesk - Account Verification",
     html: `
@@ -47,7 +45,7 @@ export const welcomeMailContent = (userName) => ({
             <li style="padding: 5px 0;">✔&nbsp; Connect with our network of verified legal professionals.</li>
         </ul>
         <div style="text-align: center; margin: 40px 0;">
-          <a href="${frontend}" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">Explore Your Dashboard</a>
+          <a href="${process.env.FRONTEND_URL}" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">Explore Your Dashboard</a>
         </div>
         <p style="font-size: 16px; color: #1A1A1A;">
           Remember, while our AI is powerful, its advice does not constitute a legal opinion. Always consult with a qualified professional for critical matters.
@@ -132,7 +130,7 @@ export const adminCreationMailContent = (details) => ({
             For security reasons, please log in and change your password immediately.
         </p>
         <div style="text-align: center; margin: 30px 0;">
-          <a href="${frontend}/login" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">Log in to Admin Panel</a>
+          <a href="${process.env.FRONTEND_URL}/login" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">Log in to Admin Panel</a>
         </div>
       </div>
       <div style="background-color: #E8D7B5; color: #1A1A1A; padding: 15px; text-align: center; font-size: 12px;">
@@ -156,7 +154,7 @@ export const verificationApprovedMailContent = (lawyerName) => ({
           We are pleased to inform you that your profile and documents have been successfully verified. Your CounselDesk profile is now active and visible to potential clients.
         </p>
         <div style="text-align: center; margin: 40px 0;">
-          <a href="${frontend}/user-lawyer" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px;">Go to Your Dashboard</a>
+          <a href="${process.env.FRONTEND_URL}/user-lawyer" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px;">Go to Your Dashboard</a>
         </div>
         <p style="font-size: 16px;">Welcome aboard! We're excited to have you as a verified member of our legal network.</p>
       </div>
@@ -188,7 +186,7 @@ export const verificationRejectedMailContent = (lawyerName, rejectReason) => ({
           You are welcome to resubmit your profile with the necessary corrections.
         </p>
         <div style="text-align: center; margin: 40px 0;">
-          <a href="${frontend}/user-lawyer/bio-data" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px;">Resubmit Profile</a>
+          <a href="${process.env.FRONTEND_URL}/user-lawyer/bio-data" target="_blank" style="background-color: #A89166; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 18px;">Resubmit Profile</a>
         </div>
       </div>
       <div style="background-color: #E8D7B5; padding: 15px; text-align: center; font-size: 12px;">
