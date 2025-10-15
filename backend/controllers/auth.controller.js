@@ -72,7 +72,7 @@ export const authByGoogle = async (req,res,next) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "None"
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         });
 
         res.status(200).json({
@@ -110,7 +110,7 @@ export const signupByLocal = async (req,res,next) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "None"
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         });
 
         res.status(200).json({
@@ -143,7 +143,7 @@ export const loginByLocal = async (req,res,next) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "None"
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         });
 
         res.status(200).json({
@@ -180,7 +180,7 @@ export const logout = async (req,res,next) => {
     try {
         res.clearCookie("refreshToken", {
             httpOnly: true,
-            sameSite: "strict",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
             secure: process.env.NODE_ENV === "production"
         });
 
@@ -248,7 +248,7 @@ export const deleteAccount = async (req,res,next) => {
             await Promise.all(filesToDelete.map(url => deleteFileByUrl(url)));
         }
 
-        if (logout) res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV === "production" });
+        if (logout) res.clearCookie("refreshToken", { httpOnly: true, sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", secure: process.env.NODE_ENV === "production" });
         res.status(200).json({ success: true, message: "Your account has been successfully anonymized and deactivated." });
     } catch (error) {
         await dbSession.abortTransaction();
