@@ -6,6 +6,8 @@ import { isLawyer, profileUpdateValidator, reviewValidator } from "../middleware
 import handleFormError from "../utils/handleFormError.js";
 import { createCheckoutSession, confirmBooking, cancelAppointment } from "../controllers/stripe.controller.js";
 import { generalLimiter } from "../middlewares/rateLimiters.js";
+import { addQuestion, getQuestionsList, markAsBestAnswer, toggleVote } from "../controllers/community.controller.js";
+import { addQuestionValidator, isValidAnswerId } from "../middlewares/community.middleware.js";
 
 const router = Router();
 router.use(generalLimiter);
@@ -40,5 +42,11 @@ router.get("/reviews/list/:lawyerId", userController.getReviewsList);
 
 //Payment History
 router.get("/payments/history", userController.getPaymentHistory);
+
+//Community
+router.post("/community/question/add", addQuestionValidator, handleFormError, addQuestion);
+router.get("/community/questions/list", getQuestionsList);
+router.post("/community/vote/toggle", isValidAnswerId, toggleVote);
+router.put("/community/mark", isValidAnswerId, markAsBestAnswer);
 
 export default router;

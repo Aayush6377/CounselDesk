@@ -9,6 +9,8 @@ import Profile from "../pages/lawyer/Profile/Profile";
 import AppointmentDetails from "../pages/lawyer/Appointments/AppointmentDetails";
 import SubscriptionSuccess from "../pages/lawyer/Subscription/SubscriptionSuccess";
 import MeetingPage from "../components/MeetingPage/MeetingPage";
+import AnswerQuestionsPage from "../pages/lawyer/AnswerQuestionsPage/AnswerQuestionsPage";
+import MyAnswersPage from "../pages/lawyer/MyAnswersPage/MyAnswersPage";
 
 const lawyerChildrens = [
     {
@@ -48,6 +50,14 @@ const lawyerChildrens = [
     {
         path: "appointment-details/:appointmentId",
         element: <AppointmentDetails />
+    },
+    {
+        path: "community",
+        element: <AnswerQuestionsPage />
+    },
+    {
+        path: "community/myAnswers",
+        element: <MyAnswersPage />
     },
     {
         path: "meeting/:appointmentId",

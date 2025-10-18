@@ -7,6 +7,7 @@ const Header = () => {
         { name: "Chatbot", path: "chatbot" },
         { name: "Find Lawyers", path: "lawyers" },
         { name: "Appointments", path: "appointments" },
+        { name: "Community", path: "community" }
     ];
 
     return (

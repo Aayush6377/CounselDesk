@@ -10,6 +10,8 @@ import UserProfile from "../pages/user/Profile/Profile";
 import LawyerReviews from "../pages/user/LawyerReviews/LawyerReviews";
 import BookingSuccess from "../pages/user/Booking/BookingSuccess";
 import MeetingPage from "../components/MeetingPage/MeetingPage";
+import LegalQAPage from "../pages/user/LegalQAPage/LegalQAPage";
+import MyQuestionsPage from "../pages/user/MyQuestionsPage/MyQuestionsPage";
 
 const userChildrens = [
       { 
@@ -51,6 +53,14 @@ const userChildrens = [
       {
         path: "lawyer-reviews/:lawyerId",
         element: <LawyerReviews />
+      },
+      {
+        path: "community",
+        element: <LegalQAPage />
+      },
+      {
+        path: "community/myQuestions",
+        element: <MyQuestionsPage />
       },
       {
         path: "meeting/:appointmentId",

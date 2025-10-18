@@ -182,3 +182,43 @@ export const getDashboardData = async () => {
         throw error;
     }
 }
+
+export const addQuestion = async ({ isAnonymous, title, description, category }) => {
+    try {
+        const res = await api.post("/api/user/community/question/add", { isAnonymous, title, description, category });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const getQuestionsList = async (page = 1, category = "", search = "", isPersonal = false) => {
+    try {
+        const res = await api.get("/api/user/community/questions/list", { params: { page, category, search, isPersonal } });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const toggleVote = async (answerId) => {
+    try {
+        const res = await api.post("/api/user/community/vote/toggle", { answerId });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const markAsBestAnswer = async ({ questionId, answerId }) => {
+    try {
+        const res = await api.put("/api/user/community/mark", { questionId, answerId });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

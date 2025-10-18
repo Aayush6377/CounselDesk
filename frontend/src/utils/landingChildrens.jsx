@@ -5,6 +5,7 @@ import LawyerProfile from "../components/LawyerProfile/LawyerProfile";
 import Login from "../pages/landing/Login/Login";
 import ForgotPassword from "../pages/landing/Login/ForgotPassword";
 import Signup from "../pages/landing/Signup/Signup";
+import LandingQAPage from "../pages/landing/LandingQAPage/LandingQAPage";
 
 const landingChildrens = [
     {
@@ -30,6 +31,10 @@ const landingChildrens = [
     {
         path: "/signup",
         element: <Signup />
+    },
+    {
+        path: "/community",
+        element: <LandingQAPage />
     },
     ...sharedChildrens
 ];
