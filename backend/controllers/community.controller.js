@@ -19,7 +19,7 @@ export const addQuestion = async (req,res,next) => {
 
 export const getQuestionsList = async (req,res,next) => {
     try {
-        const { page = 1, limit = 8, category  = "", search = "", isPersonal = false } = req.query;
+        const { page = 1, limit = 8, category  = "", search = "", isPersonal = "false" } = req.query;
         const userId = req.userId;
 
         const query = {};
@@ -32,7 +32,9 @@ export const getQuestionsList = async (req,res,next) => {
             query.$text = { $search: search };
         }
 
-        if (isPersonal){
+        const personal = isPersonal === "true";
+
+        if (personal){
             query.userId = new mongoose.Types.ObjectId(userId);
         }
 
