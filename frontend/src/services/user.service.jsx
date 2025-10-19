@@ -222,3 +222,23 @@ export const markAsBestAnswer = async ({ questionId, answerId }) => {
         throw error;
     }
 }
+
+export const updateQuestion = async ({ questionId, isAnonymous, title, description, category }) => {
+    try {
+        const res = await api.put(`/api/user/community/question/update/${questionId}`,{ isAnonymous, title, description, category });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const deleteQuestion = async ( questionId ) => {
+    try {
+        const res = await api.delete(`/api/user/community/question/delete/${questionId}`);
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

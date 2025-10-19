@@ -1,36 +1,75 @@
+import { addAnswer, updateAnswer } from '../../../services/lawyer.service';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useState, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 
-const AnswerModal = ({ isOpen, onClose, question, onSubmit, isPending }) => {
-    const [answerText, setAnswerText] = useState('');
-
+const AnswerModal = ({ isOpen, onClose, question, invalidateKey }) => {
+    const [formData, setFormData] = useState({ content: '' });
+    const [errors, setErrors] = useState({});
+    const queryClient = useQueryClient();
     const isUpdateMode = !!question?.myAnswer;
 
+    const { mutate: add, isPending: isAdding } = useMutation({
+        mutationFn: addAnswer,
+        onSuccess: (res) => {
+            setErrors({});
+            toast.success(res.message || "Your answer has been successfully added");
+            queryClient.invalidateQueries({ queryKey: invalidateKey });
+            onClose();
+        },
+        onError: (err) => {
+            if (err.response?.data?.errors) {
+                setErrors(err.response.data.errors);
+                toast.error(err.response.data.message);
+            } else {
+                toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+            }
+        }
+    });
+
+    const { mutate: update, isPending: isUpdating } = useMutation({
+        mutationFn: updateAnswer,
+        onSuccess: (res) => {
+            setErrors({});
+            toast.success(res.message || "Your answer has been successfully updated");
+            queryClient.invalidateQueries({ queryKey: invalidateKey });
+            onClose();
+        },
+        onError: (err) => {
+            if (err.response?.data?.errors) {
+                setErrors(err.response.data.errors);
+                toast.error(err.response.data.message);
+            } else {
+                toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+            }
+        }
+    });
+
     useEffect(() => {
-        // Pre-fill with existing answer if available for "Update" mode
         if (isOpen && isUpdateMode) {
-            setAnswerText(question.myAnswer.content);
+            setFormData({content: question.myAnswer.content});
         } else {
-            // Reset when opening for a new question or closing
-            setAnswerText('');
+            setFormData({ content: "" });
+            setErrors({});
         }
     }, [isOpen, question, isUpdateMode]);
 
     if (!isOpen) return null;
 
+    const handleChange = (e) => {
+        setFormData(prev => ({...prev, [e.target.name]: e.target.value}));
+        setErrors(prev => ({...prev, [e.target.name]: ""}));
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (answerText.trim().length < 50) {
-            toast.error("Your answer must be at least 50 characters long.");
-            return;
+        if (isUpdateMode){
+            update({ content: formData.content, answerId: question.myAnswer._id });
         }
-        // onSubmit would trigger a useMutation hook in the parent component
-        onSubmit({ 
-            questionId: question._id, 
-            answerId: question.myAnswer?._id, // Pass answerId if updating
-            content: answerText 
-        });
+        else{
+            add({ content: formData.content, questionId: question._id });
+        }
     };
 
     return (
@@ -41,7 +80,7 @@ const AnswerModal = ({ isOpen, onClose, question, onSubmit, isPending }) => {
                         <h2 className="text-[var(--accent-color)] text-2xl font-bold">{question.title}</h2>
                         <p className="text-gray-400 text-sm mt-1">Category: {question.category}</p>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+                    <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors cursor-pointer">
                         <IoClose size={28} />
                     </button>
                 </div>
@@ -50,20 +89,22 @@ const AnswerModal = ({ isOpen, onClose, question, onSubmit, isPending }) => {
                     <label className="block text-sm font-medium text-gray-300 mb-2" htmlFor="answer-text">Your Answer</label>
                     <textarea
                         id="answer-text"
-                        value={answerText}
-                        onChange={(e) => setAnswerText(e.target.value)}
+                        value={formData.content}
+                        onChange={handleChange}
+                        name='content'
                         rows="8"
                         placeholder="Provide your legal expertise here. Remember to include a disclaimer if necessary."
                         required
-                        className="form-textarea w-full bg-black/30 border border-white/10 rounded-lg p-4 text-gray-300 focus:ring-2 focus:ring-[var(--primary-color)] outline-none transition-all"
+                        className={`form-textarea w-full bg-black/30 border ${errors.content ? 'border-red-500' : 'border-white/10'} rounded-lg p-4 text-gray-300 focus:ring-2 focus:ring-[var(--primary-color)] outline-none transition-all`}
                     />
+                    {errors.content && <p className="text-red-400 text-sm mt-1">{errors.content}</p>}
                     <div className="flex justify-end pt-6">
                         <button
                             type="submit"
-                            disabled={isPending}
-                            className="py-3 px-8 rounded-lg bg-[var(--primary-color)] text-[var(--secondary-color)] font-bold hover:bg-[#c0a97c] transition-colors disabled:opacity-50"
+                            disabled={isAdding || isUpdating}
+                            className="py-3 px-8 rounded-lg bg-[var(--primary-color)] text-[var(--secondary-color)] font-bold hover:bg-[#c0a97c] transition-colors disabled:opacity-50 cursor-pointer"
                         >
-                            {isPending ? 'Submitting...' : (isUpdateMode ? 'Update Answer' : 'Submit Answer')}
+                            {isUpdateMode ? isUpdating ? 'Updating...' : 'Update Answer' : isAdding ? 'Submitting...' : 'Submit Answer'}
                         </button>
                     </div>
                 </form>

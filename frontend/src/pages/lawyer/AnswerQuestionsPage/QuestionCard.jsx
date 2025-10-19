@@ -38,24 +38,24 @@ const QuestionCard = ({ question, onAnswer, onUpdate, onDelete }) => (
         <div className="flex flex-col gap-4 mt-2">
             <div className="flex items-center justify-between border-t border-white/10 pt-4">
                 <div className="flex items-center gap-2">
-                    <img alt={question.user.name} className="size-8 rounded-full object-cover" src={question.user.profileImage || images.defaultProfile} />
+                    <img alt={question.username} className="size-8 rounded-full object-cover" src={question.userProfile || images.defaultProfile} />
                     <div className="text-xs text-gray-400">
-                        <span className="font-semibold text-gray-300">{question.user.name}</span>
+                        <span className="font-semibold text-gray-300">{question.username}</span>
                         <p>{moment(question.createdAt).fromNow()}</p>
                     </div>
                 </div>
             </div>
             {question.myAnswer ? (
                 <div className="flex items-center gap-3 mt-4">
-                    <button onClick={() => onUpdate(question)} className="w-full flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-[var(--primary-color)] text-[var(--secondary-color)] text-base font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect">
+                    <button onClick={() => onUpdate(question)} className="w-full flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-[var(--primary-color)] text-[var(--secondary-color)] text-base font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect cursor-pointer">
                         <MdEdit /> <span>Update</span>
                     </button>
-                    <button onClick={() => onDelete(question)} className="w-full flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-red-900/40 border border-red-500/50 text-red-300 hover:bg-red-900/60 transition-all duration-300 text-base font-bold">
+                    <button onClick={() => onDelete(question)} className="w-full flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-red-900/40 border border-red-500/50 text-red-300 hover:bg-red-900/60 transition-all duration-300 text-base font-bold cursor-pointer">
                         <MdDelete /> <span>Delete</span>
                     </button>
                 </div>
             ) : (
-                <button onClick={() => onAnswer(question)} className="w-full flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-[var(--primary-color)] text-[var(--secondary-color)] text-base font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect">
+                <button onClick={() => onAnswer(question)} className="w-full flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-[var(--primary-color)] text-[var(--secondary-color)] text-base font-bold leading-normal tracking-wide hover:bg-[#c0a97c] transition-all duration-300 transform hover:scale-105 glow-effect cursor-pointer">
                     <span>Answer Question</span> <MdArrowForward />
                 </button>
             )}

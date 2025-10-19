@@ -69,7 +69,7 @@ export const dailyMaintenanceJob = async (req,res,next) => {
         res.status(200).json({ success: 1, message: `Daily maintenance job finished successfully at ${new Date().toISOString()}` });
     } catch (error) {
         console.error('An error occurred during the daily maintenance job:', error);
-        next('An error occurred during the daily maintenance job');
+        next(error);
     }
 };
 

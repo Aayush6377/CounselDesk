@@ -21,7 +21,8 @@ const specializationOptions = [
     { value: "Real Estate Law", label: "Real Estate Law"},
     { value: "Environmental Law", label: "Environmental Law" },
     { value: "Labour Law", label: "Labour Law" },
-    { value: "Civil Law", label: "Civil Law" }
+    { value: "Civil Law", label: "Civil Law" },
+    { value: "Other", label: "Other" }
 ];
 
 const LegalQAPage = () => {
@@ -62,7 +63,7 @@ const LegalQAPage = () => {
         return () => observer.disconnect();
     }, [data, hasNextPage, fetchNextPage, isFetchingNextPage]);
     
-    const questions = data?.pages.flatMap(page => page.data) ?? [];
+    const questions = data?.pages?.flatMap(page => page?.data) ?? [];
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;

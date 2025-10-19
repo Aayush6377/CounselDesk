@@ -4,6 +4,9 @@ import APPOINTMENT from "../models/appointments.model.js";
 import TIMESLOT from "../models/timeSlot.model.js";
 import LAWYER from "../models/lawyers.model.js";
 import PAYMENT from "../models/payments.model.js";
+import QUESTION from "../models/questions.model.js";
+import ANSWER from "../models/answers.model.js";
+import VOTE from "../models/votes.model.js";
 import SCHEDULE from "../models/schedule.model.js";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
@@ -192,7 +195,6 @@ export const logout = async (req,res,next) => {
 
 export const deleteAccount = async (req,res,next) => {
     const dbSession = await mongoose.startSession();
-
     dbSession.startTransaction();
     try {
         const userId = req.userToDelete;
@@ -221,12 +223,38 @@ export const deleteAccount = async (req,res,next) => {
                 appointment.status = 'cancelled';
                 await appointment.save({ session: dbSession });
             }
+
+            const userQuestions = await QUESTION.find({ userId: userId }).select('_id').session(dbSession);
+            if (userQuestions.length > 0) {
+                const questionIds = userQuestions.map(q => q._id);
+                const answersInUserQuestions = await ANSWER.find({ questionId: { $in: questionIds } }).select('_id').session(dbSession);
+                const answerIds = answersInUserQuestions.map(a => a._id);
+                if (answerIds.length > 0) {
+                    await VOTE.deleteMany({ answerId: { $in: answerIds } }, { session: dbSession });
+                }
+                await ANSWER.deleteMany({ questionId: { $in: questionIds } }, { session: dbSession });
+                await QUESTION.deleteMany({ userId: userId }, { session: dbSession });
+            }
+
+            const userVotes = await VOTE.find({ userId: userId }).session(dbSession);
+            if (userVotes.length > 0) {
+                const answerIdsToUpdate = userVotes.map(vote => vote.answerId);
+                await ANSWER.updateMany({ _id: { $in: answerIdsToUpdate } }, { $inc: { upvotes: -1 } }, { session: dbSession });
+                await VOTE.deleteMany({ userId: userId }, { session: dbSession });
+            }
         }
 
         else if (user.role === "lawyer"){
             lawyerProfile = await LAWYER.findOne({ userId: userId }).session(dbSession);
             if (lawyerProfile) {
                 const lawyerId = lawyerProfile._id;
+
+                const lawyerAnswers = await ANSWER.find({ lawyerId: lawyerId }).select('_id').session(dbSession);
+                if (lawyerAnswers.length > 0) {
+                    const lawyerAnswerIds = lawyerAnswers.map(a => a._id);
+                    await VOTE.deleteMany({ answerId: { $in: lawyerAnswerIds } }, { session: dbSession });
+                    await ANSWER.deleteMany({ lawyerId: lawyerId }, { session: dbSession });
+                }
                 
                 await REVIEW.deleteMany({ lawyerId }, { session: dbSession });
                 await APPOINTMENT.deleteMany({ lawyerId }, { session: dbSession });

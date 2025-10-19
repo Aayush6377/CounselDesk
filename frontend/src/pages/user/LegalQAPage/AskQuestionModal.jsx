@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 import CustomSelect from '../../../components/CustomSelect/CustomSelect';
-import { addQuestion } from '../../../services/user.service';
+import { addQuestion, updateQuestion } from '../../../services/user.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const categoryOptions = [
@@ -31,7 +31,7 @@ const AskQuestionModal = ({ isOpen, onClose, invalidateKey, initialData = null }
                 title: initialData.title || '',
                 description: initialData.description || '',
                 category: initialData.category || 'Family Law',
-                isAnonymous: initialData.isAnonymous || false,
+                isAnonymous: initialData.isAnonymous || false
             });
         } else {
             setFormData({ title: '', description: '', category: 'Family Law', isAnonymous: false });
@@ -58,6 +58,24 @@ const AskQuestionModal = ({ isOpen, onClose, invalidateKey, initialData = null }
         }
     });
 
+    const { mutate: update, isPending: isUpdating } = useMutation({
+        mutationFn: updateQuestion,
+        onSuccess: (res) => {
+            setErrors({});
+            toast.success(res.message || "Your question has been successfully updated");
+            queryClient.invalidateQueries({ queryKey: invalidateKey });
+            onClose();
+        },
+         onError: (err) => {
+            if (err.response?.data?.errors) {
+                setErrors(err.response.data.errors);
+                toast.error(err.response.data.message);
+            } else {
+                toast.error(err?.response?.data?.message || err.message || "Something went wrong. Please try again.");
+            }
+        }
+    });
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
@@ -71,9 +89,8 @@ const AskQuestionModal = ({ isOpen, onClose, invalidateKey, initialData = null }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
         if (isUpdateMode) {
-           // update({ questionId: initialData._id, ...formData });
+            update({ questionId: initialData._id, ...formData });
         } else {
             add(formData);
         }
@@ -144,9 +161,10 @@ const AskQuestionModal = ({ isOpen, onClose, invalidateKey, initialData = null }
                     <div className="flex justify-end pt-4">
                         <button
                             type="submit"
+                            disabled={ isAdding || isUpdating }
                             className="py-3 px-8 rounded-lg bg-[var(--primary-color)] text-[var(--secondary-color)] font-bold hover:bg-[#c0a97c] transition-colors cursor-pointer"
                         >
-                            {isUpdateMode ? 'Update Question' : isAdding ? 'Submitting...' : 'Submit Question'}
+                            {isUpdateMode ? isUpdating ? 'Updating...' : 'Update Question' : isAdding ? 'Submitting...' : 'Submit Question'}
                         </button>
                     </div>
                 </form>

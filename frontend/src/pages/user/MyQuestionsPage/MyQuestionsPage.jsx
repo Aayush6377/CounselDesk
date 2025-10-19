@@ -5,7 +5,7 @@ import AskQuestionModal from '../LegalQAPage/AskQuestionModal';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import MyQuestionCard from './MyQuestionCard';
 import { toast } from 'react-toastify';
-import { getQuestionsList, markAsBestAnswer } from '../../../services/user.service';
+import { deleteQuestion, getQuestionsList, markAsBestAnswer } from '../../../services/user.service';
 import Loader from '../../../components/Loader/Loader';
 import Error from '../../../components/Error/Error';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -40,6 +40,18 @@ const MyQuestionsPage = () => {
         }
     });
 
+    //Delete the question
+    const { mutate: mutateDelQuestion } = useMutation({
+        mutationFn: deleteQuestion,
+        onSuccess: (res) => {
+            toast.success(res.message || "Your question has been successfully deleted");
+            queryClient.invalidateQueries({ queryKey: ["personalQuestions"] });
+        },
+        onError: (err) => {
+            toast.error(err.response.data.message || "Unable to delete the question");
+        }
+    });
+
     useEffect(() => {
         if (!observerRef.current || isFetchingNextPage || !hasNextPage) return;
 
@@ -67,7 +79,7 @@ const MyQuestionsPage = () => {
     };
 
     const handleConfirmDelete = () => {
-        console.log("Deleting question:", questionToAction._id);
+        mutateDelQuestion(questionToAction._id);
         setIsDeleteModalOpen(false);
         setQuestionToAction(null);
     };

@@ -7,11 +7,12 @@ import fileUploaderMiddleware, { imageUploader } from "../middlewares/multer.js"
 import { profileSetupValidator, profileUpdateValidator, isLawyer, scheduleUpdateValidator, scheduleTodayValidator } from "../middlewares/lawyer.middleware.js";
 import isLogin from "../middlewares/isLogin.js";
 import { generalLimiter } from "../middlewares/rateLimiters.js";
+import { getLawyerQuestionsList, addAnswer, updateAnswer, deleteAnswer } from "../controllers/community.controller.js";
+import { addAnswerValidator, updateAnswerValidator } from "../middlewares/community.middleware.js";
 
 const router = Router();
 router.use(generalLimiter);
 router.use(isLogin);
-
 
 //Profile routes
 router.post("/profile/setup", fileUploaderMiddleware, profileSetupValidator ,validationAndCleanup, lawyerController.profileSetup);
@@ -46,5 +47,11 @@ router.get("/subscription/curent-plan/details", getSubscriptionDetails);
 
 //Earning routes
 router.get("/earning/details", lawyerController.getEarningsData);
+
+//Community
+router.get("/community/questions/list", getLawyerQuestionsList);
+router.post("/community/answer/add", addAnswerValidator, handleFormError, addAnswer);
+router.put("/community/answer/update", updateAnswerValidator, handleFormError, updateAnswer);
+router.delete("/community/answer/delete/:answerId", deleteAnswer);
 
 export default router;

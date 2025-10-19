@@ -1,39 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MdEditNote, MdGavel, MdNotificationsActive, MdHelpOutline, MdLockPerson } from 'react-icons/md';
-
-const exampleQuestions = [
-    {
-        id: 1,
-        question: 'What are the first steps to take after a minor car accident?',
-        askedBy: 'a user',
-        date: '2 days ago',
-        answer: {
-            text: "First, ensure everyone is safe and call for medical help if needed. Exchange insurance and contact information with the other driver. It's crucial to take photos of the damage and the scene. Avoid admitting fault. Report the accident to your insurance company promptly. Consulting with a personal injury lawyer can also be beneficial to understand your rights and options.",
-            lawyer: {
-                name: 'John Doe, Esq.',
-                specialization: 'Verified Personal Injury Lawyer',
-                avatar: 'https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=256'
-            }
-        }
-    },
-    {
-        id: 2,
-        question: 'Can my landlord increase my rent without notice?',
-        askedBy: 'a user',
-        date: '5 days ago',
-        answer: {
-            text: "Generally, landlords are required to provide written notice before increasing rent. The notice period varies by state and the terms of your lease agreement. For a month-to-month lease, it's typically 30 days. For a fixed-term lease, the rent usually cannot be increased until the lease expires. Review your lease and local landlord-tenant laws for specific requirements.",
-            lawyer: {
-                name: 'Jane Smith, Esq.',
-                specialization: 'Verified Real Estate Lawyer',
-                avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=256'
-            }
-        }
-    }
-];
+import { useQuery } from '@tanstack/react-query';
+import { getFeaturedQAndA } from '../../../services/landing.service';
+import Loader from '../../../components/Loader/Loader';
+import createTitleFromStatus from '../../../utils/createTitleFromStatus';
+import Error from '../../../components/Error/Error';
+import moment from 'moment-timezone';
 
 const LandingQAPage = () => {
+    const { data: result, isPending, isError, error } = useQuery({
+        queryKey: ["ExampleQuestions"],
+        queryFn: getFeaturedQAndA
+    });
+
+    const exampleQuestions = result?.data;
+
+    if (isPending){
+        return <Loader />;
+    }
+
+    if (isError){
+      const errorCode = error.response?.data?.status || 500;
+      const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+      const errorTitle = createTitleFromStatus(errorCode);
+
+      return <Error errorCode={errorCode} title={errorTitle} message={errorMessage} />
+  }
+
     return (
         <main className="flex-1">
             <section className="py-20 px-4 text-center bg-[var(--secondary-color)] pt-15">
@@ -65,11 +59,19 @@ const LandingQAPage = () => {
                         <h2 className="text-4xl font-extrabold text-white tracking-[-0.033em]">Example Questions & Answers</h2>
                         <p className="mt-3 text-lg text-gray-400">See how our community helps users like you.</p>
                     </div>
+
                     <div className="space-y-8">
-                        {exampleQuestions.map((item, index) => (
-                            <ExampleQACard key={item.id} item={item} delay={`stagger-${index + 1}`} />
-                        ))}
-                    </div>
+                        {exampleQuestions && exampleQuestions.length > 0 ? (
+                            exampleQuestions.map((item, index) => (
+                                <ExampleQACard key={item.id || index} item={item} delay={`stagger-${index + 1}`} />
+                            ))
+                        ) : (
+                            <div className="text-center text-gray-400 py-10 bg-[#2D2D2D] rounded-lg">
+                                <p>No featured questions available at the moment.</p>
+                                <p className="text-sm mt-2">Be the first to ask a question and get help from our community!</p>
+                            </div>
+                        )}
+                    </div>        
                 </div>
             </section>
 
@@ -111,7 +113,7 @@ const ExampleQACard = ({ item, delay }) => (
                 <MdHelpOutline />
                 <span>{item.question}</span>
             </h3>
-            <p className="text-sm text-gray-500 mt-1">Asked by {item.askedBy} {item.date}</p>
+            <p className="text-sm text-gray-500 mt-1">Asked by {item.askedBy} {moment(item.date).fromNow()}</p>
         </div>
         <div className="border-l-4 border-[var(--primary-color)] pl-6 mt-6">
             <p className="text-gray-300 mb-4">"{item.answer.text}"</p>

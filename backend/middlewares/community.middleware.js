@@ -2,6 +2,7 @@ import { body } from "express-validator";
 import mongoose from "mongoose";
 import createError from "../utils/createError.js";
 import ANSWER from "../models/answers.model.js";
+import QUESTION from "../models/questions.model.js";
 
 
 export const addQuestionValidator = [
@@ -19,6 +20,44 @@ export const addQuestionValidator = [
 
     body("isAnonymous").optional()
     .isBoolean().withMessage("isAnonymous must be a boolean value")
+];
+
+export const addAnswerValidator = [
+    body("content").trim()
+    .notEmpty().withMessage("Answer must not be empty")
+    .isLength({ min: 30 }).withMessage("Answer must at least 30 characters long"),
+
+    body("questionId")
+    .notEmpty().withMessage("Question ID is required")
+    .isMongoId().withMessage("Invalid Question ID")
+    .custom(async (value) => {
+        const result = await QUESTION.findById(value);
+
+        if (!result){
+            return Promise.reject("Question Not Found");
+        }
+
+        return true;
+    })
+];
+
+export const updateAnswerValidator = [
+    body("content").trim()
+    .notEmpty().withMessage("Answer must not be empty")
+    .isLength({ min: 30 }).withMessage("Answer must at least 30 characters long"),
+
+    body("answerId")
+    .notEmpty().withMessage("Answer ID is required")
+    .isMongoId().withMessage("Invalid Answer ID")
+    .custom(async (value) => {
+        const result = await ANSWER.findById(value);
+
+        if (!result){
+            return Promise.reject("Answer Not Found");
+        }
+
+        return true;
+    })
 ];
 
 export const isValidAnswerId = async (req,res,next) => {

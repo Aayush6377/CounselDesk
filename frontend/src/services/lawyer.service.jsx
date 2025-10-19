@@ -183,3 +183,46 @@ export const getEarningsData = async (page = 1) => {
         throw error;
     }
 }
+
+export const getLawyerQuestionsList = async ({ pageParam = 1, queryKey }) => {
+    const [_key, filters] = queryKey;
+    try {
+        const res = await api.get("/api/lawyer/community/questions/list", {
+            params: { page: pageParam, ...filters }
+        });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+export const addAnswer = async ({ content, questionId }) => {
+    try {
+        const res = await api.post("/api/lawyer/community/answer/add", { content, questionId });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const updateAnswer = async ({ content, answerId }) => {
+    try {
+        const res = await api.put("/api/lawyer/community/answer/update",{ content, answerId });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const deleteAnswer = async (answerId) => {
+    try {
+        const res = await api.delete(`/api/lawyer/community/answer/delete/${answerId}`);
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

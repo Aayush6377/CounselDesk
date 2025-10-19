@@ -43,3 +43,13 @@ export const addContactSubmission = async ({ name, email, message, phone }) => {
         throw error;
     }
 }
+
+export const getFeaturedQAndA = async () => {
+    try {
+        const res = await api.get("/api/landing/community/questions/list");
+        return res.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
