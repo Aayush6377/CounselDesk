@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { MdAutoAwesome } from "react-icons/md";
 import { generateContent } from '../../../services/geminiService';
-// 1. Import the ReactMarkdown component
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm'; // For better markdown support (tables, etc.)
+import remarkGfm from 'remark-gfm';
 
 const SectionDetailModal = ({ isOpen, onClose, section }) => {
     const [aiSummary, setAiSummary] = useState('');
