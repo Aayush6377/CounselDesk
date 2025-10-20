@@ -9,7 +9,7 @@ const codeOptions = [
     { value: '', label: 'All Codes' },
     { value: 'Constitution', label: 'Constitution of India' },
     { value: 'IPC', label: 'Indian Penal Code (IPC)' },
-    { value: 'CrPC', label: 'Code of Criminal Procedure (CrPC)' },
+    { value: 'CRPC', label: 'Code of Criminal Procedure (CrPC)' },
     { value: 'CPC', label: 'Code of Civil Procedure (CPC)' },
     { value: 'IEA', label: 'Indian Evidence Act (IEA)' },
     { value: 'NIA', label: 'Negotiable Instruments Act (NIA)' },
