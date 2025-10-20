@@ -60,7 +60,7 @@ app.use("/api/cron", cronRouter);
 app.use("/api/seed", seedRouter);
 
 app.get("/", (req, res) => {
-    res.status(200).send("CounselDesk Backend is running successfully.");
+    res.status(200).redirect(process.env.FRONTEND_URL);
 });
 
 app.use((err,req,res,next) => {

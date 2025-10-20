@@ -9,6 +9,7 @@ const footerLinks = {
   Services: [
     { name: "AI Legal Chatbot", path: "chatbot" },
     { name: "Lawyers", path: "lawyers" },
+    { name: "Indian Legal Codes", path: "indian-legal-codes" }
   ],
   "Quick Links": [
     { name: "About us", path: "about" },

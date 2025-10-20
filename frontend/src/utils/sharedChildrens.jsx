@@ -5,6 +5,7 @@ import AboutUs from "../pages/common/AboutUs/AboutUs";
 import PrivacyPolicy from "../pages/common/PrivacyPolicy/PrivacyPolicy";
 import TermsOfService from "../pages/common/TermsOfService/TermsOfService";
 import Disclaimer from "../pages/common/Disclaimer/Disclaimer";
+import LegalCodeExplorer from "../pages/common/LegalCodeExplorer/LegalCodeExplorer";
 
 const sharedChildrens = [
     {
@@ -34,6 +35,10 @@ const sharedChildrens = [
     {
         path: "disclaimer",
         element: <Disclaimer />
+    },
+    {
+        path: "indian-legal-codes",
+        element: <LegalCodeExplorer />
     }
 ];
 
