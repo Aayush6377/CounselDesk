@@ -4,6 +4,7 @@ import { signUpValidator, otpValidator, otpVerifyValidator, loginValidator, rese
 import handleFormError from "../utils/handleFormError.js";
 import isLogin from "../middlewares/isLogin.js";
 import { authLimiter } from "../middlewares/rateLimiters.js";
+import isDemoAccount from "../middlewares/isDemoAccount.js";
 
 const router = Router();
 router.use(authLimiter);
@@ -12,7 +13,7 @@ router.use(authLimiter);
 router.post("/google", authController.authByGoogle);
 router.post("/local/signup", signUpValidator, handleFormError, authController.signupByLocal);
 router.post("/local/login", loginValidator, handleFormError ,authController.loginByLocal);
-router.post("/local/resetPassword", resetPasswordValidator, handleFormError, authController.resetPassword);
+router.post("/local/resetPassword", resetPasswordValidator,isDemoAccount, handleFormError, authController.resetPassword);
 
 //OTP routes
 router.post("/otp/send", otpValidator, handleFormError, authController.sendOtp);
@@ -22,6 +23,6 @@ router.post("/refresh",authController.refresh);
 
 router.use(isLogin);
 router.post("/logout",authController.logout);
-router.delete("/delete", deleteMiddleware, authController.deleteAccount);
+router.delete("/delete", isDemoAccount, deleteMiddleware, authController.deleteAccount);
 
 export default router;

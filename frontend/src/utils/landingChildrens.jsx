@@ -6,6 +6,7 @@ import Login from "../pages/landing/Login/Login";
 import ForgotPassword from "../pages/landing/Login/ForgotPassword";
 import Signup from "../pages/landing/Signup/Signup";
 import LandingQAPage from "../pages/landing/LandingQAPage/LandingQAPage";
+import DemoLogin from "../pages/landing/DemoLogin/DemoLogin";
 
 const landingChildrens = [
     {
@@ -35,6 +36,14 @@ const landingChildrens = [
     {
         path: "/community",
         element: <LandingQAPage />
+    },
+    {
+        path: "/demo/user",
+        element: <DemoLogin role="user"/>
+    },
+    {
+        path: "/demo/lawyer",
+        element: <DemoLogin role="lawyer"/>
     },
     ...sharedChildrens
 ];

@@ -4,20 +4,20 @@ import { Link } from 'react-router-dom';
 import { developers } from '../../../assets/assets';
 
 const teamData = [
-   {
-    name: 'Sushil Gupta',
-    role: 'Backend Developer',
-    bio: 'Sushil is instrumental in developing the secure and powerful server-side logic of CounselDesk. He excels in database management and API development, guaranteeing the platform\'s integrity and performance.',
-    imageUrl: developers.sushil,
+  {
+    name: 'Aayush Kukreja',
+    role: 'Full Stack Developer & UI Designer',
+    bio: 'Aayush is the visionary behind CounselDesk, leading both the frontend and backend development. He specializes in crafting intuitive user experiences and brings the platform to life with his keen eye for design and full-stack expertise.',
+    imageUrl: developers.aayush,
     social: {
-      github: 'https://github.com/SGgithub001',
-      linkedin: 'https://www.linkedin.com/in/sushil-gupta-157b03250',
+      github: 'https://github.com/Aayush6377',
+      linkedin: 'https://www.linkedin.com/in/aayush-kukreja-b5885324a',
     },
   },
   {
     name: 'Sankit Singhal',
-    role: 'Backend Developer',
-    bio: 'Sankit architects the robust and scalable backend systems that power CounselDesk. His focus on clean, efficient code ensures that our platform runs smoothly and reliably for all our users.',
+    role: 'Backend & AI Research',
+    bio: 'Sankit architects the robust backend systems and leads the AI integration for CounselDesk. He has published a research paper on the application of AI in the legal tech space, working closely with Rahul to push the boundaries of our platform\'s intelligence.',
     imageUrl: developers.sankit,
     social: {
       github: 'https://github.com/SankitSinghal',
@@ -25,22 +25,22 @@ const teamData = [
     },
   },
   {
-    name: 'Aayush Kukreja',
-    role: 'Frontend Developer & UI Designer',
-    bio: 'Aayush is the creative mind behind CounselDesk\'s user interface. He specializes in crafting intuitive, user-friendly experiences and brings the platform to life with his keen eye for design and frontend expertise.',
-    imageUrl: developers.aayush, 
+    name: 'Sushil Gupta',
+    role: 'Backend Developer',
+    bio: 'Sushil is instrumental in developing the secure and powerful server-side logic of CounselDesk. He excels in database management and assisted in the backend development and testing, ensuring the platform\'s integrity and performance.',
+    imageUrl: developers.sushil,
     social: {
-      github: 'https://github.com/Aayush6377',
-      linkedin: 'https://www.linkedin.com/in/aayush-kukreja-b5885324a',
+      github: 'https://github.com/SGgithub001',
+      linkedin: 'https://www.linkedin.com/in/sushil-gupta-157b03250',
     },
   },
   {
     name: 'Rahul',
-    role: 'AI Research & Development',
-    bio: 'Rahul leads our research and development efforts, focusing on the AI that makes CounselDesk unique. His work in legal tech research ensures our platform stays innovative and provides intelligent solutions.',
+    role: 'AI Research Assistant',
+    bio: 'Rahul supports our research and development efforts. He assisted Sankit in the research and data analysis that contributed to his published paper, helping to ensure our AI solutions are cutting-edge and effective.',
     imageUrl: developers.rahul,
     social: {
-      github: 'rahul',
+      github: 'https://github.com/rahulmandal2002',
       linkedin: 'https://www.linkedin.com/in/rahulmandal2002',
     },
   },

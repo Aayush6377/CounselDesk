@@ -9,6 +9,7 @@ import isLogin from "../middlewares/isLogin.js";
 import { generalLimiter } from "../middlewares/rateLimiters.js";
 import { getLawyerQuestionsList, addAnswer, updateAnswer, deleteAnswer } from "../controllers/community.controller.js";
 import { addAnswerValidator, updateAnswerValidator } from "../middlewares/community.middleware.js";
+import isDemoAccount from "../middlewares/isDemoAccount.js";
 
 const router = Router();
 router.use(generalLimiter);
@@ -19,7 +20,7 @@ router.post("/profile/setup", fileUploaderMiddleware, profileSetupValidator ,val
 
 router.use(isLawyer);
 
-router.put("/profile/update", imageUploader, profileUpdateValidator, handleFormError ,lawyerController.profileUpdate);
+router.put("/profile/update", isDemoAccount, imageUploader, profileUpdateValidator, handleFormError ,lawyerController.profileUpdate);
 router.get("/profile/details", lawyerController.profileDetails);
 
 //Dashboard details

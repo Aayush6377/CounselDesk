@@ -8,13 +8,17 @@
   --glow-color: rgba(168, 145, 102, 0.4);
 }
 
+::selection{
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
 
 ::-webkit-scrollbar {
   width: 12px; 
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--secondary-color); 
+  background: var(--secondary-color);
 }
 
 ::-webkit-scrollbar-thumb {

@@ -8,13 +8,14 @@ import { createCheckoutSession, confirmBooking, cancelAppointment } from "../con
 import { generalLimiter } from "../middlewares/rateLimiters.js";
 import { addQuestion, deleteQuestion, getQuestionsList, markAsBestAnswer, toggleVote, updateQuestion } from "../controllers/community.controller.js";
 import { addQuestionValidator, isValidAnswerId } from "../middlewares/community.middleware.js";
+import isDemoAccount from "../middlewares/isDemoAccount.js";
 
 const router = Router();
 router.use(generalLimiter);
 router.use(isLogin);
 
 //Profile route
-router.put("/profile/update", imageUploader, profileUpdateValidator , handleFormError ,userController.profileUpdate);
+router.put("/profile/update",isDemoAccount, imageUploader, profileUpdateValidator , handleFormError ,userController.profileUpdate);
 
 //Dashboard details
 router.get("/dashboard/details", userController.getDashboardData);
