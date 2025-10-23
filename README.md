@@ -25,6 +25,12 @@ The project is live and deployed on **Vercel**. You can explore full functionali
 
 ---
 
+## 💳 Stripe Payment & Payouts
+
+**Stripe Test Card:** Use card number `4242 4242 4242 4242` with any future MM/YY and any CVC code for testing payments in Stripe’s test mode.
+
+---
+
 ## ✨ Key Features
 
 - **Role-Based Dashboards:** Independent secured dashboards for **Users**, **Lawyers**, and **Admins**.
