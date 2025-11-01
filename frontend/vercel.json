@@ -9,6 +9,10 @@
         {
           "key": "Permissions-Policy",
           "value": "microphone=(self)"
+        },
+        {
+          "key": "Feature-Policy",
+          "value": "microphone 'self'"
         }
       ]
     }
