@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { FaPaperPlane, FaUser, FaRobot } from "react-icons/fa";
+import { FaPaperPlane, FaUser, FaRobot, FaMicrophone } from "react-icons/fa";
 import { generateContent } from "../../../services/geminiService";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useMutation } from '@tanstack/react-query';
 import { useStore } from "../../../hooks/useStore";
 import  TypingText  from "../../../components/ui/shadcn-io/typing-text";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 const subtitles = [
   "Ask me anything about your legal concerns.",
@@ -22,11 +23,17 @@ const Chatbot = () => {
   const [input, setInput] = useState("");
   const chatMessagesRef = useRef(null);
 
+  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
+
   useEffect(() => {
     if (chatMessagesRef.current) {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+      setInput(transcript);
+  }, [transcript]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: generateContent,
@@ -52,6 +59,10 @@ const Chatbot = () => {
     e.preventDefault();
     if (input.trim() === "") return;
 
+    if (listening) {
+        SpeechRecognition.stopListening();
+    }
+
     const newMessage = { sender: "User", text: input };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setInput("");
@@ -71,6 +82,15 @@ const Chatbot = () => {
         <FaUser />
       </div>
     );
+  };
+
+  const handleMicClick = () => {
+      if (listening) {
+          SpeechRecognition.stopListening();
+      } else {
+          resetTranscript();
+          SpeechRecognition.startListening({ continuous: true, language: 'en-IN' });
+      }
   };
 
   return (
@@ -131,17 +151,32 @@ const Chatbot = () => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="w-full bg-[#3E3E3E] border border-[#555] rounded-full py-3 px-6 pr-16 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] transition-all duration-300"
+              className={`w-full bg-[#3E3E3E] border border-[#555] rounded-full py-3 px-6 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] transition-all duration-300 ${browserSupportsSpeechRecognition ? "pr-28" : "pr-16"}`}
               placeholder="Type your message here..."
               disabled={isPending}
             />
-            <button
-              type="submit"
-              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center size-10 rounded-full bg-[var(--primary-color)] text-white hover:bg-amber-600 transition-all duration-300 transform hover:scale-110"
-              disabled={isPending}
-            >
-              <FaPaperPlane />
-            </button>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                  {browserSupportsSpeechRecognition && (
+                      <button
+                          type="button"
+                          onClick={handleMicClick}
+                          className={`flex items-center justify-center size-10 rounded-full transition-all duration-300 cursor-pointer ${
+                              listening
+                              ? "bg-red-500 text-white animate-pulse"
+                              : "bg-gray-600 text-gray-300 hover:bg-gray-500 hover:scale-110"
+                          }`}
+                      >
+                          <FaMicrophone />
+                      </button>
+                  )}
+                  <button
+                      type="submit"
+                      className="flex items-center justify-center size-10 rounded-full bg-[var(--primary-color)] text-white hover:bg-amber-600 transition-all duration-300 transform hover:scale-110 cursor-pointer"
+                      disabled={isPending || input.trim() === ""}
+                  >
+                      <FaPaperPlane />
+                  </button>
+              </div>
           </div>
         </form>
       </div>
