@@ -85,13 +85,20 @@ const Chatbot = () => {
   };
 
   const handleMicClick = () => {
-      if (listening) {
-          SpeechRecognition.stopListening();
-      } else {
-          resetTranscript();
-          SpeechRecognition.startListening({ continuous: true, language: 'en-IN' });
-      }
-  };
+  if (listening) {
+    SpeechRecognition.stopListening();
+    console.log("Stopped listening.");
+  } else {
+    resetTranscript();
+    console.log("Starting to listen...");
+    SpeechRecognition.startListening({
+      continuous: true,
+      interimResults: true,
+      language: "en-IN"
+    });
+  }
+};
+
 
   return (
     <main className="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8 bg-[var(--secondary-color)]">
